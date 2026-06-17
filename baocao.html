@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Đồ Án - Website Trường Cao Đẳng Nghề VN-HQ Cà Mau</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <style>
+        :root {
+            --primary: #c62a47;
+            --primary-dark: #9b1b31;
+            --primary-light: #f5a623;
+            --secondary: #0d0d14;
+            --secondary-light: #4a5180;
+            --bg-dark: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-card2: #f1f5f9;
+            --bg-glass: rgba(198, 42, 71, 0.04);
+            --border: rgba(198, 42, 71, 0.12);
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --r-sm: 8px;
+            --r-md: 16px;
+            --r-lg: 24px;
+            --shadow-sm: 0 4px 20px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 12px 36px rgba(15, 23, 42, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; }
+
+        @media print {
+            @page {
+                size: A4;
+                /* margin: 0 ẩn header/footer URL và ngày giờ của trình duyệt */
+                margin: 0;
+            }
+            html, body { 
+                background: #fff !important; 
+                color: #111 !important; 
+                font-size: 12pt;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            /* Thêm padding cho các section nội dung (không phải body) */
+            .toc-page { padding: 1.5cm 1.5cm !important; }
+            .toc-item { padding: 4px 0 !important; }
+            .main-content { padding: 0.5cm 1.5cm 1.5cm 1.5cm !important; }
+            .cover-page { 
+                background: #fff !important; 
+                padding: 10mm !important; 
+                height: 280mm !important; 
+                min-height: 280mm !important;
+                max-height: 280mm !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                margin: 0 auto !important;
+            }
+            .cover-content { 
+                padding: 25px 35px !important; 
+                margin: 0 auto !important; 
+                border: 4px double var(--primary) !important;
+                max-width: 720px !important;
+                height: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                box-sizing: border-box !important;
+            }
+            .cover-title-container { 
+                padding: 10px 10px !important; 
+                margin: 8px 0 !important; 
+            }
+            .cover-title { 
+                font-size: 1.8rem !important; 
+            }
+            .university-logo { 
+                width: 65px !important; 
+                height: 65px !important; 
+                margin: 5px auto !important; 
+            }
+            .logo-container {
+                margin: 5px auto !important;
+                gap: 15px !important;
+            }
+            .cover-details-table { 
+                margin: 10px 0 10px auto !important; 
+                max-width: 400px !important;
+            }
+            .cover-details-row {
+                padding: 2px 0 !important;
+            }
+            .cover-subtitle {
+                margin-bottom: 8px !important;
+                font-size: 0.82rem !important;
+            }
+            .cover-tags {
+                margin-bottom: 8px !important;
+            }
+            .print-btn { display: none !important; }
+            .chapter-header { page-break-before: always !important; break-before: page !important; }
+            .chapter-header:first-of-type { page-break-before: avoid !important; break-before: avoid !important; }
+            .toc-page { page-break-after: always !important; break-after: page !important; }
+            .page-break { display: none !important; }
+            .no-print { display: none !important; }
+            p, td, li { color: #333 !important; }
+            .code-block { 
+                background: #f8fafc !important; 
+                color: #1e293b !important; 
+                border: 1px solid #cbd5e1 !important; 
+                max-height: none !important;
+                overflow: visible !important;
+                page-break-inside: auto !important;
+                break-inside: auto !important;
+                padding: 12px 18px !important;
+            }
+            .code-block pre, .code-block code {
+                font-size: 7.2pt !important;
+                line-height: 1.25 !important;
+                white-space: pre-wrap !important;
+                word-break: break-all !important;
+            }
+            .code-block .code-label {
+                position: static !important;
+                display: block !important;
+                margin-bottom: 6px !important;
+                border-bottom: 1px dashed #cbd5e1 !important;
+                padding-bottom: 4px !important;
+                font-size: 7.5pt !important;
+                color: var(--primary-dark) !important;
+            }
+            .card { background: #f9fafb !important; border: 1px solid #e5e7eb !important; }
+            .section-title { color: var(--primary) !important; }
+            .chapter-title { color: #111 !important; }
+
+            /* Tránh chia cắt nội dung giữa các trang */
+            .data-table, .card, .screen-box, .tech-grid, .feature-list, .db-diagram, .account-cards {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            /* Tránh tiêu đề mồ côi ở cuối trang */
+            h1, h2, h3, h4, h5, h6, .section-title, .chapter-header {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+        }
+
+        /* PRINT BUTTON */
+        .print-btn {
+            position: fixed; top: 24px; right: 24px;
+            background: var(--primary);
+            color: #fff; border: none; padding: 12px 24px; border-radius: 30px;
+            font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; z-index: 1000; box-shadow: 0 4px 20px rgba(198, 42, 71, 0.4);
+            transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+            letter-spacing: 0.5px;
+        }
+        .print-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(198, 42, 71, 0.5); }
+        .cover-page {
+            min-height: 100vh;
+            background: #fff8f8; /* Soft light crimson bg tint */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 40px 20px; position: relative; overflow: hidden;
+        }
+        .cover-page::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(198, 42, 71, 0.02) 0%, transparent 60%);
+            animation: bg-pulse 10s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes bg-pulse { 0%,100%{opacity:.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
+
+        .cover-content {
+            position: relative; z-index: 1; max-width: 820px; width: 100%;
+            background: #ffffff;
+            border: 4px double var(--primary);
+            padding: 55px 50px;
+            box-shadow: 0 12px 40px rgba(198, 42, 71, 0.05);
+            border-radius: 4px;
+        }
+        .cover-content::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px solid rgba(198, 42, 71, 0.25);
+            pointer-events: none;
+        }
+        .university-logo {
+            width: 90px; height: 90px;
+            background: #ffffff;
+            border: 2px double var(--primary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 15px auto;
+            box-shadow: 0 4px 15px rgba(198, 42, 71, 0.08);
+            position: relative;
+            padding: 3px;
+            overflow: hidden;
+        }
+        .cover-univ { font-size: 0.88rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); margin-bottom: 4px; font-weight: 700; }
+        .cover-school { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+        .cover-dept { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 600; text-transform: uppercase; }
+        .academic-divider { font-size: 0.85rem; color: var(--primary-light); letter-spacing: 8px; margin: 15px 0; text-align: center; font-weight: bold; }
+        .cover-label { font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--primary-dark); margin-bottom: 12px; font-weight: 800; }
+        
+        .cover-title-container {
+            border-top: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding: 20px 10px;
+            margin: 20px 0;
+            background: rgba(198, 42, 71, 0.01);
+        }
+        .cover-title {
+            font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.8vw, 2.8rem); font-weight: 900; line-height: 1.3;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+        
+        .cover-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 25px; font-style: normal; font-weight: 400; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+        .cover-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+        .cover-tag { background: rgba(198,42,71,0.04); border: 1px solid rgba(198,42,71,0.12); color: var(--primary); padding: 5px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px; }
+        .cover-tag.gold { border-color: rgba(245,166,35,0.3); color: var(--primary-light); background: rgba(245,166,35,0.04); }
+        
+        .cover-details-table {
+            margin: 30px 0 30px auto;
+            width: 100%;
+            max-width: 440px;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            border-collapse: collapse;
+        }
+        .cover-details-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed rgba(198, 42, 71, 0.1);
+            padding: 6px 0;
+        }
+        .cover-details-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 180px;
+        }
+        .cover-details-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            flex-grow: 1;
+        }
+        
+        .cover-year { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 15px; }
+
+        /* CONTENT LAYOUT */
+        .toc-page, .main-content { max-width: 960px; margin: 0 auto; padding: 60px 40px; }
+        .main-content { padding-top: 20px; padding-bottom: 80px; }
+
+        .page-section-label { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; font-weight: 700; }
+        .page-section-title {
+            font-family: 'Playfair Display', serif; font-size: 2.1rem; margin-bottom: 6px;
+            color: var(--text-primary); font-weight: 800;
+        }
+        .section-hr { height: 2px; background: var(--primary); border: none; margin: 18px 0 36px; }
+
+        /* TOC */
+        .toc-list { list-style: none; }
+        .toc-item { display: flex; align-items: baseline; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.04); transition: all .2s; }
+        .toc-item:hover { padding-left: 8px; border-bottom-color: rgba(198,42,71,0.2); }
+        .toc-num { font-size: 0.75rem; font-weight: 800; color: var(--primary); min-width: 40px; font-family: monospace; }
+        .toc-text { flex: 1; font-size: 0.95rem; color: var(--text-primary); font-weight: 600; }
+        .toc-sub { padding-left: 28px; }
+        .toc-sub .toc-text { font-size: 0.88rem; color: var(--text-secondary); font-weight: 400; }
+        .toc-dots { flex: 1; margin: 0 10px; border-bottom: 1px dotted rgba(198,42,71,0.25); }
+        .toc-page-num { font-size: 0.82rem; color: var(--primary); font-weight: 700; font-family: monospace; }
+
+        /* CHAPTER */
+        .chapter-header { display: flex; align-items: center; gap: 20px; padding: 60px 0 28px; }
+        .chapter-num {
+            font-size: 5.5rem; font-weight: 900; font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            line-height: 1; opacity: 0.35;
+        }
+        .chapter-label { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: var(--primary); margin-bottom: 5px; font-weight: 700; }
+        .chapter-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--text-primary); }
+
+        .section { margin-bottom: 44px; }
+        .section-title {
+            font-size: 1.15rem; font-weight: 800; color: var(--primary);
+            margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::before { content: ''; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; flex-shrink: 0; }
+        .subsection-title { font-size: 1.05rem; font-weight: 700; color: var(--primary-dark); margin: 24px 0 12px; border-left: 3px solid var(--primary); padding-left: 12px; }
+        p { color: var(--text-secondary); margin-bottom: 14px; text-align: justify; font-size: 0.95rem; }
+
+        /* CARD */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-md); padding: 28px; margin-bottom: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--primary); }
+        .card-title { font-size: 1.02rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+        /* TECH GRID */
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 16px; margin-top: 18px; }
+        .tech-item { background: var(--bg-card2); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--r-md); padding: 18px; display: flex; align-items: center; gap: 12px; transition: all .3s; }
+        .tech-item:hover { border-color: var(--border); transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+        .tech-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; color: #fff; }
+        .tech-icon.php { background: #0284c7; }
+        .tech-icon.mysql { background: #0369a1; }
+        .tech-icon.html { background: #0ea5e9; }
+        .tech-icon.css { background: #38bdf8; }
+        .tech-icon.bs { background: #5b21b6; }
+        .tech-icon.js { background: #ca8a04; }
+        .tech-icon.face { background: #059669; }
+        .tech-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+        .tech-desc { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
+
+        /* DB DIAGRAM */
+        .db-diagram { background: #fef2f2; border: 1px solid var(--border); border-radius: var(--r-md); padding: 28px; margin: 18px 0; font-family: 'Courier New', monospace; font-size: 0.77rem; color: var(--primary-dark); overflow-x: auto; line-height: 1.7; }
+
+        /* TABLE */
+        .data-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.88rem; box-shadow: var(--shadow-sm); border-radius: var(--r-sm); overflow: hidden; }
+        .data-table th { background: var(--primary); color: #fff; padding: 12px 16px; text-align: left; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase; border: none; }
+        .data-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; color: var(--text-secondary); vertical-align: top; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:nth-child(even) td { background: #f8fafc; }
+        .data-table tr:hover td { background: #f1f5f9; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-blue { background: #e0f2fe; color: #0369a1; border: 1.5px solid #bae6fd; }
+        .badge-gold { background: #fef3c7; color: #b45309; border: 1.5px solid #fde68a; }
+        .badge-green { background: #d1fae5; color: #047857; border: 1.5px solid #a7f3d0; }
+        .badge-red { background: #fee2e2; color: #b91c1c; border: 1.5px solid #fca5a5; }
+
+        code { font-family: 'Courier New', monospace; background: #fee2e2; color: var(--primary-dark); padding: 2px 7px; border-radius: 4px; font-size: 0.84em; font-weight: 600; }
+
+        /* CODE BLOCK */
+        .code-block {
+            background: #0d0d14; border: 1px solid #2d2f39; border-radius: var(--r-md);
+            padding: 16px 24px 20px; font-family: 'Courier New', monospace; font-size: 0.8rem;
+            color: #e2e8f0; overflow-x: auto; margin: 18px 0; line-height: 1.8;
+            position: relative; box-shadow: var(--shadow-md);
+            white-space: pre-wrap;
+        }
+        .code-block pre, .code-block code {
+            background: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            font-weight: normal !important;
+            color: inherit !important;
+            font-size: 0.8rem !important;
+        }
+        .code-block .code-label {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #8a99ad;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 6px;
+        }
+        .code-block .kw { color: #f472b6; font-weight: 700; }
+        .code-block .str { color: #34d399; }
+        .code-block .cmt { color: #64748b; font-style: italic; }
+        .code-block .fn { color: #60a5fa; }
+        .code-block .var { color: #fb923c; }
+        .code-block .tag { color: #f87171; }
+        .code-block .attr { color: #fbbf24; }
+
+        /* FEATURE LIST */
+        .feature-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin: 14px 0; }
+        .feature-item { background: var(--bg-card2); border: 1px solid rgba(0,0,0,0.07); border-radius: 10px; padding: 13px 15px; display: flex; align-items: flex-start; gap: 11px; font-size: 0.86rem; color: var(--text-secondary); transition: border-color .2s; }
+        .feature-item:hover { border-color: var(--primary); }
+        .feature-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; flex-shrink: 0; color: #fff; }
+
+        /* FLOW */
+        .flow-chart { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 22px 0; }
+        .flow-step { background: var(--bg-card); border: 1px solid var(--border); border-radius: 11px; padding: 13px 22px; font-size: 0.86rem; font-weight: 600; color: var(--text-primary); min-width: 230px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .flow-step.highlight { background: linear-gradient(135deg,#fee2e2,#fff5f5); border-color: var(--primary); }
+        .flow-arrow { font-size: 1.1rem; color: var(--primary); padding: 5px 0; line-height: 1; }
+
+        /* INSTALL */
+        .install-steps { counter-reset: step-counter; list-style: none; }
+        .install-step { counter-increment: step-counter; display: flex; gap: 14px; margin-bottom: 18px; align-items: flex-start; }
+        .install-step::before { content: counter(step-counter); min-width: 34px; height: 34px; background: linear-gradient(135deg,var(--primary),var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; color: #fff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(198,42,71,0.35); }
+        .install-title { font-size: 0.93rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .install-desc { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+
+        /* ACCOUNT CARDS */
+        .account-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .account-card { border-radius: 14px; padding: 22px; border: 1px solid; }
+        .account-card.admin { background: linear-gradient(135deg,#fefce8,#fef9c3); border-color: #fde68a; }
+        .account-card.member { background: linear-gradient(135deg,#fff5f5,#fee2e2); border-color: #fca5a5; }
+        .account-role { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .account-card.admin .account-role { color: #92400e; }
+        .account-card.member .account-role { color: var(--primary-dark); }
+        .account-cred { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; font-size: 0.86rem; }
+        .account-cred-label { color: var(--text-muted); min-width: 80px; }
+        .account-cred-val { font-family: monospace; font-size: 0.93rem; font-weight: 700; }
+        .account-card.admin .account-cred-val { color: #92400e; }
+        .account-card.member .account-cred-val { color: var(--primary-dark); }
+
+        /* ACHIEVEMENT */
+        .achievement-list { list-style: none; margin: 16px 0; }
+        .achievement-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .achievement-icon { font-size: 1.05rem; flex-shrink: 0; margin-top: 2px; }
+        .achievement-text { font-size: 0.88rem; color: var(--text-secondary); margin: 0; }
+
+        /* CONCLUSION */
+        .conclusion-card { background: #fdf2f2; border: 1px solid #fca5a5; border-radius: 18px; padding: 36px; text-align: center; margin: 36px 0; }
+        .conclusion-emoji { font-size: 2.8rem; margin-bottom: 14px; }
+        .conclusion-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 14px; }
+
+        .page-break { height: 50px; }
+
+        /* SCREEN MOCKUP */
+        .screen-box {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 0; margin: 16px 0; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .screen-bar {
+            background: #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 8px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+        .screen-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .screen-dot.red { background: #ef4444; }
+        .screen-dot.yellow { background: #f59e0b; }
+        .screen-dot.green { background: #10b981; }
+        .screen-url { font-family: monospace; font-size: 0.75rem; color: #64748b; margin-left: 8px; background: #fff; padding: 2px 10px; border-radius: 20px; border: 1px solid #cbd5e1; }
+        .screen-content { padding: 20px; }
+
+        /* INFO BOX */
+        .info-box { background: #fff5f5; border: 1px solid #fecaca; border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.85rem; color: var(--primary-dark); }
+        .warn-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.85rem; color: #92400e; }
+
+        /* NUMBERED LIST */
+        .num-list { list-style: none; counter-reset: nl; padding: 0; }
+        .num-list li { counter-increment: nl; display: flex; gap: 12px; margin-bottom: 10px; font-size: 0.88rem; color: var(--text-secondary); }
+        .num-list li::before { content: counter(nl); min-width: 26px; height: 26px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: var(--primary-dark); flex-shrink: 0; }
+
+        /* BULLET LIST */
+        .bullet-list { list-style: none; padding: 0; }
+        .bullet-list li { padding: 6px 0 6px 20px; position: relative; font-size: 0.88rem; color: var(--text-secondary); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .bullet-list li::before { content: '▸'; position: absolute; left: 0; color: var(--primary); }
+
+        @media (max-width: 640px) {
+            .cover-title { font-size: 1.7rem; }
+            .cover-info-grid, .feature-list, .account-cards, .tech-grid { grid-template-columns: 1fr; }
+            .main-content, .toc-page { padding: 20px 20px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ In / Xuất PDF</button>
+
+<!-- ====== TRANG BÌA ====== -->
+<div class="cover-page">
+    <div class="cover-content">
+        <div class="cover-univ">Trường Cao Đẳng Nghề Việt Nam – Hàn Quốc Cà Mau</div>
+        <div class="cover-school">Khoa Công Nghệ Thông Tin</div>
+        <div class="cover-dept">Bộ Môn: Lập Trình Web</div>
+        <div class="logo-container" style="display: flex; justify-content: center; gap: 20px; margin: 15px auto;">
+            <div class="university-logo" style="margin: 0;"><img src="assets/img/logo_vkc.jpg" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+            <div class="university-logo" style="margin: 0; background: rgba(198, 42, 71, 0.03); font-size: 2.2rem; display: flex; align-items: center; justify-content: center;">🎓</div>
+        </div>
+        <div class="academic-divider">❖ ❖ ❖</div>
+        <div class="cover-label">Báo Cáo Đồ Án Môn Học — Đề Tài</div>
+        <div class="cover-title-container">
+            <h1 class="cover-title">Website Trường Cao Đẳng Nghề<br>Việt Nam – Hàn Quốc Cà Mau</h1>
+        </div>
+        <p class="cover-subtitle">Hệ thống quản lý thông tin sinh viên, thời khóa biểu &amp; tích hợp điểm danh khuôn mặt AI</p>
+        <div class="cover-tags">
+            <span class="cover-tag">PHP</span>
+            <span class="cover-tag">MySQL</span>
+            <span class="cover-tag">Bootstrap 5</span>
+            <span class="cover-tag">jQuery</span>
+            <span class="cover-tag gold">Face-api.js</span>
+            <span class="cover-tag">PDO</span>
+        </div>
+        
+        <div class="cover-details-table">
+            <div class="cover-details-row">
+                <span class="cover-details-label">Giáo viên hướng dẫn:</span>
+                <span class="cover-details-value">Phạm Duy Cường</span>
+            </div>
+            <div class="cover-details-row">
+                <span class="cover-details-label">Sinh viên thực hiện:</span>
+                <span class="cover-details-value">Lê Nhựt Khánh</span>
+            </div>
+            <div class="cover-details-row">
+                <span class="cover-details-label">Mã số sinh viên:</span>
+                <span class="cover-details-value">K24CDCNT006</span>
+            </div>
+            <div class="cover-details-row">
+                <span class="cover-details-label">Lớp học:</span>
+                <span class="cover-details-value">K24CDCNT1</span>
+            </div>
+            <div class="cover-details-row">
+                <span class="cover-details-label">Môn học học tập:</span>
+                <span class="cover-details-value">Đồ án Lập Trình Web</span>
+            </div>
+        </div>
+        
+        <div class="cover-year">Cà Mau, Năm 2026</div>
+    </div>
+</div>
+
+<!-- ====== MỤC LỤC ====== -->
+<div class="toc-page">
+    <div class="page-section-label">Nội dung</div>
+    <h2 class="page-section-title">Mục Lục</h2>
+    <hr class="section-hr">
+    <ul class="toc-list">
+        <li class="toc-item"><span class="toc-num">01</span><span class="toc-text">Lời Nói Đầu</span><span class="toc-dots"></span><span class="toc-page-num">§1</span></li>
+
+        <li class="toc-item"><span class="toc-num">02</span><span class="toc-text">Cơ Sở Lý Luận / Lý Thuyết</span><span class="toc-dots"></span><span class="toc-page-num">§2</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">2.1</span><span class="toc-text">HTML5 &amp; CSS3</span><span class="toc-dots"></span><span class="toc-page-num">§2</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">2.2</span><span class="toc-text">Bootstrap 5</span><span class="toc-dots"></span><span class="toc-page-num">§2</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">2.3</span><span class="toc-text">jQuery &amp; AJAX</span><span class="toc-dots"></span><span class="toc-page-num">§2</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">2.4</span><span class="toc-text">Ngôn Ngữ Lập Trình PHP</span><span class="toc-dots"></span><span class="toc-page-num">§2</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">2.5</span><span class="toc-text">Hệ Quản Trị CSDL MySQL</span><span class="toc-dots"></span><span class="toc-page-num">§2</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">2.6</span><span class="toc-text">Sơ Đồ Use Case &amp; Phân Tích Chức Năng</span><span class="toc-dots"></span><span class="toc-page-num">§2</span></li>
+
+        <li class="toc-item"><span class="toc-num">03</span><span class="toc-text">Các Chức Năng Chính Của Sản Phẩm</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">3.1</span><span class="toc-text">Website Public giới thiệu trường</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">3.2</span><span class="toc-text">Phân hệ Admin (Quản trị viên)</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">3.3</span><span class="toc-text">Phân hệ Giáo viên (Giới hạn khoa bảo mật)</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">3.4</span><span class="toc-text">Phân hệ Hiệu trưởng (Giám sát tổng thể)</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">3.5</span><span class="toc-text">Phân hệ Sinh viên</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">3.6</span><span class="toc-text">Bảo mật: Đổi mật khẩu &amp; Quên mật khẩu</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">3.7</span><span class="toc-text">Tìm kiếm &amp; nhóm dữ liệu theo điều kiện</span><span class="toc-dots"></span><span class="toc-page-num">§3</span></li>
+
+        <li class="toc-item"><span class="toc-num">04</span><span class="toc-text">Màn Hình Thiết Kế Từng Chức Năng</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.1</span><span class="toc-text">Màn hình Đăng nhập (login.php)</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.2</span><span class="toc-text">Màn hình Admin Dashboard</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.3</span><span class="toc-text">Màn hình Quản lý sinh viên (CRUD)</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.4</span><span class="toc-text">Màn hình Sinh viên — Dashboard &amp; Xem điểm</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.5</span><span class="toc-text">Màn hình Điểm danh khuôn mặt AI</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.6</span><span class="toc-text">Màn hình Đổi mật khẩu &amp; Quên mật khẩu</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.7</span><span class="toc-text">Màn hình Phân hệ Giáo viên &amp; Hiệu trưởng</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.8</span><span class="toc-text">Màn hình Quản lý Môn Học (monhoc.php)</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.9</span><span class="toc-text">Màn hình Quản lý Thời Khóa Biểu (tkb.php)</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">4.10</span><span class="toc-text">Màn hình Quản lý Học Phí &amp; Tài Chính (taichinh.php)</span><span class="toc-dots"></span><span class="toc-page-num">§4</span></li>
+
+
+        <li class="toc-item"><span class="toc-num">05</span><span class="toc-text">Mã Lệnh Chính Thực Hiện Chức Năng</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.1</span><span class="toc-text">Kết nối CSDL (config.php)</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.2</span><span class="toc-text">Đăng nhập &amp; phân quyền</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.3</span><span class="toc-text">Thêm, cập nhật, xóa sinh viên</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.4</span><span class="toc-text">Tìm kiếm &amp; nhóm theo loại</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.5</span><span class="toc-text">Điểm danh khuôn mặt AI</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.6</span><span class="toc-text">Xử lý Đổi mật khẩu &amp; Quên mật khẩu</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.7</span><span class="toc-text">Giới hạn khoa bảo mật cho Giáo viên</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.8</span><span class="toc-text">Xử lý Quản lý Môn Học</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.9</span><span class="toc-text">Xử lý Quản lý Thời Khóa Biểu</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+        <li class="toc-item toc-sub"><span class="toc-num">5.10</span><span class="toc-text">Xử lý Quản lý Học Phí &amp; Tài Chính</span><span class="toc-dots"></span><span class="toc-page-num">§5</span></li>
+
+
+        <li class="toc-item"><span class="toc-num">06</span><span class="toc-text">Hướng Dẫn Cài Đặt &amp; Chạy</span><span class="toc-dots"></span><span class="toc-page-num">§6</span></li>
+
+        <li class="toc-item"><span class="toc-num">07</span><span class="toc-text">Kết Luận</span><span class="toc-dots"></span><span class="toc-page-num">§7</span></li>
+
+        <li class="toc-item"><span class="toc-num">PL</span><span class="toc-text">Phụ Lục: Liên Kết GitHub &amp; Cấu Trúc Mã Nguồn</span><span class="toc-dots"></span><span class="toc-page-num">§PL</span></li>
+    </ul>
+</div>
+
+<!-- ====== NỘI DUNG CHÍNH ====== -->
+<div class="main-content">
+
+    <!-- ==================== CHƯƠNG 1: LỜI NÓI ĐẦU ==================== -->
+    <div class="chapter-header">
+        <div class="chapter-num">01</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Chương Một</div>
+            <div class="chapter-title">Lời Nói Đầu</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <div class="section">
+        <h3 class="section-title">1.1 Lý Do Chọn Đề Tài</h3>
+        <p>Trong bối cảnh chuyển đổi số đang diễn ra mạnh mẽ tại các cơ sở giáo dục Việt Nam, việc ứng dụng công nghệ thông tin vào quản lý trường học không còn là xu hướng mà đã trở thành yêu cầu thiết yếu. Hệ thống quản lý trường học truyền thống dựa trên sổ sách thủ công đang bộc lộ nhiều hạn chế: tốn thời gian, dễ sai sót, khó tra cứu và không tạo điều kiện cho sinh viên theo dõi thông tin học tập của mình.</p>
+        <p>Xuất phát từ thực tiễn đó, đề tài <strong>"Website Trường Cao Đẳng Nghề Việt Nam – Hàn Quốc Cà Mau"</strong> được xây dựng nhằm hiện đại hóa toàn bộ quy trình quản lý thông tin nhà trường — từ website giới thiệu dành cho công chúng đến hệ thống quản lý nội bộ cho admin và sinh viên, đặc biệt tích hợp công nghệ <strong>nhận diện khuôn mặt (Face-api.js)</strong> vào điểm danh để thay thế phương pháp điểm danh thủ công.</p>
+
+        <div class="card">
+            <div class="card-title">🎯 Mục Tiêu Đề Tài</div>
+            <ul class="bullet-list">
+                <li>Xây dựng website giới thiệu trường chuyên nghiệp, đầy đủ thông tin tuyển sinh, đào tạo, sự kiện</li>
+                <li>Xây dựng hệ thống quản lý nội bộ với phân quyền 2 cấp: Admin và Sinh viên</li>
+                <li>Thực hiện đầy đủ các thao tác CRUD (thêm, xóa, cập nhật, tìm kiếm) trên các bảng dữ liệu</li>
+                <li>Tích hợp công nghệ AI nhận diện khuôn mặt cho tính năng điểm danh tự động</li>
+                <li>Đảm bảo bảo mật: mã hóa mật khẩu bcrypt, phòng chống SQL Injection bằng PDO</li>
+                <li>Triển khai thực tế lên hosting InfinityFree để kiểm nghiệm thực tiễn</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">1.2 Phạm Vi &amp; Giới Hạn</h3>
+        <p>Đề tài tập trung vào môi trường Web (trình duyệt), sử dụng ngôn ngữ phía server là PHP thuần và hệ quản trị CSDL MySQL. Giao diện được xây dựng với Bootstrap 5 và jQuery, đảm bảo tính responsive trên mọi thiết bị. Tính năng nhận diện khuôn mặt chạy hoàn toàn phía client (trình duyệt) qua thư viện Face-api.js, không yêu cầu server AI riêng.</p>
+
+        <div class="info-box">
+            ℹ️ <strong>Phạm vi:</strong> Quản lý sinh viên, môn học, thời khóa biểu, điểm số, điểm danh AI, tài chính học phí, thông báo nội bộ. Chưa bao gồm: đăng ký học phần online, tích hợp thanh toán trực tuyến.
+        </div>
+    </div>
+
+    <!-- ==================== CHƯƠNG 2: CƠ SỞ LÝ LUẬN ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num">02</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Chương Hai</div>
+            <div class="chapter-title">Cơ Sở Lý Luận / Lý Thuyết</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <!-- 2.1 HTML & CSS -->
+    <div class="section">
+        <h3 class="section-title">2.1 HTML5 &amp; CSS3</h3>
+        <p><strong>HTML5 (HyperText Markup Language 5)</strong> là ngôn ngữ đánh dấu chuẩn để xây dựng cấu trúc trang web. Phiên bản HTML5 bổ sung nhiều thẻ ngữ nghĩa (<code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>) giúp mã nguồn rõ ràng, dễ đọc và tối ưu SEO. Đề tài sử dụng HTML5 để xây dựng cấu trúc toàn bộ trang — từ trang public giới thiệu trường đến các form nhập liệu, bảng dữ liệu trong phần quản trị.</p>
+        <p><strong>CSS3 (Cascading Style Sheets 3)</strong> là ngôn ngữ định dạng giao diện. CSS3 bổ sung nhiều tính năng mạnh mẽ như Flexbox, Grid Layout, Animation, Transition, Custom Properties (biến CSS), Media Queries — cho phép xây dựng giao diện hiện đại, responsive và trực quan mà không cần JavaScript. Đề tài dùng CSS3 custom để tạo bảng màu, hiệu ứng hover, animation giao diện dashboard.</p>
+        <div class="code-block">
+            <span class="code-label">CSS3</span>
+<span class="cmt">/* Ví dụ: CSS variables và flexbox trong dự án */</span>
+<span class="attr">:root</span> {
+  <span class="attr">--accent</span>: <span class="str">#dc2626</span>;
+  <span class="attr">--bg</span>: <span class="str">#0a0a0f</span>;
+  <span class="attr">--text</span>: <span class="str">#e2e8f0</span>;
+}
+<span class="tag">.sidebar</span> {
+  <span class="attr">display</span>: <span class="str">flex</span>;
+  <span class="attr">flex-direction</span>: <span class="str">column</span>;
+  <span class="attr">width</span>: <span class="str">240px</span>;
+  <span class="attr">background</span>: <span class="str">var(--bg)</span>;
+  <span class="attr">transition</span>: <span class="str">all 0.3s ease</span>;
+}
+        </div>
+    </div>
+
+    <!-- 2.2 Bootstrap -->
+    <div class="section">
+        <h3 class="section-title">2.2 Bootstrap 5</h3>
+        <p><strong>Bootstrap 5</strong> là framework CSS/UI phổ biến nhất thế giới, do Twitter phát triển. Bootstrap cung cấp hệ thống Grid 12 cột, bộ component UI hoàn chỉnh (Button, Card, Modal, Navbar, Table, Form, Badge...) và các tiện ích (utilities) giúp xây dựng giao diện nhanh chóng mà không cần viết CSS từ đầu. Phiên bản 5 bỏ phụ thuộc jQuery, hoạt động bằng vanilla JavaScript thuần.</p>
+        <p>Đề tài sử dụng Bootstrap 5 CDN để xây dựng giao diện responsive cho toàn bộ website public và một phần giao diện admin (Navbar, Modal form, Badge trạng thái, Toast thông báo).</p>
+        <div class="code-block">
+            <span class="code-label">HTML + Bootstrap</span>
+<span class="cmt">&lt;!-- Ví dụ: Modal Bootstrap dùng trong form thêm sinh viên --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"modal fade"</span> <span class="attr">id</span>=<span class="str">"addModal"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"modal-dialog"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"modal-content"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"modal-header"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;h5</span> <span class="attr">class</span>=<span class="str">"modal-title"</span><span class="tag">&gt;</span>Thêm sinh viên<span class="tag">&lt;/h5&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+      <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"modal-body"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;input</span> <span class="attr">class</span>=<span class="str">"form-control"</span> <span class="attr">name</span>=<span class="str">"ho_ten"</span> <span class="attr">required</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+        </div>
+    </div>
+
+    <!-- 2.3 jQuery & AJAX -->
+    <div class="section">
+        <h3 class="section-title">2.3 jQuery &amp; AJAX</h3>
+        <p><strong>jQuery</strong> là thư viện JavaScript nhẹ, đơn giản hóa thao tác DOM, xử lý sự kiện, animation và AJAX. Cú pháp ngắn gọn giúp viết code nhanh hơn nhiều so với JavaScript thuần (ví dụ: <code>$(selector).on('click', fn)</code>).</p>
+        <p><strong>AJAX (Asynchronous JavaScript and XML)</strong> cho phép trang web gửi/nhận dữ liệu từ server mà không cần tải lại trang. Đề tài sử dụng AJAX (qua <code>$.post()</code> / <code>$.get()</code> của jQuery) để thực hiện điểm danh khuôn mặt realtime, tìm kiếm sinh viên theo từ khóa ngay khi gõ, và cập nhật trạng thái mà không reload.</p>
+        <div class="code-block">
+            <span class="code-label">jQuery / AJAX</span>
+<span class="cmt">// Ví dụ: tìm kiếm sinh viên theo từ khóa bằng AJAX</span>
+<span class="var">$</span>(<span class="str">'#searchInput'</span>).on(<span class="str">'input'</span>, <span class="kw">function</span>() {
+  <span class="kw">let</span> <span class="var">q</span> = <span class="var">$</span>(<span class="kw">this</span>).val();
+  <span class="var">$</span>.get(<span class="str">'/tkb/admin/students.php'</span>, { q: <span class="var">q</span> }, <span class="kw">function</span>(<span class="var">html</span>) {
+    <span class="var">$</span>(<span class="str">'#studentTable'</span>).html(<span class="var">html</span>);
+  });
+});
+
+<span class="cmt">// Ví dụ: gửi điểm danh khuôn mặt lên server</span>
+<span class="var">$</span>.post(<span class="str">'/tkb/api/diem_danh.php'</span>, {
+  student_id: <span class="var">matchedId</span>,
+  tkb_id: <span class="var">currentTkbId</span>,
+  trang_thai: <span class="str">'co_mat'</span>
+}, <span class="kw">function</span>(<span class="var">res</span>) {
+  <span class="kw">if</span> (<span class="var">res</span>.success) showSuccess(<span class="str">'Điểm danh thành công!'</span>);
+});
+        </div>
+    </div>
+
+    <!-- 2.4 PHP -->
+    <div class="section">
+        <h3 class="section-title">2.4 Ngôn Ngữ Lập Trình PHP</h3>
+        <p><strong>PHP (PHP: Hypertext Preprocessor)</strong> là ngôn ngữ lập trình phía server (server-side scripting) mã nguồn mở, được thiết kế đặc biệt cho phát triển web. PHP chạy trên máy chủ, xử lý logic nghiệp vụ, tương tác với cơ sở dữ liệu và trả về HTML động cho trình duyệt.</p>
+
+        <div class="card">
+            <div class="card-title">⚙️ Các Tính Năng PHP Sử Dụng Trong Đề Tài</div>
+            <table class="data-table">
+                <thead><tr><th>Tính năng</th><th>Mô tả &amp; Ứng dụng</th></tr></thead>
+                <tbody>
+                    <tr><td><code>Session</code></td><td>Quản lý đăng nhập, lưu thông tin người dùng (<code>$_SESSION['user_id']</code>, <code>$_SESSION['role']</code>)</td></tr>
+                    <tr><td><code>PDO / MySQLi</code></td><td>Kết nối và truy vấn CSDL an toàn với Prepared Statements</td></tr>
+                    <tr><td><code>password_hash()</code></td><td>Mã hóa mật khẩu bằng bcrypt (PASSWORD_DEFAULT)</td></tr>
+                    <tr><td><code>password_verify()</code></td><td>Xác minh mật khẩu khi đăng nhập</td></tr>
+                    <tr><td><code>header()</code></td><td>Chuyển hướng trang sau xử lý form (Post/Redirect/Get)</td></tr>
+                    <tr><td><code>$_POST / $_GET</code></td><td>Nhận dữ liệu từ form và URL</td></tr>
+                    <tr><td><code>json_encode()</code></td><td>Trả về JSON cho AJAX requests</td></tr>
+                    <tr><td><code>include / require</code></td><td>Tái sử dụng code (nav, config, header)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="code-block">
+            <span class="code-label">PHP</span>
+<span class="cmt">// Xác thực đăng nhập với bcrypt và session</span>
+<span class="var">$stmt</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"SELECT * FROM users WHERE username = ?"</span>);
+<span class="var">$stmt</span>-><span class="fn">bind_param</span>(<span class="str">"s"</span>, <span class="var">$username</span>);
+<span class="var">$stmt</span>-><span class="fn">execute</span>();
+<span class="var">$user</span> = <span class="var">$stmt</span>-><span class="fn">get_result</span>()-><span class="fn">fetch_assoc</span>();
+
+<span class="kw">if</span> (<span class="var">$user</span> && <span class="fn">password_verify</span>(<span class="var">$password</span>, <span class="var">$user</span>[<span class="str">'password'</span>])) {
+    <span class="fn">session_start</span>();
+    <span class="var">$_SESSION</span>[<span class="str">'user_id'</span>] = <span class="var">$user</span>[<span class="str">'id'</span>];
+    <span class="var">$_SESSION</span>[<span class="str">'role'</span>]    = <span class="var">$user</span>[<span class="str">'role'</span>];
+    <span class="fn">header</span>(<span class="str">"Location: /tkb/admin/dashboard.php"</span>);
+}
+        </div>
+    </div>
+
+    <!-- 2.5 MySQL -->
+    <div class="section">
+        <h3 class="section-title">2.5 Hệ Quản Trị Cơ Sở Dữ Liệu MySQL</h3>
+        <p><strong>MySQL</strong> là hệ quản trị cơ sở dữ liệu quan hệ (RDBMS) mã nguồn mở phổ biến nhất thế giới, được sử dụng rộng rãi trong các ứng dụng web. MySQL hoạt động theo mô hình client-server, sử dụng ngôn ngữ SQL (Structured Query Language) để truy vấn và thao tác dữ liệu.</p>
+        <p>Đề tài sử dụng MySQL thông qua phpMyAdmin (XAMPP) để thiết kế và quản lý cơ sở dữ liệu <code>truong_caodang</code> gồm <strong>9 bảng</strong> với ràng buộc khóa ngoại chặt chẽ, tối ưu hiệu suất truy vấn và đảm bảo toàn vẹn tham chiếu.</p>
+
+        <div class="card">
+            <div class="card-title">🗄️ Sơ Đồ Quan Hệ Các Bảng (ERD)</div>
+            <div class="db-diagram">
++----------+       +----------+       +-----------+<br>
+|  users   |       | students |       | giang_vien|<br>
++----------+       +----------+       +-----------+<br>
+| id (PK)  |&lt;------| user_id  |       | id (PK)   |<br>
+| username |       | ma_sv    |       | ma_gv     |<br>
+| password |       | ho_ten   |       | ho_ten    |<br>
+| role     |       | lop      |       | khoa      |<br>
+| avatar   |       | khoa     |       +-----------+<br>
+|face_desc |       |face_desc |<br>
++----------+       +----+-----+<br>
+                        |<br>
+    +-----------+  +---------+---------+  +-------------+<br>
+    | tai_chinh |  |  diem_danh       |  |    diem     |<br>
+    +-----------+  +------------------+  +-------------+<br>
+    | so_tien   |  | ngay_diem_danh   |  | diem_gk     |<br>
+    | trang_thai|  | trang_thai       |  | diem_ck     |<br>
+    +-----------+  | tkb_id (FK)      |  | diem_tk     |<br>
+                  +------------------+  +-------------+<br>
+                        |<br>
+    +-----------+  +--+---------------+  +------------+<br>
+    | mon_hoc   |&lt;--| thoi_khoa_bieu  |  | thong_bao  |<br>
+    +-----------+  +------------------+  +------------+<br>
+    | ma_mon    |  | thu, tiet        |  | tieu_de    |<br>
+    | ten_mon   |  | phong_hoc        |  | khoa       |<br>
+    | so_tin_chi|  | hoc_ky           |  | trang_thai |<br>
+    +-----------+  +------------------+  +------------+
+            </div>
+        </div>
+
+        <table class="data-table">
+            <thead><tr><th>#</th><th>Tên Bảng</th><th>Vai Trò</th><th>Trường Quan Trọng &amp; Kiểu Dữ Liệu</th></tr></thead>
+            <tbody>
+                <tr><td><span class="badge badge-blue">1</span></td><td><code>users</code></td><td>Tài khoản đăng nhập hệ thống</td><td><code>id</code> (INT PK AI), <code>username</code> (VARCHAR UNIQUE), <code>password</code> (VARCHAR bcrypt), <code>role</code> (ENUM 'admin', 'student', 'teacher', 'principal')</td></tr>
+                <tr><td><span class="badge badge-blue">2</span></td><td><code>students</code></td><td>Hồ sơ cá nhân và thông tin sinh viên</td><td><code>id</code> (INT PK AI), <code>user_id</code> (INT FK), <code>ma_sv</code> (VARCHAR UNIQUE), <code>lop</code> (VARCHAR), <code>face_descriptor</code> (TEXT lưu vector nhận diện khuôn mặt)</td></tr>
+                <tr><td><span class="badge badge-blue">3</span></td><td><code>mon_hoc</code></td><td>Danh mục các môn học đào tạo</td><td><code>id</code> (INT PK AI), <code>ma_mon</code> (VARCHAR UNIQUE), <code>ten_mon</code> (VARCHAR), <code>so_tin_chi</code> (INT)</td></tr>
+                <tr><td><span class="badge badge-blue">4</span></td><td><code>giang_vien</code></td><td>Hồ sơ giảng viên của trường</td><td><code>id</code> (INT PK AI), <code>ma_gv</code> (VARCHAR UNIQUE), <code>ho_ten</code> (VARCHAR), <code>khoa</code> (VARCHAR)</td></tr>
+                <tr><td><span class="badge badge-blue">5</span></td><td><code>thoi_khoa_bieu</code></td><td>Lịch học, phân phòng học và giảng viên</td><td><code>id</code> (INT PK AI), <code>mon_hoc_id</code> (INT FK), <code>giang_vien_id</code> (INT FK SET NULL), <code>thu</code> (INT), <code>tiet_bat_dau</code> (INT)</td></tr>
+                <tr><td><span class="badge badge-blue">6</span></td><td><code>diem</code></td><td>Bảng điểm chi tiết của sinh viên</td><td><code>id</code> (INT PK AI), <code>student_id</code> (INT FK), <code>mon_hoc_id</code> (INT FK), <code>diem_giua_ky</code>, <code>diem_cuoi_ky</code>, <code>diem_tong_ket</code> (DECIMAL(4,2))</td></tr>
+                <tr><td><span class="badge badge-blue">7</span></td><td><code>diem_danh</code></td><td>Nhật ký chuyên cần từng buổi học</td><td><code>id</code> (INT PK AI), <code>student_id</code> (INT FK), <code>mon_hoc_id</code> (INT FK), <code>ngay_diem_danh</code> (DATE), <code>trang_thai</code> (VARCHAR)</td></tr>
+                <tr><td><span class="badge badge-blue">8</span></td><td><code>tai_chinh</code></td><td>Học phí và các khoản nộp của sinh viên</td><td><code>id</code> (INT PK AI), <code>student_id</code> (INT FK), <code>noi_dung</code> (VARCHAR), <code>so_tien</code> (DECIMAL(15,2)), <code>trang_thai</code> (VARCHAR)</td></tr>
+                <tr><td><span class="badge badge-blue">9</span></td><td><code>thong_bao</code></td><td>Bảng tin thông báo nội bộ toàn trường/khoa</td><td><code>id</code> (INT PK AI), <code>tieu_de</code> (VARCHAR), <code>noi_dung</code> (TEXT), <code>khoa</code> (VARCHAR), <code>trang_thai</code> (VARCHAR)</td></tr>
+            </tbody>
+        </table>
+
+        <div class="card" style="margin-top: 24px;">
+            <div class="card-title">🔑 Phân Tích Ràng Buộc Toàn Vẹn &amp; Khóa Ngoại</div>
+            <p>Để duy trì tính toàn vẹn tham chiếu trong cơ sở dữ liệu quan hệ, các ràng buộc khóa ngoại (FOREIGN KEY) được thiết lập với các quy tắc xử lý sự kiện nghiêm ngặt:</p>
+            <ul class="bullet-list">
+                <li><strong>Quy tắc xóa dây chuyền (ON DELETE CASCADE):</strong> 
+                    Các bảng liên kết trực tiếp với sinh viên như <code>students</code> (liên kết với <code>users</code>), <code>diem</code>, <code>diem_danh</code>, và <code>tai_chinh</code> (liên kết với <code>students</code>) đều sử dụng <code>ON DELETE CASCADE</code>. Khi một tài khoản người dùng hoặc hồ sơ sinh viên bị xóa, tất cả các bản ghi điểm số, điểm danh và học phí tương ứng sẽ tự động bị xóa theo. Điều này ngăn chặn tình trạng dữ liệu mồ côi (orphaned data), tiết kiệm tài nguyên lưu trữ và đảm bảo hệ thống không phát sinh lỗi liên kết.
+                </li>
+                <li><strong>Quy tắc đặt rỗng (ON DELETE SET NULL):</strong>
+                    Trong bảng <code>thoi_khoa_bieu</code>, trường <code>giang_vien_id</code> tham chiếu đến bảng <code>giang_vien</code> được cấu hình quy tắc <code>ON DELETE SET NULL</code>. Khi một giảng viên nghỉ việc hoặc thông tin của họ bị xóa khỏi cơ sở dữ liệu, các tiết học mà giảng viên đó đảm nhiệm trên thời khóa biểu sẽ không bị xóa bỏ. Thay vào đó, trường <code>giang_vien_id</code> sẽ chuyển thành <code>NULL</code>, giúp giữ nguyên phòng học, giờ học và lớp học ban đầu để Quản trị viên dễ dàng phân công giảng viên thay thế.
+                </li>
+            </ul>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+            <div class="card-title">📐 Phân Tích Chuẩn Hóa Cơ Sở Dữ Liệu</div>
+            <p>Mô hình dữ liệu được thiết kế tuân thủ các nguyên lý chuẩn hóa cơ sở dữ liệu nhằm giảm thiểu tối đa sự dư thừa dữ liệu và loại bỏ các dị thường thêm, xóa, sửa (insert, delete, update anomalies):</p>
+            <ul class="bullet-list">
+                <li><strong>Dạng chuẩn 1 (1NF):</strong> Toàn bộ các bảng đều có khóa chính xác định duy nhất từng bản ghi, các cột dữ liệu đều là thuộc tính đơn trị và có miền giá trị nguyên tố (atomic). Trường vector khuôn mặt <code>face_descriptor</code> được lưu dưới dạng chuỗi JSON văn bản thuần và được phân tích cú pháp thành mảng 128 số thực ở phía client, hoàn toàn thỏa mãn tính nguyên tố của thuộc tính trong cơ sở dữ liệu quan hệ.</li>
+                <li><strong>Dạng chuẩn 2 (2NF):</strong> Cơ sở dữ liệu đạt chuẩn 1NF và không tồn tại sự phụ thuộc bán phần của các thuộc tính không khóa vào khóa chính (mọi cột không khóa đều phụ thuộc hàm hoàn toàn vào toàn bộ khóa chính). Ví dụ, các thông tin trong bảng <code>students</code> như <code>lop</code>, <code>khoa</code>, <code>sdt</code> đều phụ thuộc trực tiếp vào khóa chính <code>id</code>/<code>ma_sv</code> chứ không phụ thuộc vào một phần của khóa.</li>
+                <li><strong>Dạng chuẩn 3 (3NF):</strong> Cơ sở dữ liệu đạt chuẩn 2NF và loại bỏ hoàn toàn các phụ thuộc bắc cầu (không có thuộc tính không khóa nào phụ thuộc vào khóa chính thông qua một thuộc tính không khóa khác). Hệ thống đã tách biệt rõ ràng bảng <code>users</code> (phục vụ xác thực đăng nhập) và bảng <code>students</code> (phục vụ hồ sơ học thuật). Thông tin bảo mật tài khoản và thông tin hồ sơ sinh viên được đồng bộ thông qua khóa ngoại <code>user_id</code>, tránh được việc lặp lại thông tin cá nhân của người dùng trên nhiều bảng.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 2.6 Use Case -->
+    <div class="section" style="page-break-before: always;">
+        <h3 class="section-title">2.6 Sơ Đồ Use Case &amp; Phân Tích Chức Năng</h3>
+        <p>Sơ đồ Use Case tổng thể mô tả các mối tương tác giữa người dùng (Actors) và các chức năng hệ thống (Use Cases). Hệ thống bao gồm 4 nhóm đối tượng chính: <strong>Admin (Quản trị viên)</strong>, <strong>Giáo viên</strong>, <strong>Sinh viên</strong>, và <strong>Hiệu trưởng</strong>.</p>
+        
+        <div class="card" style="padding: 16px; background: #ffffff;">
+            <div class="card-title" style="margin-bottom: 12px; font-size: 0.95rem;">📊 Sơ Đồ Use Case Tổng Thể Hệ Thống</div>
+            <div style="width: 100%; overflow-x: auto; text-align: center;">
+                <svg width="100%" height="650" viewBox="0 0 900 650" xmlns="http://www.w3.org/2000/svg" style="background: #fff8f8; border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: var(--shadow-sm); max-width: 900px; display: inline-block;">
+                  <style>
+                    .uc-boundary { fill: #ffffff; stroke: #c62a47; stroke-width: 2; stroke-dasharray: 6 4; opacity: 0.25; }
+                    .uc-actor-line { stroke: #cbd5e1; stroke-width: 1.5; opacity: 0.75; transition: all 0.3s; }
+                    .uc-actor-line:hover { stroke: #c62a47; stroke-width: 2.5; opacity: 1; }
+                    .uc-ellipse { fill: #ffffff; stroke: #c62a47; stroke-width: 2; cursor: pointer; transition: all 0.3s ease; }
+                    .uc-ellipse:hover { fill: #fff0f2; stroke: #9b1b31; transform: scale(1.02); filter: drop-shadow(0 4px 8px rgba(198,42,71,0.15)); }
+                    .uc-text { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; fill: #0f172a; text-anchor: middle; pointer-events: none; }
+                    .uc-actor-text { font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 800; fill: #9b1b31; text-anchor: middle; }
+                    .uc-actor-role { font-family: 'Outfit', sans-serif; font-size: 11px; fill: #64748b; text-anchor: middle; font-weight: 500; }
+                    .uc-system-label { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 900; fill: #c62a47; text-anchor: middle; letter-spacing: 1.5px; }
+                  </style>
+                  
+                  <defs>
+                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.05" />
+                    </filter>
+                  </defs>
+
+                  <!-- System Boundary Box -->
+                  <rect x="200" y="30" width="500" height="590" rx="16" class="uc-boundary" />
+                  <text x="450" y="55" class="uc-system-label">HỆ THỐNG QUẢN LÝ THỜI KHÓA BIỂU VKC</text>
+
+                  <!-- Lines from Admin (100, 220) -->
+                  <line x1="100" y1="220" x2="450" y2="105" class="uc-actor-line" />
+                  <line x1="100" y1="220" x2="450" y2="170" class="uc-actor-line" />
+                  <line x1="100" y1="220" x2="450" y2="235" class="uc-actor-line" />
+                  <line x1="100" y1="220" x2="450" y2="300" class="uc-actor-line" />
+                  <line x1="100" y1="220" x2="450" y2="365" class="uc-actor-line" />
+                  <line x1="100" y1="220" x2="450" y2="430" class="uc-actor-line" />
+
+                  <!-- Lines from Teacher (100, 480) -->
+                  <line x1="100" y1="480" x2="450" y2="105" class="uc-actor-line" />
+                  <line x1="100" y1="480" x2="450" y2="235" class="uc-actor-line" />
+                  <line x1="100" y1="480" x2="450" y2="300" class="uc-actor-line" />
+
+                  <!-- Lines from Student (800, 220) -->
+                  <line x1="800" y1="220" x2="450" y2="105" class="uc-actor-line" />
+                  <line x1="800" y1="220" x2="450" y2="495" class="uc-actor-line" />
+                  <line x1="800" y1="220" x2="450" y2="560" class="uc-actor-line" />
+
+                  <!-- Lines from Principal (800, 480) -->
+                  <line x1="800" y1="480" x2="450" y2="105" class="uc-actor-line" />
+                  <line x1="800" y1="480" x2="450" y2="430" class="uc-actor-line" />
+                  <line x1="800" y1="480" x2="450" y2="365" class="uc-actor-line" />
+                  <line x1="800" y1="480" x2="450" y2="495" class="uc-actor-line" />
+
+                  <!-- Actor 1: Admin (Left Upper) -->
+                  <g transform="translate(100, 140)" filter="url(#shadow)">
+                    <circle cx="0" cy="0" r="16" fill="#c62a47" />
+                    <circle cx="0" cy="-4" r="8" fill="#fff" />
+                    <path d="M-18,28 C-18,16 -8,14 0,14 C8,14 18,16 18,28" fill="#c62a47" />
+                    <path d="M-4,20 L4,20 L6,25 L0,29 L-6,25 Z" fill="#f5a623" />
+                    <text x="0" y="52" class="uc-actor-text">ADMIN</text>
+                    <text x="0" y="66" class="uc-actor-role">Quản trị viên</text>
+                  </g>
+
+                  <!-- Actor 2: Teacher (Left Lower) -->
+                  <g transform="translate(100, 400)" filter="url(#shadow)">
+                    <circle cx="0" cy="0" r="16" fill="#0d0d14" />
+                    <circle cx="0" cy="-4" r="8" fill="#fff" />
+                    <path d="M-18,28 C-18,16 -8,14 0,14 C8,14 18,16 18,28" fill="#0d0d14" />
+                    <rect x="-5" y="18" width="10" height="8" fill="#cbd5e1" rx="1" />
+                    <line x1="-3" y1="20" x2="3" y2="20" stroke="#0d0d14" stroke-width="1" />
+                    <text x="0" y="52" class="uc-actor-text">GIÁO VIÊN</text>
+                    <text x="0" y="66" class="uc-actor-role">Giảng viên khoa</text>
+                  </g>
+
+                  <!-- Actor 3: Student (Right Upper) -->
+                  <g transform="translate(800, 140)" filter="url(#shadow)">
+                    <circle cx="0" cy="0" r="16" fill="#3b82f6" />
+                    <circle cx="0" cy="-4" r="8" fill="#fff" />
+                    <path d="M-18,28 C-18,16 -8,14 0,14 C8,14 18,16 18,28" fill="#3b82f6" />
+                    <path d="M-8,14 L0,10 L8,14 L0,18 Z" fill="#f5a623" />
+                    <text x="0" y="52" class="uc-actor-text">SINH VIÊN</text>
+                    <text x="0" y="66" class="uc-actor-role">Sinh viên học tập</text>
+                  </g>
+
+                  <!-- Actor 4: Principal (Right Lower) -->
+                  <g transform="translate(800, 400)" filter="url(#shadow)">
+                    <circle cx="0" cy="0" r="16" fill="#10b981" />
+                    <circle cx="0" cy="-4" r="8" fill="#fff" />
+                    <path d="M-18,28 C-18,16 -8,14 0,14 C8,14 18,16 18,28" fill="#10b981" />
+                    <path d="M-2,14 L2,14 L3,24 L0,28 L-3,24 Z" fill="#fff" />
+                    <text x="0" y="52" class="uc-actor-text">HIỆU TRƯỞNG</text>
+                    <text x="0" y="66" class="uc-actor-role">Ban giám hiệu</text>
+                  </g>
+
+                  <!-- Use Case Ellipses -->
+                  <g transform="translate(450, 105)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Đăng nhập (Mật khẩu &amp; FaceID AI)</text>
+                  </g>
+                  <g transform="translate(450, 170)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Quản lý hệ thống (Sinh viên, Môn học, TKB)</text>
+                  </g>
+                  <g transform="translate(450, 235)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Điểm danh (Camera AI / Thủ công)</text>
+                  </g>
+                  <g transform="translate(450, 300)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Quản lý điểm số (Nhập/Sửa điểm)</text>
+                  </g>
+                  <g transform="translate(450, 365)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Quản lý &amp; Xem học phí, tài chính</text>
+                  </g>
+                  <g transform="translate(450, 430)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Quản lý &amp; Xem thông báo nội bộ</text>
+                  </g>
+                  <g transform="translate(450, 495)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Xem Thời khóa biểu &amp; Điểm cá nhân</text>
+                  </g>
+                  <g transform="translate(450, 560)">
+                    <ellipse cx="0" cy="0" rx="140" ry="22" class="uc-ellipse" />
+                    <text x="0" y="4" class="uc-text">Đăng ký dữ liệu khuôn mặt AI</text>
+                  </g>
+                </svg>
+            </div>
+        </div>
+
+        <table class="data-table" style="margin-top: 24px;">
+            <thead><tr><th>Đối tượng (Actor)</th><th>Quyền Hạn &amp; Tương Tác Chức Năng (Use Case)</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge badge-red">Admin</span></td>
+                    <td>Có toàn quyền cao nhất trên hệ thống. Đăng nhập hệ thống; quản lý danh mục sinh viên, giáo viên, môn học, thời khóa biểu; đăng thông báo toàn trường; cấu hình học phí cho từng lớp; thực hiện điểm danh AI qua camera.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-blue">Giảng viên</span></td>
+                    <td>Đăng nhập hệ thống; truy cập các chức năng được phân quyền giới hạn theo <strong>Khoa chuyên môn</strong> của mình: Xem thời khóa biểu/lịch dạy được phân công; nhập và sửa điểm cho sinh viên thuộc các lớp trong khoa; thực hiện điểm danh (có mặt, vắng, muộn) cho sinh viên lớp dạy.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-gold">Sinh viên</span></td>
+                    <td>Đăng nhập hệ thống bằng mật khẩu cá nhân hoặc bằng nhận diện khuôn mặt; xem thời khóa biểu cá nhân theo học kỳ; tra cứu kết quả học tập (điểm giữa kỳ, cuối kỳ, điểm tổng kết); xem lịch sử điểm danh chuyên cần của mình; kiểm tra trạng thái đóng học phí; cập nhật hồ sơ cá nhân và chủ động đăng ký vector khuôn mặt để sử dụng FaceID.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-green">Hiệu trưởng</span></td>
+                    <td>Đăng nhập hệ thống; giám sát toàn diện dữ liệu đào tạo và hành chính của trường: Xem báo cáo thống kê doanh thu học phí (tổng tiền thu, số tiền nợ) theo từng lớp học; tra cứu điểm thi toàn bộ sinh viên trong trường; quản trị danh sách Admin/Giáo viên; đăng tải các thông báo chung của ban giám hiệu.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== CHƯƠNG 3: CÁC CHỨC NĂNG ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num">03</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Chương Ba</div>
+            <div class="chapter-title">Các Chức Năng Chính Của Sản Phẩm</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <div class="section">
+        <h3 class="section-title">3.1 Website Public — Giới Thiệu Trường</h3>
+        <p>Phần website public dành cho khách truy cập, không yêu cầu đăng nhập. Giao diện sử dụng Bootstrap 5, responsive hoàn toàn trên mobile.</p>
+        <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon">🏠</div><div><strong>Trang chủ</strong> (index.php): Hero section, thống kê nhà trường, tin tức &amp; sự kiện nổi bật</div></li>
+            <li class="feature-item"><div class="feature-icon">ℹ️</div><div><strong>Giới thiệu</strong> (gioi_thieu.php): Lịch sử, sứ mệnh, ban lãnh đạo nhà trường</div></li>
+            <li class="feature-item"><div class="feature-icon">📚</div><div><strong>Đào tạo</strong> (dao_tao.php): Danh sách ngành nghề theo khối, chương trình đào tạo</div></li>
+            <li class="feature-item"><div class="feature-icon">📋</div><div><strong>Tuyển sinh</strong> (tuyen_sinh.php): Phương thức xét tuyển, học bổng, chỉ tiêu</div></li>
+            <li class="feature-item"><div class="feature-icon">🎉</div><div><strong>Sự kiện</strong> (su_kien.php): Tin tức, hoạt động, ngày hội doanh nghiệp</div></li>
+            <li class="feature-item"><div class="feature-icon">📖</div><div><strong>Thư viện</strong> (thu_vien.php &amp; tai_lieu.php): Nguồn học liệu, tài liệu số</div></li>
+            <li class="feature-item"><div class="feature-icon">📞</div><div><strong>Liên hệ</strong> (lien_he.php): Địa chỉ, form liên hệ, bản đồ nhà trường</div></li>
+            <li class="feature-item"><div class="feature-icon">🔐</div><div><strong>Đăng nhập</strong> (login.php): Đăng nhập username/mật khẩu hoặc bằng khuôn mặt AI</div></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">3.2 Phân Hệ Admin (Quản Trị Viên)</h3>
+        <p>Phân hệ Admin được bảo vệ bởi session kiểm tra <code>role === 'admin'</code>. Admin có toàn quyền quản lý dữ liệu hệ thống.</p>
+        <table class="data-table">
+            <thead><tr><th>#</th><th>Module</th><th>Chức năng CRUD</th><th>Tìm kiếm / Lọc</th></tr></thead>
+            <tbody>
+                <tr><td><span class="badge badge-gold">1</span></td><td>📊 Dashboard</td><td>Xem thống kê tổng quan</td><td>—</td></tr>
+                <tr><td><span class="badge badge-gold">2</span></td><td>👥 Sinh viên</td><td>Thêm, sửa, xóa hồ sơ SV</td><td>Tìm theo tên, mã SV, lớp</td></tr>
+                <tr><td><span class="badge badge-gold">3</span></td><td>📖 Môn học</td><td>Thêm, sửa, xóa môn học</td><td>Nhóm theo ngành/khoa</td></tr>
+                <tr><td><span class="badge badge-gold">4</span></td><td>📅 Thời khóa biểu</td><td>Tạo, sửa, xóa lịch học</td><td>Lọc theo lớp, học kỳ</td></tr>
+                <tr><td><span class="badge badge-gold">5</span></td><td>📝 Điểm số</td><td>Nhập điểm GK, CK, tổng kết</td><td>Lọc theo môn, sinh viên</td></tr>
+                <tr><td><span class="badge badge-gold">6</span></td><td>🤖 Điểm danh AI</td><td>Điểm danh bằng camera khuôn mặt</td><td>Lọc theo ngày, môn học</td></tr>
+                <tr><td><span class="badge badge-gold">7</span></td><td>💰 Tài chính</td><td>Thêm, cập nhật học phí SV</td><td>Lọc theo trạng thái nộp</td></tr>
+                <tr><td><span class="badge badge-gold">8</span></td><td>📢 Thông báo</td><td>Đăng, ẩn thông báo theo khoa</td><td>Lọc theo khoa, trạng thái</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">3.3 Phân Hệ Giáo Viên (Giới Hạn Khoa Bảo Mật)</h3>
+        <p>Phân hệ Giáo viên được bảo vệ bằng session check <code>role === 'teacher'</code>. Nhằm bảo đảm an toàn dữ liệu và phân quyền chính xác theo đề bài, giáo viên của mỗi khoa chỉ được quyền quản trị sinh viên, điểm số và điểm danh của khoa đó, hoàn toàn không được phép xâm nhập hay sửa đổi dữ liệu của khoa khác.</p>
+        <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon">📊</div><div><strong>Dashboard Giáo viên:</strong> Thống kê số lớp thuộc khoa, số sinh viên phụ trách, lịch dạy hôm nay.</div></li>
+            <li class="feature-item"><div class="feature-icon">📝</div><div><strong>Quản lý điểm số:</strong> Nhập/Sửa điểm giữa kỳ, cuối kỳ cho sinh viên. Hệ thống tự động chặn nếu lưu sinh viên ngoài khoa.</div></li>
+            <li class="feature-item"><div class="feature-icon">✅</div><div><strong>Điểm danh thủ công:</strong> Ghi nhận tình trạng đi học của sinh viên theo từng buổi học thuộc khoa mình.</div></li>
+            <li class="feature-item"><div class="feature-icon">📅</div><div><strong>Thời khóa biểu:</strong> Xem lịch dạy, phân phối chương trình giảng dạy được admin xếp lịch.</div></li>
+            <li class="feature-item"><div class="feature-icon">👤</div><div><strong>Hồ sơ &amp; Đổi mật khẩu:</strong> Thay đổi thông tin cá nhân và cập nhật mật khẩu trực tiếp.</div></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">3.4 Phân Hệ Hiệu Trưởng (Giám Sát Tổng Thể)</h3>
+        <p>Phân hệ Hiệu trưởng được bảo vệ bởi session check <code>role === 'principal'</code>. Hiệu trưởng có quyền hạn tối cao trong việc xem báo cáo tổng quan nhưng không có quyền can thiệp, chỉnh sửa điểm số hay dữ liệu chuyên môn của giáo viên, đảm bảo tính khách quan.</p>
+        <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon">🏛️</div><div><strong>Dashboard Hiệu trưởng:</strong> Xem biểu đồ tổng quan, số lượng tài khoản, số khoa của trường.</div></li>
+            <li class="feature-item"><div class="feature-icon">👥</div><div><strong>Quản lý cán bộ:</strong> Thêm, cập nhật, xóa tài khoản Admin và tài khoản Giáo viên.</div></li>
+            <li class="feature-item"><div class="feature-icon">📝</div><div><strong>Xem điểm số toàn trường:</strong> Tra cứu điểm số của mọi sinh viên thuộc tất cả các khoa.</div></li>
+            <li class="feature-item"><div class="feature-icon">💰</div><div><strong>Giám sát tài chính:</strong> Thống kê doanh thu học phí đóng, còn nợ của từng khoa, từng sinh viên.</div></li>
+            <li class="feature-item"><div class="feature-icon">📢</div><div><strong>Quản lý thông báo:</strong> Đăng tải thông báo chung toàn trường hoặc thông báo riêng cho từng khoa.</div></li>
+            <li class="feature-item"><div class="feature-icon">👤</div><div><strong>Hồ sơ &amp; Đổi mật khẩu:</strong> Xem thông tin cá nhân và cập nhật mật khẩu.</div></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">3.5 Phân Hệ Sinh Viên</h3>
+        <p>Sinh viên đăng nhập bằng tài khoản (username/mật khẩu) hoặc khuôn mặt AI, được điều hướng đến dashboard cá nhân. Sinh viên chỉ xem được thông tin của chính mình.</p>
+        <ul class="feature-list">
+            <li class="feature-item"><div class="feature-icon">📊</div><div><strong>Dashboard cá nhân:</strong> Thông tin học kỳ, điểm danh gần đây, thông báo mới nhất</div></li>
+            <li class="feature-item"><div class="feature-icon">📅</div><div><strong>Xem TKB:</strong> Lịch học theo tuần của lớp mình (hiển thị phòng học, giảng viên)</div></li>
+            <li class="feature-item"><div class="feature-icon">📝</div><div><strong>Xem điểm số:</strong> Điểm GK, CK, tổng kết; lọc theo học kỳ/năm học</div></li>
+            <li class="feature-item"><div class="feature-icon">✅</div><div><strong>Lịch sử điểm danh:</strong> Xem có mặt/vắng/muộn theo từng môn</div></li>
+            <li class="feature-item"><div class="feature-icon">💰</div><div><strong>Tài chính:</strong> Kiểm tra tình trạng học phí, lịch sử đóng tiền</div></li>
+            <li class="feature-item"><div class="feature-icon">👤</div><div><strong>Hồ sơ &amp; Đổi mật khẩu:</strong> Đăng ký/đổi mật khẩu trực tiếp, đăng ký khuôn mặt AI phục vụ điểm danh và đăng nhập.</div></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">3.6 Bảo Mật: Đổi Mật Khẩu &amp; Quên Mật Khẩu</h3>
+        <p>Hệ thống cung cấp cơ chế bảo mật tài khoản chặt chẽ, đáp ứng đầy đủ yêu cầu quản lý mật khẩu của người dùng:</p>
+        <div class="card">
+            <div class="card-title">🔐 Cơ Chế Quản Lý Mật Khẩu Bảo Mật</div>
+            <ul class="bullet-list">
+                <li><strong>Quên Mật Khẩu:</strong> Cho phép người dùng khôi phục mật khẩu khi bị quên mà không cần admin. Người dùng nhập Username và Email đăng ký. Hệ thống kiểm tra trùng khớp, tạo mã token ngẫu nhiên bằng <code>bin2hex(random_bytes(16))</code> lưu vào DB kèm thời gian hết hạn (1 giờ). Đường dẫn khôi phục an toàn được mô phỏng sinh ra giúp người dùng đổi mật khẩu mới.</li>
+                <li><strong>Đổi Mật Khẩu Trong Hồ Sơ:</strong> Tất cả các phân hệ (Admin, Teacher, Principal, Student) đều tích hợp mục Đổi mật khẩu ngay trong trang Hồ sơ cá nhân (profile.php). Hệ thống xác thực mật khẩu hiện tại bằng <code>password_verify</code>, yêu cầu mật khẩu mới từ 6 ký tự trở lên và khớp với mật khẩu nhập lại (xác thực cả ở JS phía Client và PHP phía Server).</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">3.7 Tìm Kiếm &amp; Nhóm Dữ Liệu Theo Điều Kiện</h3>
+        <p>Đây là chức năng yêu cầu quan trọng: cho phép người dùng <strong>tìm kiếm mẫu tin theo điều kiện</strong> và <strong>nhóm dữ liệu theo loại</strong> (theo khoa/ngành). Chức năng này được triển khai ở tất cả các module quản lý:</p>
+
+        <div class="card">
+            <div class="card-title">🔍 Các Điểm Tìm Kiếm &amp; Phân Nhóm Trong Hệ Thống</div>
+            <table class="data-table">
+                <thead><tr><th>Module</th><th>Tìm kiếm theo điều kiện</th><th>Nhóm theo loại</th></tr></thead>
+                <tbody>
+                    <tr><td>Quản lý Sinh viên</td><td>Tên, mã SV, lớp (realtime)</td><td>Nhóm theo khoa/ngành</td></tr>
+                    <tr><td>Môn học</td><td>Mã môn, tên môn</td><td>Nhóm theo khoa phụ trách</td></tr>
+                    <tr><td>Thời khóa biểu</td><td>Lọc theo lớp, học kỳ, năm học</td><td>Nhóm theo thứ trong tuần</td></tr>
+                    <tr><td>Điểm số</td><td>Tên SV, mã môn</td><td>Nhóm theo học kỳ</td></tr>
+                    <tr><td>Điểm danh</td><td>Ngày điểm danh, trạng thái</td><td>Nhóm theo môn/buổi học</td></tr>
+                    <tr><td>Tài chính</td><td>Tên SV</td><td>Nhóm theo trạng thái (Đã nộp/Chưa nộp)</td></tr>
+                    <tr><td>Thông báo</td><td>Tiêu đề thông báo</td><td>Nhóm theo khoa nhận</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== CHƯƠNG 4: MÀN HÌNH ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num">04</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Chương Bốn</div>
+            <div class="chapter-title">Màn Hình Thiết Kế Từng Chức Năng</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <!-- Màn hình 1: Đăng nhập -->
+    <div class="section">
+        <h3 class="section-title">4.1 Màn Hình Đăng Nhập (login.php)</h3>
+        <p>Màn hình đăng nhập hỗ trợ 2 phương thức: nhập username/mật khẩu truyền thống hoặc đăng nhập bằng nhận diện khuôn mặt qua camera. Sau khi xác thực, hệ thống tự động điều hướng theo role (admin → /admin/dashboard, student → /student/dashboard).</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div>
+                <div class="screen-dot yellow"></div>
+                <div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/login.php</span>
+            </div>
+            <div class="screen-content">
+                <div style="display:flex;gap:24px;align-items:flex-start;">
+                    <div style="flex:1;background:#fff5f5;border:1px solid rgba(198,42,71,0.12);border-radius:10px;padding:20px;">
+                        <div style="font-size:0.8rem;color:var(--primary);font-weight:700;margin-bottom:14px;">🔐 ĐĂNG NHẬP HỆ THỐNG</div>
+                        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:10px;margin-bottom:10px;font-size:0.78rem;color:var(--text-secondary);">
+                            👤 Tên đăng nhập: <span style="color:var(--text-primary);font-weight:600;">admin</span>
+                        </div>
+                        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:10px;margin-bottom:14px;font-size:0.78rem;color:var(--text-secondary);">
+                            🔑 Mật khẩu: <span style="color:var(--text-primary);font-weight:600;">••••••••</span>
+                        </div>
+                        <div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;text-align:center;border-radius:7px;padding:10px;font-size:0.8rem;font-weight:700;">Đăng Nhập</div>
+                        <div style="text-align:center;margin-top:12px;font-size:0.75rem;color:var(--text-muted);">— hoặc —</div>
+                        <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);color:#059669;text-align:center;border-radius:7px;padding:10px;font-size:0.78rem;font-weight:600;margin-top:12px;">🎥 Đăng nhập bằng Khuôn Mặt</div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:8px;">Mô tả chức năng:</div>
+                        <ul class="bullet-list" style="font-size:0.82rem;">
+                            <li>Nhập username + mật khẩu → PHP verify bcrypt</li>
+                            <li>Kiểm tra role → redirect đến dashboard tương ứng</li>
+                            <li>Tab "Khuôn mặt": bật camera → Face-api.js nhận diện</li>
+                            <li>So sánh Euclidean distance với DB → đăng nhập tự động</li>
+                            <li>Sai mật khẩu → hiển thị thông báo lỗi inline</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 2: Admin Dashboard -->
+    <div class="section">
+        <h3 class="section-title">4.2 Màn Hình Admin Dashboard</h3>
+        <p>Dashboard admin hiển thị thống kê tổng quan: tổng số sinh viên, môn học đang dạy, số lượt điểm danh hôm nay, thông báo chưa xuất bản. Sidebar bên trái cung cấp điều hướng nhanh đến các module quản lý.</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/admin/dashboard.php</span>
+            </div>
+            <div class="screen-content">
+                <div style="display:grid;grid-template-columns:180px 1fr;gap:16px;">
+                    <div style="background:#f8fafc;border-right:1px solid #e2e8f0;padding-right:12px;">
+                        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;margin-bottom:12px;">QUẢN TRỊ</div>
+                        <div style="font-size:0.8rem;padding:8px;border-radius:6px;background:rgba(198,42,71,0.08);color:var(--primary);font-weight:700;margin-bottom:4px;">📊 Dashboard</div>
+                        <div style="font-size:0.8rem;padding:8px;color:var(--text-secondary);margin-bottom:2px;">👥 Sinh viên</div>
+                        <div style="font-size:0.8rem;padding:8px;color:var(--text-secondary);margin-bottom:2px;">📖 Môn học</div>
+                        <div style="font-size:0.8rem;padding:8px;color:var(--text-secondary);margin-bottom:2px;">📅 Thời khóa biểu</div>
+                        <div style="font-size:0.8rem;padding:8px;color:var(--text-secondary);margin-bottom:2px;">📝 Điểm số</div>
+                        <div style="font-size:0.8rem;padding:8px;color:var(--text-secondary);margin-bottom:2px;">🤖 Điểm danh</div>
+                        <div style="font-size:0.8rem;padding:8px;color:var(--text-secondary);">💰 Tài chính</div>
+                    </div>
+                    <div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+                            <div style="background:rgba(198,42,71,0.06);border:1px solid rgba(198,42,71,0.15);border-radius:10px;padding:14px;text-align:center;">
+                                <div style="font-size:1.6rem;font-weight:800;color:var(--primary);">45</div>
+                                <div style="font-size:0.72rem;color:var(--text-muted);">Sinh viên</div>
+                            </div>
+                            <div style="background:rgba(232,160,32,0.08);border:1px solid rgba(232,160,32,0.2);border-radius:10px;padding:14px;text-align:center;">
+                                <div style="font-size:1.6rem;font-weight:800;color:#b45309;">12</div>
+                                <div style="font-size:0.72rem;color:var(--text-muted);">Môn học</div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.78rem;color:var(--text-muted);">Biểu đồ điểm danh tuần này, danh sách sinh viên mới nhất...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 3: Quản lý sinh viên -->
+    <div class="section">
+        <h3 class="section-title">4.3 Màn Hình Quản Lý Sinh Viên (CRUD)</h3>
+        <p>Module quản lý sinh viên cho phép tìm kiếm theo tên/mã SV/lớp, thêm mới sinh viên qua popup modal, sửa thông tin và xóa tài khoản. Tìm kiếm hoạt động realtime (gửi form GET khi người dùng gõ).</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/admin/students.php</span>
+            </div>
+            <div class="screen-content">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:8px 14px;font-size:0.78rem;color:var(--text-secondary);display:flex;gap:8px;align-items:center;">
+                        🔍 <span>Tìm theo tên, mã SV, lớp...</span>
+                    </div>
+                    <div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:8px 16px;border-radius:7px;font-size:0.78rem;font-weight:600;">+ Thêm SV mới</div>
+                </div>
+                <table style="width:100%;font-size:0.78rem;border-collapse:collapse;">
+                    <thead><tr style="background:rgba(198,42,71,0.08);">
+                        <td style="padding:8px 10px;color:var(--primary-dark);font-weight:700;">Mã SV</td>
+                        <td style="padding:8px 10px;color:var(--primary-dark);font-weight:700;">Họ tên</td>
+                        <td style="padding:8px 10px;color:var(--primary-dark);font-weight:700;">Lớp</td>
+                        <td style="padding:8px 10px;color:var(--primary-dark);font-weight:700;">Khoa</td>
+                        <td style="padding:8px 10px;color:var(--primary-dark);font-weight:700;">Thao tác</td>
+                    </tr></thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:8px 10px;color:var(--primary);font-weight:600;">K24CDCNT006</td>
+                            <td style="padding:8px 10px;color:var(--text-primary);">Lê Nhựt Khánh</td>
+                            <td style="padding:8px 10px;color:var(--text-muted);">K24CDCNT1</td>
+                            <td style="padding:8px 10px;color:var(--text-muted);">CNTT</td>
+                            <td style="padding:8px 10px;display:flex;gap:6px;">
+                                <span style="background:rgba(198,42,71,0.08);color:var(--primary);padding:3px 8px;border-radius:5px;font-size:0.72rem;border:1px solid rgba(198,42,71,0.2);">✏️ Sửa</span>
+                                <span style="background:#fee2e2;color:#b91c1c;padding:3px 8px;border-radius:5px;font-size:0.72rem;border:1px solid #fca5a5;">🗑️ Xóa</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 10px;color:var(--primary);font-weight:600;">SV2024002</td>
+                            <td style="padding:8px 10px;color:var(--text-primary);">Nguyễn Văn A</td>
+                            <td style="padding:8px 10px;color:var(--text-muted);">KT24B</td>
+                            <td style="padding:8px 10px;color:var(--text-muted);">Kế toán</td>
+                            <td style="padding:8px 10px;display:flex;gap:6px;">
+                                <span style="background:rgba(198,42,71,0.08);color:var(--primary);padding:3px 8px;border-radius:5px;font-size:0.72rem;border:1px solid rgba(198,42,71,0.2);">✏️ Sửa</span>
+                                <span style="background:#fee2e2;color:#b91c1c;padding:3px 8px;border-radius:5px;font-size:0.72rem;border:1px solid #fca5a5;">🗑️ Xóa</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 4: Student Dashboard -->
+    <div class="section">
+        <h3 class="section-title">4.4 Màn Hình Sinh Viên — Dashboard &amp; Xem Điểm</h3>
+        <p>Sinh viên sau khi đăng nhập được chào mừng bằng tên, xem điểm danh gần đây, xem thời khóa biểu và điểm số của bản thân. Không có quyền chỉnh sửa dữ liệu của người khác.</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/student/dashboard.php</span>
+            </div>
+            <div class="screen-content">
+                <div style="display:flex;gap:16px;margin-bottom:14px;">
+                    <div style="flex:1;background:rgba(198,42,71,0.05);border:1px solid rgba(198,42,71,0.12);border-radius:10px;padding:14px;">
+                        <div style="font-size:0.72rem;color:var(--text-muted);">Chào mừng trở lại!</div>
+                        <div style="font-size:1rem;font-weight:700;color:var(--text-primary);">Lê Nhựt Khánh</div>
+                        <div style="font-size:0.75rem;color:var(--primary);">K24CDCNT1 · Học kỳ 2</div>
+                    </div>
+                    <div style="flex:1;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:14px;text-align:center;">
+                        <div style="font-size:1.4rem;font-weight:800;color:#059669;">87%</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted);">Tỷ lệ đi học</div>
+                    </div>
+                    <div style="flex:1;background:rgba(232,160,32,0.08);border:1px solid rgba(232,160,32,0.2);border-radius:10px;padding:14px;text-align:center;">
+                        <div style="font-size:1.4rem;font-weight:800;color:#b45309;">7.8</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted);">Điểm TB học kỳ</div>
+                    </div>
+                </div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">Menu: Dashboard · TKB · Điểm số · Điểm danh · Tài chính · Hồ sơ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 5: Điểm danh AI -->
+    <div class="section">
+        <h3 class="section-title">4.5 Màn Hình Điểm Danh Khuôn Mặt AI</h3>
+        <p>Admin bật camera, hệ thống sử dụng Face-api.js để liên tục phát hiện và nhận diện khuôn mặt trong khung hình. Khi nhận ra sinh viên (khoảng cách Euclidean &lt; 0.6), tự động ghi nhận trạng thái "Có mặt" vào bảng <code>diem_danh</code>. Danh sách điểm danh cập nhật realtime bên phải màn hình.</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/admin/diemdanh.php</span>
+            </div>
+            <div class="screen-content">
+                <div style="display:flex;gap:16px;">
+                    <div style="flex:1.2;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;">
+                        <div style="color:#555;font-size:0.85rem;">🎥 Camera Feed</div>
+                        <div style="position:absolute;border:2px solid #10b981;width:120px;height:120px;border-radius:8px;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:flex-start;justify-content:flex-end;">
+                            <span style="background:#10b981;color:#fff;font-size:0.6rem;padding:2px 6px;border-radius:0 0 0 6px;">Lê Nhựt Khánh ✓</span>
+                        </div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:0.75rem;color:var(--primary-light);font-weight:700;margin-bottom:10px;">✅ Đã điểm danh (3)</div>
+                        <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:7px;padding:8px;margin-bottom:6px;font-size:0.78rem;">✅ Lê Nhựt Khánh — 08:02</div>
+                        <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:7px;padding:8px;margin-bottom:6px;font-size:0.78rem;">✅ Nguyễn Văn A — 08:05</div>
+                        <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:7px;padding:8px;font-size:0.78rem;">⏰ Trần Thị B — 08:18 (Muộn)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 6: Quên mật khẩu & Đặt lại mật khẩu -->
+    <div class="section">
+        <h3 class="section-title">4.6 Màn Hình Quên Mật Khẩu &amp; Đặt Lại Mật Khẩu</h3>
+        <p>Trang <code>forgot_password.php</code> cho phép nhập tên tài khoản và email. Nếu hợp lệ, hệ thống tạo token ngẫu nhiên và hiển thị link đặt lại mật khẩu. Trang <code>reset_password.php?token=...</code> nhận token, kiểm tra hạn dùng, hiển thị form đổi mật khẩu bảo mật (có nút hiện/ẩn mật khẩu bằng mắt).</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="screen-box">
+                <div class="screen-bar">
+                    <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                    <span class="screen-url">.../forgot_password.php</span>
+                </div>
+                <div class="screen-content" style="padding:15px; font-size:0.8rem;">
+                    <div style="font-weight:700; color:var(--primary); margin-bottom:8px; text-align:center;">QUÊN MẬT KHẨU</div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:0.65rem; color:var(--text-muted);">Tên đăng nhập</label>
+                        <div style="background:#fff; border:1px solid #cbd5e1; padding:6px; border-radius:5px;">lenhutkhanh</div>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:0.65rem; color:var(--text-muted);">Email đăng ký</label>
+                        <div style="background:#fff; border:1px solid #cbd5e1; padding:6px; border-radius:5px;">khanh@gmail.com</div>
+                    </div>
+                    <div style="background:var(--primary); color:#fff; text-align:center; padding:8px; border-radius:5px; font-weight:700; cursor:pointer; margin-top:10px;">Gửi yêu cầu</div>
+                </div>
+            </div>
+            <div class="screen-box">
+                <div class="screen-bar">
+                    <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                    <span class="screen-url">.../reset_password.php?token=xyz</span>
+                </div>
+                <div class="screen-content" style="padding:15px; font-size:0.8rem;">
+                    <div style="font-weight:700; color:var(--primary); margin-bottom:8px; text-align:center;">ĐẶT LẠI MẬT KHẨU</div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:0.65rem; color:var(--text-muted);">Mật khẩu mới</label>
+                        <div style="background:#fff; border:1px solid #cbd5e1; padding:6px; border-radius:5px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>••••••••</span>
+                            <span style="cursor:pointer;">👁️</span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-size:0.65rem; color:var(--text-muted);">Nhập lại mật khẩu</label>
+                        <div style="background:#fff; border:1px solid #cbd5e1; padding:6px; border-radius:5px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>••••••••</span>
+                            <span style="cursor:pointer;">👁️</span>
+                        </div>
+                    </div>
+                    <div style="background:var(--primary); color:#fff; text-align:center; padding:8px; border-radius:5px; font-weight:700; cursor:pointer; margin-top:10px;">Cập nhật mật khẩu</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 7: Phân hệ Giáo viên & Hiệu trưởng -->
+    <div class="section">
+        <h3 class="section-title">4.7 Màn Hình Phân Hệ Giáo Viên &amp; Hiệu Trưởng</h3>
+        <p><strong>Giao diện phân hệ Giáo viên (Quản lý theo khoa):</strong> Giáo viên chỉ quản lý sinh viên, điểm và điểm danh thuộc khoa của mình. Hệ thống tự nhận diện khoa từ tài khoản giảng viên.</p>
+        <div class="screen-box" style="margin-bottom:24px;">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/teacher/diem.php</span>
+            </div>
+            <div class="screen-content" style="font-size:0.8rem; padding:15px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; background:rgba(0,0,0,0.03); padding:8px; border-radius:6px; align-items:center;">
+                    <div>👨‍🏫 GV: <strong>Nguyễn Văn Trỗi</strong> | Khoa: <span class="badge badge-blue">Công nghệ thông tin</span></div>
+                    <div style="display:flex; gap:8px;">
+                        <span style="border:1px solid #cbd5e1; background:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem;">Lớp: K24CDCNT1</span>
+                        <span style="border:1px solid #cbd5e1; background:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem;">Môn: Lập trình PHP</span>
+                    </div>
+                </div>
+                <table style="width:100%; font-size:0.75rem; border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:var(--primary); color:#fff; font-weight:700;">
+                            <td style="padding:6px;">Mã SV</td><td style="padding:6px;">Họ tên</td><td style="padding:6px;">Điểm GK</td><td style="padding:6px;">Điểm CK</td><td style="padding:6px;">Tổng kết</td><td style="padding:6px;">Thao tác</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+                            <td style="padding:6px; color:var(--primary);">K24CDCNT006</td><td style="padding:6px; font-weight:600;">Lê Nhựt Khánh</td><td style="padding:6px;">8.5</td><td style="padding:6px;">9.0</td><td style="padding:6px; font-weight:700; color:var(--success);">8.85</td><td style="padding:6px;"><span style="color:var(--primary-light); cursor:pointer;">✏️ Nhập điểm</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p><strong>Giao diện phân hệ Hiệu trưởng (Giám sát toàn trường):</strong> Hiệu trưởng xem báo cáo điểm số, tài chính học phí ở tất cả các khoa, quản lý các cán bộ cấp dưới.</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/principal/dashboard.php</span>
+            </div>
+            <div class="screen-content" style="font-size:0.8rem; padding:15px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; background:rgba(0,0,0,0.03); padding:8px; border-radius:6px; align-items:center;">
+                    <div>🏛️ Ban Giám Hiệu: <strong>Hiệu Trưởng</strong> | Giám sát hệ thống</div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                    <div style="background:rgba(29,111,164,0.1); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center;">
+                        <div style="font-size:0.7rem; color:var(--text-muted);">Tài khoản Admin</div>
+                        <div style="font-size:1.2rem; font-weight:800; color:var(--primary);">2</div>
+                    </div>
+                    <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:8px; padding:10px; text-align:center;">
+                        <div style="font-size:0.7rem; color:var(--text-muted);">Tài khoản Giáo viên</div>
+                        <div style="font-size:1.2rem; font-weight:800; color:var(--success);">8</div>
+                    </div>
+                    <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:8px; padding:10px; text-align:center;">
+                        <div style="font-size:0.7rem; color:var(--text-muted);">Tổng học phí đóng</div>
+                        <div style="font-size:1.1rem; font-weight:800; color:var(--primary-light);">120,000,000đ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 8: Quản lý môn học -->
+    <div class="section">
+        <h3 class="section-title">4.8 Màn Hình Quản Lý Môn Học (monhoc.php)</h3>
+        <p>Màn hình này cho phép quản lý danh mục môn học của trường. Admin có thể thêm mới môn học (mã môn, tên môn, khoa phụ trách, số tín chỉ), chỉnh sửa thông tin hoặc xóa môn học nếu chưa được liên kết với thời khóa biểu.</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/admin/monhoc.php</span>
+            </div>
+            <div class="screen-content">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                    <div style="font-weight:700;color:var(--primary);font-size:0.9rem;">📚 DANH SÁCH MÔN HỌC</div>
+                    <div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:600;">+ Thêm môn học</div>
+                </div>
+                <table style="width:100%;font-size:0.75rem;border-collapse:collapse;">
+                    <thead><tr style="background:rgba(198, 42, 71, 0.08); font-weight:700;">
+                        <td style="padding:6px;color:var(--primary-dark);">Mã Môn</td>
+                        <td style="padding:6px;color:var(--primary-dark);">Tên Môn Học</td>
+                        <td style="padding:6px;color:var(--primary-dark);">Khoa / Ngành</td>
+                        <td style="padding:6px;color:var(--primary-dark);text-align:center;">Số Tín Chỉ</td>
+                        <td style="padding:6px;color:var(--primary-dark);text-align:center;">Thao tác</td>
+                    </tr></thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                            <td style="padding:6px;"><code style="color:#f43f6d">CNTT101</code></td>
+                            <td style="padding:6px;font-weight:600;">Lập trình PHP cơ bản</td>
+                            <td style="padding:6px;">Công Nghệ Thông Tin</td>
+                            <td style="padding:6px;text-align:center;"><span class="badge badge-blue" style="background:#e0f2fe;color:#0369a1;">3 TC</span></td>
+                            <td style="padding:6px;text-align:center;">✏️ 🗑️</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                            <td style="padding:6px;"><code style="color:#f43f6d">CNTT102</code></td>
+                            <td style="padding:6px;font-weight:600;">Cơ sở dữ liệu MySQL</td>
+                            <td style="padding:6px;">Công Nghệ Thông Tin</td>
+                            <td style="padding:6px;text-align:center;"><span class="badge badge-blue" style="background:#e0f2fe;color:#0369a1;">3 TC</span></td>
+                            <td style="padding:6px;text-align:center;">✏️ 🗑️</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                            <td style="padding:6px;"><code style="color:#f43f6d">CKO201</code></td>
+                            <td style="padding:6px;font-weight:600;">Kỹ thuật động cơ đốt trong</td>
+                            <td style="padding:6px;">Cơ Khí Ô Tô</td>
+                            <td style="padding:6px;text-align:center;"><span class="badge badge-blue" style="background:#e0f2fe;color:#0369a1;">4 TC</span></td>
+                            <td style="padding:6px;text-align:center;">✏️ 🗑️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 9: Quản lý thời khóa biểu -->
+    <div class="section">
+        <h3 class="section-title">4.9 Màn Hình Quản Lý Thời Khóa Biểu (tkb.php)</h3>
+        <p>Màn hình quản lý lịch học và thời khóa biểu cho toàn trường. Admin lọc thời khóa biểu theo Học kỳ, Năm học và Khoa/Ngành để xem lịch dạy của các giảng viên và phòng học đang sử dụng.</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/admin/tkb.php</span>
+            </div>
+            <div class="screen-content" style="font-size:0.8rem; padding:15px;">
+                <div style="display:flex; gap:8px; margin-bottom:12px; background:rgba(0,0,0,0.02); padding:8px; border-radius:6px;">
+                    <span style="border:1px solid #cbd5e1; background:#fff; padding:3px 8px; border-radius:4px; font-size:0.72rem;">Kỳ: <strong>HK1</strong></span>
+                    <span style="border:1px solid #cbd5e1; background:#fff; padding:3px 8px; border-radius:4px; font-size:0.72rem;">Năm: <strong>2026-2027</strong></span>
+                    <span style="border:1px solid #cbd5e1; background:#fff; padding:3px 8px; border-radius:4px; font-size:0.72rem;">Khoa: <strong>Công Nghệ Thông Tin</strong></span>
+                </div>
+                <table style="width:100%; font-size:0.75rem; border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:var(--primary); color:#fff; font-weight:700;">
+                            <td style="padding:6px;">Môn học</td><td style="padding:6px;">Ngành</td><td style="padding:6px;">Thứ</td><td style="padding:6px;text-align:center;">Tiết</td><td style="padding:6px;">Giảng viên</td><td style="padding:6px;text-align:center;">Phòng</td><td style="padding:6px;text-align:center;">Thao tác</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+                            <td style="padding:6px;"><b>Lập trình PHP cơ bản</b><br><code style="font-size:10px;color:#f43f6d">CNTT101</code></td>
+                            <td style="padding:6px;">CNTT</td>
+                            <td style="padding:6px;"><span class="badge badge-gold" style="background:#fef3c7;color:#b45309;">Thứ Hai</span></td>
+                            <td style="padding:6px;text-align:center;">1 - 3</td>
+                            <td style="padding:6px;">Nguyễn Văn Trỗi</td>
+                            <td style="padding:6px;text-align:center;"><span class="badge badge-red" style="background:#fee2e2;color:#b91c1c;">PM102</span></td>
+                            <td style="padding:6px;text-align:center;">✏️ 🗑️</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+                            <td style="padding:6px;"><b>Cơ sở dữ liệu MySQL</b><br><code style="font-size:10px;color:#f43f6d">CNTT102</code></td>
+                            <td style="padding:6px;">CNTT</td>
+                            <td style="padding:6px;"><span class="badge badge-gold" style="background:#fef3c7;color:#b45309;">Thứ Tư</span></td>
+                            <td style="padding:6px;text-align:center;">4 - 6</td>
+                            <td style="padding:6px;">Trần Thị Hoa</td>
+                            <td style="padding:6px;text-align:center;"><span class="badge badge-red" style="background:#fee2e2;color:#b91c1c;">PM201</span></td>
+                            <td style="padding:6px;text-align:center;">✏️ 🗑️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 10: Quản lý học phí và tài chính -->
+    <div class="section">
+        <h3 class="section-title">4.10 Màn Hình Quản Lý Học Phí &amp; Tài Chính (taichinh.php)</h3>
+        <p>Giao diện quản lý các khoản thu và học phí của sinh viên toàn trường. Cho phép lọc theo khoa, lớp, hoặc từng sinh viên để thống kê công nợ. Admin cập nhật trạng thái đóng học phí (Đã nộp / Chưa nộp) và ngày nộp tiền.</p>
+        <div class="screen-box">
+            <div class="screen-bar">
+                <div class="screen-dot red"></div><div class="screen-dot yellow"></div><div class="screen-dot green"></div>
+                <span class="screen-url">http://localhost/tkb/admin/taichinh.php</span>
+            </div>
+            <div class="screen-content" style="font-size:0.8rem; padding:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="display:flex; gap:6px;">
+                        <span style="border:1px solid #cbd5e1; background:#fff; padding:3px 8px; border-radius:4px; font-size:0.72rem;">Lớp: <strong>K24CDCNT1</strong></span>
+                        <span style="border:1px solid #cbd5e1; background:#fff; padding:3px 8px; border-radius:4px; font-size:0.72rem;">Tình trạng: <strong>Tất cả</strong></span>
+                    </div>
+                    <div style="font-weight:700; color:var(--primary); font-size:0.75rem;">Tổng số: 2 khoản thu</div>
+                </div>
+                <table style="width:100%; font-size:0.75rem; border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:#475569; color:#fff; font-weight:700;">
+                            <td style="padding:6px;">Sinh viên</td><td style="padding:6px;">Nội dung thu</td><td style="padding:6px;text-align:right;">Số tiền (đ)</td><td style="padding:6px;text-align:center;">Trạng thái</td><td style="padding:6px;">Ngày nộp</td><td style="padding:6px;text-align:center;">Thao tác</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+                            <td style="padding:6px;"><b>Lê Nhựt Khánh</b><br><code style="font-size:10px;color:var(--text-muted);">K24CDCNT006</code></td>
+                            <td style="padding:6px;">Học phí Học kỳ II (2025-2026)</td>
+                            <td style="padding:6px;text-align:right;font-weight:700;color:var(--text-primary);">4.500.000</td>
+                            <td style="padding:6px;text-align:center;"><span class="badge badge-green" style="background:#d1fae5;color:#047857;font-size:9px;padding:2px 6px;">Đã nộp</span></td>
+                            <td style="padding:6px;color:var(--text-muted);font-size:11px;">10/05/2026</td>
+                            <td style="padding:6px;text-align:center;">✏️ 🗑️</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+                            <td style="padding:6px;"><b>Nguyễn Văn A</b><br><code style="font-size:10px;color:var(--text-muted);">SV2024002</code></td>
+                            <td style="padding:6px;">Học phí Học kỳ II (2025-2026)</td>
+                            <td style="padding:6px;text-align:right;font-weight:700;color:var(--text-primary);">4.500.000</td>
+                            <td style="padding:6px;text-align:center;"><span class="badge badge-red" style="background:#fee2e2;color:#b91c1c;font-size:9px;padding:2px 6px;">Chưa nộp</span></td>
+                            <td style="padding:6px;color:var(--text-muted);font-size:11px;">—</td>
+                            <td style="padding:6px;text-align:center;">✏️ 🗑️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CHƯƠNG 5: MÃ LỆNH ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num">05</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Chương Năm</div>
+            <div class="chapter-title">Mã Lệnh Chính Thực Hiện Chức Năng</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <!-- 5.1 Config -->
+    <div class="section">
+        <h3 class="section-title">5.1 Kết Nối Cơ Sở Dữ Liệu — config.php</h3>
+        <p>File <code>config.php</code> là trung tâm cấu hình của toàn bộ hệ thống: thiết lập kết nối CSDL, định nghĩa các hàm kiểm tra phân quyền, và danh sách ngành học.</p>
+        <div class="code-block">
+            <span class="code-label">PHP — config.php</span>
+<span class="var">$host</span> = <span class="str">'localhost'</span>;
+<span class="var">$db</span>   = <span class="str">'truong_caodang'</span>;
+<span class="var">$user</span> = <span class="str">'root'</span>;
+<span class="var">$pass</span> = <span class="str">''</span>;
+
+<span class="kw">function</span> <span class="fn">getDB</span>() {
+    <span class="kw">global</span> <span class="var">$host</span>, <span class="var">$db</span>, <span class="var">$user</span>, <span class="var">$pass</span>;
+    <span class="var">$conn</span> = <span class="kw">new</span> <span class="fn">mysqli</span>(<span class="var">$host</span>, <span class="var">$user</span>, <span class="var">$pass</span>, <span class="var">$db</span>);
+    <span class="var">$conn</span>-><span class="fn">set_charset</span>(<span class="str">'utf8mb4'</span>);
+    <span class="kw">if</span> (<span class="var">$conn</span>->connect_error)
+        <span class="kw">die</span>(<span class="str">'Lỗi kết nối: '</span> . <span class="var">$conn</span>->connect_error);
+    <span class="kw">return</span> <span class="var">$conn</span>;
+}
+
+<span class="kw">function</span> <span class="fn">requireAdmin</span>() {
+    <span class="fn">session_start</span>();
+    <span class="kw">if</span> (empty(<span class="var">$_SESSION</span>[<span class="str">'user_id'</span>]) || <span class="var">$_SESSION</span>[<span class="str">'role'</span>] !== <span class="str">'admin'</span>) {
+        <span class="fn">header</span>(<span class="str">'Location: /tkb/login.php'</span>);
+        <span class="kw">exit</span>;
+    }
+}
+
+<span class="kw">function</span> <span class="fn">requireStudent</span>() {
+    <span class="fn">session_start</span>();
+    <span class="kw">if</span> (empty(<span class="var">$_SESSION</span>[<span class="str">'user_id'</span>]) || <span class="var">$_SESSION</span>[<span class="str">'role'</span>] !== <span class="str">'student'</span>) {
+        <span class="fn">header</span>(<span class="str">'Location: /tkb/login.php'</span>);
+        <span class="kw">exit</span>;
+    }
+}
+        </div>
+    </div>
+
+    <!-- 5.2 Đăng nhập -->
+    <div class="section">
+        <h3 class="section-title">5.2 Đăng Nhập &amp; Phân Quyền — login.php</h3>
+        <p>Xử lý đăng nhập: kiểm tra username trong CSDL, xác minh mật khẩu bcrypt, lưu session và điều hướng theo role.</p>
+        <div class="code-block">
+            <span class="code-label">PHP — login.php (xử lý đăng nhập)</span>
+<span class="kw">if</span> (<span class="var">$_SERVER</span>[<span class="str">'REQUEST_METHOD'</span>] === <span class="str">'POST'</span>) {
+    <span class="var">$username</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'username'</span>] ?? <span class="str">''</span>);
+    <span class="var">$password</span> = <span class="var">$_POST</span>[<span class="str">'password'</span>] ?? <span class="str">''</span>;
+    <span class="var">$db</span>       = <span class="fn">getDB</span>();
+
+    <span class="var">$stmt</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(
+        <span class="str">"SELECT id, username, password, role FROM users WHERE username = ?"</span>
+    );
+    <span class="var">$stmt</span>-><span class="fn">bind_param</span>(<span class="str">'s'</span>, <span class="var">$username</span>);
+    <span class="var">$stmt</span>-><span class="fn">execute</span>();
+    <span class="var">$user</span> = <span class="var">$stmt</span>-><span class="fn">get_result</span>()-><span class="fn">fetch_assoc</span>();
+
+    <span class="kw">if</span> (<span class="var">$user</span> && <span class="fn">password_verify</span>(<span class="var">$password</span>, <span class="var">$user</span>[<span class="str">'password'</span>])) {
+        <span class="var">$_SESSION</span>[<span class="str">'user_id'</span>]  = <span class="var">$user</span>[<span class="str">'id'</span>];
+        <span class="var">$_SESSION</span>[<span class="str">'username'</span>] = <span class="var">$user</span>[<span class="str">'username'</span>];
+        <span class="var">$_SESSION</span>[<span class="str">'role'</span>]     = <span class="var">$user</span>[<span class="str">'role'</span>];
+
+        <span class="cmt">// Điều hướng theo phân quyền</span>
+        <span class="kw">if</span> (<span class="var">$user</span>[<span class="str">'role'</span>] === <span class="str">'admin'</span>)
+            <span class="fn">header</span>(<span class="str">'Location: /tkb/admin/dashboard.php'</span>);
+        <span class="kw">else</span>
+            <span class="fn">header</span>(<span class="str">'Location: /tkb/student/dashboard.php'</span>);
+        <span class="kw">exit</span>;
+    } <span class="kw">else</span> {
+        <span class="var">$error</span> = <span class="str">'Tên đăng nhập hoặc mật khẩu không đúng!'</span>;
+    }
+}
+        </div>
+    </div>
+
+    <!-- 5.3 CRUD Sinh viên -->
+    <div class="section">
+        <h3 class="section-title">5.3 Thêm, Cập Nhật, Xóa Sinh Viên — students.php</h3>
+        <p>Module quản lý sinh viên thực hiện đầy đủ các thao tác CRUD (Create, Read, Update, Delete). Khi thêm sinh viên mới, hệ thống dùng transaction để tạo đồng thời tài khoản trong bảng <code>users</code> và hồ sơ trong bảng <code>students</code>.</p>
+
+        <h4 class="subsection-title">▸ Thêm Sinh Viên (INSERT + Transaction)</h4>
+        <div class="code-block">
+            <span class="code-label">PHP — Thêm SV</span>
+<span class="kw">if</span> (<span class="var">$action</span> === <span class="str">'add'</span>) {
+    <span class="var">$un</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'username'</span>] ?? <span class="str">''</span>);
+    <span class="var">$ht</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'ho_ten'</span>] ?? <span class="str">''</span>);
+    <span class="var">$nd</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'ngay_sinh'</span>] ?? <span class="str">''</span>);
+    <span class="var">$lp</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'lop'</span>] ?? <span class="str">''</span>);
+    <span class="var">$kh</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'khoa'</span>] ?? <span class="str">''</span>);
+
+    <span class="cmt">// Mật khẩu mặc định = ngày sinh định dạng ddmmyyyy</span>
+    <span class="var">$pw</span> = <span class="fn">password_hash</span>(
+        <span class="var">$nd</span> ? <span class="fn">date</span>(<span class="str">'dmY'</span>, <span class="fn">strtotime</span>(<span class="var">$nd</span>)) : <span class="str">'123456'</span>,
+        PASSWORD_DEFAULT
+    );
+
+    <span class="var">$db</span>-><span class="fn">begin_transaction</span>();
+    <span class="kw">try</span> {
+        <span class="cmt">// Tạo tài khoản đăng nhập</span>
+        <span class="var">$st</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"INSERT INTO users (username,password,role) VALUES(?,?,'student')"</span>);
+        <span class="var">$st</span>-><span class="fn">bind_param</span>(<span class="str">"ss"</span>, <span class="var">$un</span>, <span class="var">$pw</span>);
+        <span class="var">$st</span>-><span class="fn">execute</span>();
+        <span class="var">$uid</span> = <span class="var">$db</span>->insert_id;
+
+        <span class="cmt">// Tạo hồ sơ sinh viên</span>
+        <span class="var">$st2</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"INSERT INTO students (user_id,ma_sv,ho_ten,ngay_sinh,lop,khoa) VALUES(?,?,?,?,?,?)"</span>);
+        <span class="var">$st2</span>-><span class="fn">bind_param</span>(<span class="str">"isssss"</span>, <span class="var">$uid</span>, <span class="var">$un</span>, <span class="var">$ht</span>, <span class="var">$nd</span>, <span class="var">$lp</span>, <span class="var">$kh</span>);
+        <span class="var">$st2</span>-><span class="fn">execute</span>();
+
+        <span class="var">$db</span>-><span class="fn">commit</span>();
+        <span class="var">$msg</span> = <span class="str">'success:Thêm sinh viên thành công!'</span>;
+    } <span class="kw">catch</span>(<span class="fn">Exception</span> <span class="var">$e</span>) {
+        <span class="var">$db</span>-><span class="fn">rollback</span>();
+        <span class="var">$msg</span> = <span class="str">'error:Lỗi: '</span> . <span class="var">$e</span>-><span class="fn">getMessage</span>();
+    }
+}
+        </div>
+
+        <h4 class="subsection-title">▸ Cập Nhật Sinh Viên (UPDATE)</h4>
+        <div class="code-block">
+            <span class="code-label">PHP — Cập nhật SV</span>
+<span class="kw">if</span> (<span class="var">$action</span> === <span class="str">'edit'</span>) {
+    <span class="var">$id</span> = (<span class="kw">int</span>)<span class="var">$_POST</span>[<span class="str">'id'</span>];
+    <span class="var">$ht</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'ho_ten'</span>] ?? <span class="str">''</span>);
+    <span class="var">$nd</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'ngay_sinh'</span>] ?? <span class="str">''</span>);
+    <span class="var">$lp</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'lop'</span>] ?? <span class="str">''</span>);
+    <span class="var">$kh</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'khoa'</span>] ?? <span class="str">''</span>);
+    <span class="var">$em</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'email'</span>] ?? <span class="str">''</span>);
+
+    <span class="var">$st</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(
+        <span class="str">"UPDATE students SET ho_ten=?,ngay_sinh=?,lop=?,khoa=?,email=? WHERE id=?"</span>
+    );
+    <span class="var">$st</span>-><span class="fn">bind_param</span>(<span class="str">"sssssi"</span>, <span class="var">$ht</span>, <span class="var">$nd</span>, <span class="var">$lp</span>, <span class="var">$kh</span>, <span class="var">$em</span>, <span class="var">$id</span>);
+    <span class="var">$st</span>-><span class="fn">execute</span>();
+    <span class="var">$msg</span> = <span class="str">'success:Cập nhật thành công!'</span>;
+}
+        </div>
+
+        <h4 class="subsection-title">▸ Xóa Sinh Viên (DELETE)</h4>
+        <div class="code-block">
+            <span class="code-label">PHP — Xóa SV</span>
+<span class="kw">if</span> (<span class="var">$action</span> === <span class="str">'delete'</span>) {
+    <span class="var">$id</span> = (<span class="kw">int</span>)<span class="var">$_GET</span>[<span class="str">'id'</span>];
+    <span class="cmt">// Lấy user_id để xóa cả bảng users (CASCADE sẽ xóa students)</span>
+    <span class="var">$row</span> = <span class="var">$db</span>-><span class="fn">query</span>(<span class="str">"SELECT user_id FROM students WHERE id=$id"</span>)-><span class="fn">fetch_assoc</span>();
+    <span class="kw">if</span> (<span class="var">$row</span>) {
+        <span class="var">$db</span>-><span class="fn">query</span>(<span class="str">"DELETE FROM users WHERE id={$row['user_id']}"</span>);
+        <span class="var">$msg</span> = <span class="str">'success:Đã xóa sinh viên!'</span>;
+    }
+}
+        </div>
+    </div>
+
+    <!-- 5.4 Tìm kiếm & nhóm -->
+    <div class="section">
+        <h3 class="section-title">5.4 Tìm Kiếm &amp; Nhóm Theo Loại</h3>
+        <p>Chức năng tìm kiếm sinh viên theo điều kiện (tên, mã SV, lớp) và nhóm môn học theo khoa sử dụng SQL LIKE và GROUP BY.</p>
+
+        <h4 class="subsection-title">▸ Tìm Kiếm Sinh Viên Theo Điều Kiện</h4>
+        <div class="code-block">
+            <span class="code-label">PHP + SQL — Tìm kiếm</span>
+<span class="cmt">// Lấy từ khóa tìm kiếm từ URL (?q=...)</span>
+<span class="var">$search</span> = <span class="fn">trim</span>(<span class="var">$_GET</span>[<span class="str">'q'</span>] ?? <span class="str">''</span>);
+
+<span class="var">$sql</span> = <span class="str">"SELECT s.*, u.username
+         FROM students s
+         JOIN users u ON s.user_id = u.id"</span>;
+
+<span class="kw">if</span> (<span class="var">$search</span>) {
+    <span class="cmt">// Tìm theo nhiều điều kiện: tên, mã SV hoặc lớp</span>
+    <span class="var">$sql</span> .= <span class="str">" WHERE s.ho_ten   LIKE '%$search%'
+              OR s.ma_sv    LIKE '%$search%'
+              OR s.lop      LIKE '%$search%'"</span>;
+}
+<span class="var">$sql</span> .= <span class="str">" ORDER BY s.id DESC"</span>;
+<span class="var">$list</span> = <span class="var">$db</span>-><span class="fn">query</span>(<span class="var">$sql</span>)-><span class="fn">fetch_all</span>(MYSQLI_ASSOC);
+        </div>
+
+        <h4 class="subsection-title">▸ Nhóm Môn Học Theo Khoa/Ngành</h4>
+        <div class="code-block">
+            <span class="code-label">SQL — Nhóm theo loại</span>
+<span class="cmt">-- Đếm số môn học theo từng khoa (nhóm theo loại)</span>
+<span class="kw">SELECT</span> khoa,
+       <span class="fn">COUNT</span>(*) AS so_mon,
+       <span class="fn">SUM</span>(so_tin_chi) AS tong_tin_chi
+<span class="kw">FROM</span> mon_hoc
+<span class="kw">GROUP BY</span> khoa
+<span class="kw">ORDER BY</span> so_mon <span class="kw">DESC</span>;
+
+<span class="cmt">-- Lọc sinh viên theo điều kiện lớp và khoa</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> students
+<span class="kw">WHERE</span> khoa = <span class="str">'Công nghệ thông tin'</span>
+  <span class="kw">AND</span> lop <span class="kw">LIKE</span> <span class="str">'CNTT24%'</span>
+<span class="kw">ORDER BY</span> ho_ten <span class="kw">ASC</span>;
+        </div>
+    </div>
+
+    <!-- 5.5 Điểm danh AI -->
+    <div class="section">
+        <h3 class="section-title">5.5 Điểm Danh Khuôn Mặt AI — Face-api.js</h3>
+        <p>Tính năng điểm danh AI sử dụng Face-api.js chạy hoàn toàn trên trình duyệt. Quy trình: phát hiện khuôn mặt → trích xuất descriptor 128 chiều → so sánh với DB → ghi nhận điểm danh qua AJAX.</p>
+
+        <h4 class="subsection-title">▸ JavaScript: Nhận diện &amp; So sánh</h4>
+        <div class="code-block">
+            <span class="code-label">JavaScript — Face-api.js</span>
+<span class="cmt">// Tải models Face-api.js</span>
+<span class="kw">await</span> Promise.all([
+  faceapi.<span class="fn">nets</span>.tinyFaceDetector.<span class="fn">loadFromUri</span>(<span class="str">'/models'</span>),
+  faceapi.<span class="fn">nets</span>.faceLandmark68Net.<span class="fn">loadFromUri</span>(<span class="str">'/models'</span>),
+  faceapi.<span class="fn">nets</span>.faceRecognitionNet.<span class="fn">loadFromUri</span>(<span class="str">'/models'</span>)
+]);
+
+<span class="cmt">// Phát hiện khuôn mặt và trích xuất descriptor</span>
+<span class="kw">const</span> <span class="var">detection</span> = <span class="kw">await</span> faceapi
+  .<span class="fn">detectSingleFace</span>(<span class="var">videoEl</span>, <span class="kw">new</span> faceapi.<span class="fn">TinyFaceDetectorOptions</span>())
+  .<span class="fn">withFaceLandmarks</span>()
+  .<span class="fn">withFaceDescriptor</span>();
+
+<span class="kw">if</span> (<span class="var">detection</span>) {
+  <span class="kw">const</span> <span class="var">descriptor</span> = detection.descriptor; <span class="cmt">// Float32Array[128]</span>
+
+  <span class="cmt">// So sánh với tất cả descriptors trong database</span>
+  <span class="kw">let</span> <span class="var">minDist</span> = Infinity, <span class="var">matchedId</span> = <span class="kw">null</span>;
+  <span class="var">allDescriptors</span>.<span class="fn">forEach</span>((<span class="var">saved</span>) => {
+    <span class="kw">const</span> <span class="var">dist</span> = faceapi.<span class="fn">euclideanDistance</span>(<span class="var">descriptor</span>, <span class="var">saved</span>.vec);
+    <span class="kw">if</span> (<span class="var">dist</span> < <span class="var">minDist</span>) { <span class="var">minDist</span> = <span class="var">dist</span>; <span class="var">matchedId</span> = <span class="var">saved</span>.id; }
+  });
+
+  <span class="cmt">// Ngưỡng nhận diện: khoảng cách < 0.6</span>
+  <span class="kw">if</span> (<span class="var">minDist</span> < <span class="str">0.6</span>) {
+    $.<span class="fn">post</span>(<span class="str">'/tkb/api/diem_danh.php'</span>, {
+      student_id: <span class="var">matchedId</span>, tkb_id: <span class="var">currentTkbId</span>
+    }, (<span class="var">res</span>) => {
+      <span class="kw">if</span> (<span class="var">res</span>.success) <span class="fn">addToList</span>(<span class="var">res</span>.ho_ten);
+    }, <span class="str">'json'</span>);
+  }
+}
+        </div>
+
+        <h4 class="subsection-title">▸ PHP API: Ghi Nhận Điểm Danh</h4>
+        <div class="code-block">
+            <span class="code-label">PHP — api/diem_danh.php</span>
+<span class="kw">header</span>(<span class="str">'Content-Type: application/json'</span>);
+<span class="var">$student_id</span> = (<span class="kw">int</span>)(<span class="var">$_POST</span>[<span class="str">'student_id'</span>] ?? <span class="str">0</span>);
+<span class="var">$tkb_id</span>     = (<span class="kw">int</span>)(<span class="var">$_POST</span>[<span class="str">'tkb_id'</span>] ?? <span class="str">0</span>);
+
+<span class="kw">if</span> (!<span class="var">$student_id</span> || !<span class="var">$tkb_id</span>) {
+    <span class="kw">echo</span> <span class="fn">json_encode</span>([<span class="str">'success'</span> => <span class="kw">false</span>]);
+    <span class="kw">exit</span>;
+}
+
+<span class="var">$db</span>    = <span class="fn">getDB</span>();
+<span class="var">$today</span> = <span class="fn">date</span>(<span class="str">'Y-m-d'</span>);
+
+<span class="cmt">// Kiểm tra đã điểm danh hôm nay chưa</span>
+<span class="var">$check</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(
+    <span class="str">"SELECT id FROM diem_danh WHERE student_id=? AND tkb_id=? AND ngay_diem_danh=?"</span>
+);
+<span class="var">$check</span>-><span class="fn">bind_param</span>(<span class="str">"iis"</span>, <span class="var">$student_id</span>, <span class="var">$tkb_id</span>, <span class="var">$today</span>);
+<span class="var">$check</span>-><span class="fn">execute</span>();
+
+<span class="kw">if</span> (<span class="var">$check</span>-><span class="fn">get_result</span>()-><span class="fn">num_rows</span> === <span class="str">0</span>) {
+    <span class="cmt">// Ghi nhận điểm danh mới</span>
+    <span class="var">$st</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(
+        <span class="str">"INSERT INTO diem_danh (student_id,tkb_id,ngay_diem_danh,trang_thai)
+         VALUES (?,?,?,'co_mat')"</span>
+    );
+    <span class="var">$st</span>-><span class="fn">bind_param</span>(<span class="str">"iis"</span>, <span class="var">$student_id</span>, <span class="var">$tkb_id</span>, <span class="var">$today</span>);
+    <span class="var">$st</span>-><span class="fn">execute</span>();
+    <span class="kw">echo</span> <span class="fn">json_encode</span>([<span class="str">'success'</span> => <span class="kw">true</span>, <span class="str">'ho_ten'</span> => <span class="var">$ho_ten</span>]);
+}
+        </div>
+    </div>
+
+    <!-- 5.6 Xử lý Đổi mật khẩu & Quên mật khẩu -->
+    <div class="section">
+        <h3 class="section-title">5.6 Xử Lý Đổi Mật Khẩu &amp; Quên Mật Khẩu</h3>
+        <p>Dưới đây là mã nguồn chính dùng để tạo token khôi phục và cập nhật mật khẩu băm bảo mật.</p>
+        
+        <h4 class="subsection-title">▸ Tạo Token Quên Mật Khẩu (forgot_password.php)</h4>
+        <div class="code-block">
+            <span class="code-label">PHP — Tạo token</span>
+<span class="cmt">// Phát sinh token ngẫu nhiên và lưu vào DB</span>
+<span class="var">$token</span> = <span class="fn">bin2hex</span>(<span class="fn">random_bytes</span>(<span class="str">16</span>));
+<span class="var">$expires</span> = <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>, <span class="fn">strtotime</span>(<span class="str">'+1 hour'</span>));
+
+<span class="var">$st_tok</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?"</span>);
+<span class="var">$st_tok</span>-><span class="fn">bind_param</span>(<span class="str">"ssi"</span>, <span class="var">$token</span>, <span class="var">$expires</span>, <span class="var">$uid</span>);
+<span class="var">$st_tok</span>-><span class="fn">execute</span>();
+        </div>
+
+        <h4 class="subsection-title">▸ Xác Minh Token &amp; Cập Nhật Mật Khẩu Mới (reset_password.php)</h4>
+        <div class="code-block">
+            <span class="code-label">PHP — Cập nhật pass mới</span>
+<span class="cmt">// Kiểm tra tính hợp lệ và hạn dùng của token</span>
+<span class="var">$st</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"SELECT id, username FROM users WHERE reset_token = ? AND reset_token_expires > ?"</span>);
+<span class="var">$st</span>-><span class="fn">bind_param</span>(<span class="str">"ss"</span>, <span class="var">$token</span>, <span class="var">$now</span>);
+<span class="var">$st</span>-><span class="fn">execute</span>();
+<span class="var">$res</span> = <span class="var">$st</span>-><span class="fn">get_result</span>();
+
+<span class="kw">if</span> (<span class="var">$res</span>->num_rows > <span class="str">0</span> && <span class="var">$_SERVER</span>[<span class="str">'REQUEST_METHOD'</span>] === <span class="str">'POST'</span>) {
+    <span class="var">$password</span> = <span class="var">$_POST</span>[<span class="str">'password'</span>];
+    <span class="var">$hashed</span> = <span class="fn">password_hash</span>(<span class="var">$password</span>, PASSWORD_DEFAULT);
+    <span class="var">$user</span> = <span class="var">$res</span>-><span class="fn">fetch_assoc</span>();
+    
+    <span class="var">$st_up</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?"</span>);
+    <span class="var">$st_up</span>-><span class="fn">bind_param</span>(<span class="str">"si"</span>, <span class="var">$hashed</span>, <span class="var">$user</span>[<span class="str">'id'</span>]);
+    <span class="var">$st_up</span>-><span class="fn">execute</span>();
+}
+        </div>
+    </div>
+
+    <!-- 5.7 Giới hạn khoa bảo mật cho Giáo viên -->
+    <div class="section">
+        <h3 class="section-title">5.7 Giới Hạn Khoa Bảo Mật Cho Giáo Viên</h3>
+        <p>Mỗi giáo viên chỉ được quản lý điểm và sinh viên của khoa mình. Khi thao tác, hệ thống luôn kiểm tra khoa của giáo viên trong database trùng khớp với khoa của sinh viên được truy vấn.</p>
+        <div class="code-block">
+            <span class="code-label">PHP — Kiểm soát khoa</span>
+<span class="cmt">// Lấy thông tin khoa của giáo viên hiện tại</span>
+<span class="var">$st_t</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"SELECT khoa FROM giang_vien WHERE id = ?"</span>);
+<span class="var">$st_t</span>-><span class="fn">bind_param</span>(<span class="str">"i"</span>, <span class="var">$gv_id</span>);
+<span class="var">$st_t</span>-><span class="fn">execute</span>();
+<span class="var">$teacher_khoa</span> = <span class="var">$st_t</span>-><span class="fn">get_result</span>()-><span class="fn">fetch_assoc</span>()[<span class="str">'khoa'</span>] ?? <span class="str">''</span>;
+
+<span class="cmt">// Khi thực hiện lưu điểm, kiểm tra tính hợp lệ khoa của sinh viên</span>
+<span class="kw">if</span> (<span class="var">$teacher_khoa</span>) {
+    <span class="var">$st_chk</span> = <span class="var">$db</span>-><span class="fn">prepare</span>(<span class="str">"SELECT id FROM students WHERE id = ? AND LOWER(khoa) = LOWER(?)"</span>);
+    <span class="var">$st_chk</span>-><span class="fn">bind_param</span>(<span class="str">"is"</span>, <span class="var">$sid</span>, <span class="var">$teacher_khoa</span>);
+    <span class="var">$st_chk</span>-><span class="fn">execute</span>();
+            <span class="kw">if</span> (<span class="var">$st_chk</span>-><span class="fn">get_result</span>()->num_rows === <span class="str">0</span>) {
+                    <span class="var">$msg</span> = <span class="str">'error:Sinh viên này không thuộc khoa của bạn!'</span>;
+                }
+            }
+        </div>
+    </div>
+
+    <!-- 5.8 Quản lý Môn học -->
+    <div class="section">
+        <h3 class="section-title">5.8 Xử Lý Nghiệp Vụ Quản Lý Môn Học — monhoc.php</h3>
+        <p>Quy trình CRUD môn học sử dụng Prepared Statements để ngăn chặn lỗi SQL Injection, đồng thời kiểm tra sự tồn tại của mã môn để tránh trùng lặp dữ liệu khóa chính.</p>
+        <div class="code-block">
+            <span class="code-label">PHP — Thêm Môn Học</span>
+<span class="cmt">// Kiểm tra trùng lặp mã môn học trước khi thêm</span>
+<span class="var">$ma</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'ma_mon'</span>] ?? <span class="str">''</span>);
+<span class="var">$ten</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'ten_mon'</span>] ?? <span class="str">''</span>);
+<span class="var">$tc</span> = (<span class="kw">int</span>)(<span class="var">$_POST</span>[<span class="str">'so_tin_chi'</span>] ?? <span class="str">2</span>);
+<span class="var">$kh</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'khoa'</span>] ?? <span class="str">''</span>);
+
+<span class="var">$st</span> = <span class="var">$db</span>-&gt;<span class="fn">prepare</span>(<span class="str">"INSERT INTO mon_hoc (ma_mon,ten_mon,so_tin_chi,khoa) VALUES(?,?,?,?)"</span>);
+<span class="var">$st</span>-&gt;<span class="fn">bind_param</span>(<span class="str">"ssis"</span>, <span class="var">$ma</span>, <span class="var">$ten</span>, <span class="var">$tc</span>, <span class="var">$kh</span>);
+<span class="kw">if</span> (<span class="var">$st</span>-&gt;<span class="fn">execute</span>()) {
+    <span class="var">$msg</span> = <span class="str">'success:Thêm môn học thành công!'</span>;
+} <span class="kw">else</span> {
+    <span class="var">$msg</span> = <span class="str">'error:Mã môn đã tồn tại hoặc có lỗi xảy ra!'</span>;
+}
+        </div>
+    </div>
+
+    <!-- 5.9 Quản lý Thời khóa biểu -->
+    <div class="section">
+        <h3 class="section-title">5.9 Xử Lý Lọc Và Truy Vấn Thời Khóa Biểu — tkb.php</h3>
+        <p>Truy vấn lịch học kết hợp JOIN với các bảng liên kết `mon_hoc` và `giang_vien` để hiển thị tên môn, mã môn, và tên giảng viên đầy đủ theo điều kiện học kỳ, năm học và ngành khoa được lọc.</p>
+        <div class="code-block">
+            <span class="code-label">PHP — SQL JOIN &amp; Filter</span>
+<span class="cmt">// Tạo câu truy vấn có điều kiện lọc động</span>
+<span class="var">$sql</span> = <span class="str">"SELECT t.*, m.ten_mon, m.ma_mon, g.ho_ten as ten_gv 
+        FROM thoi_khoa_bieu t 
+        JOIN mon_hoc m ON t.mon_hoc_id = m.id 
+        LEFT JOIN giang_vien g ON t.giang_vien_id = g.id 
+        WHERE t.hoc_ky = ? AND t.nam_hoc = ?"</span>;
+<span class="var">$params</span> = [<span class="var">$fhk</span>, <span class="var">$fnh</span>]; 
+<span class="var">$types</span> = <span class="str">"ss"</span>;
+
+<span class="kw">if</span> (<span class="var">$fkhoa</span>) {
+    <span class="var">$sql</span> .= <span class="str">" AND t.khoa = ?"</span>;
+    <span class="var">$params</span>[] = <span class="var">$fkhoa</span>;
+    <span class="var">$types</span> .= <span class="str">"s"</span>;
+}
+<span class="var">$sql</span> .= <span class="str">" ORDER BY t.khoa, t.thu, t.tiet_bat_dau"</span>;
+<span class="var">$st</span> = <span class="var">$db</span>-&gt;<span class="fn">prepare</span>(<span class="var">$sql</span>);
+<span class="var">$st</span>-&gt;<span class="fn">bind_param</span>(<span class="var">$types</span>, ...<span class="var">$params</span>);
+<span class="var">$st</span>-&gt;<span class="fn">execute</span>();
+<span class="var">$list</span> = <span class="var">$st</span>-&gt;<span class="fn">get_result</span>()-&gt;<span class="fn">fetch_all</span>(MYSQLI_ASSOC);
+        </div>
+    </div>
+
+    <!-- 5.10 Quản lý Học phí -->
+    <div class="section">
+        <h3 class="section-title">5.10 Ghi Nhận Học Phí &amp; Tài Chính — taichinh.php</h3>
+        <p>Quản lý tài chính học phí sinh viên sử dụng các câu lệnh cập nhật trực tiếp. Khi cập nhật trạng thái đóng tiền, số tiền chuỗi sẽ được lọc bỏ dấu phẩy phân tách trước khi đưa vào lưu trữ trong CSDL dưới dạng kiểu Float/Double.</p>
+        <div class="code-block">
+            <span class="code-label">PHP — Ghi nhận khoản thu</span>
+<span class="cmt">// Chuẩn hóa định dạng số tiền gửi lên từ Form</span>
+<span class="var">$so_tien</span> = (<span class="kw">float</span>)<span class="fn">str_replace</span>(<span class="str">','</span>, <span class="str">''</span>, <span class="var">$_POST</span>[<span class="str">'so_tien'</span>]);
+<span class="var">$student_id</span> = (<span class="kw">int</span>)<span class="var">$_POST</span>[<span class="str">'student_id'</span>];
+<span class="var">$noi_dung</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'noi_dung'</span>] ?? <span class="str">''</span>);
+<span class="var">$ngay_nop</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'ngay_nop'</span>] ?? <span class="str">''</span>);
+<span class="var">$trang_thai</span> = <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'trang_thai'</span>] ?? <span class="str">'Chưa nộp'</span>);
+
+<span class="var">$st</span> = <span class="var">$db</span>-&gt;<span class="fn">prepare</span>(<span class="str">"INSERT INTO tai_chinh (student_id, noi_dung, so_tien, ngay_nop, trang_thai) VALUES (?, ?, ?, ?, ?)"</span>);
+<span class="var">$st</span>-&gt;<span class="fn">bind_param</span>(<span class="str">"isdss"</span>, <span class="var">$student_id</span>, <span class="var">$noi_dung</span>, <span class="var">$so_tien</span>, <span class="var">$ngay_nop</span>, <span class="var">$trang_thai</span>);
+<span class="kw">if</span> (<span class="var">$st</span>-&gt;<span class="fn">execute</span>()) {
+    <span class="var">$msg</span> = <span class="str">'success:Tạo khoản thu thành công!'</span>;
+}
+        </div>
+    </div>
+
+    <!-- ==================== CHƯƠNG 6: CÀI ĐẶT ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num">06</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Chương Sáu</div>
+            <div class="chapter-title">Hướng Dẫn Cài Đặt &amp; Chạy</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <div class="section">
+        <p>Hệ thống hỗ trợ 2 môi trường: chạy local trên XAMPP hoặc triển khai trực tuyến (đã deploy lên InfinityFree).</p>
+
+        <h4 class="subsection-title">▸ Chạy Local (XAMPP)</h4>
+        <ol class="install-steps">
+            <li class="install-step">
+                <div class="install-content">
+                    <div class="install-title">Cài đặt XAMPP</div>
+                    <p class="install-desc">Tải và cài đặt XAMPP tại <code>https://apachefriends.org</code>. Khởi động Apache và MySQL.</p>
+                </div>
+            </li>
+            <li class="install-step">
+                <div class="install-content">
+                    <div class="install-title">Sao chép thư mục dự án</div>
+                    <p class="install-desc">Đặt thư mục <code>tkb</code> vào: <code>C:\xampp\htdocs\tkb</code></p>
+                </div>
+            </li>
+            <li class="install-step">
+                <div class="install-content">
+                    <div class="install-title">Import cơ sở dữ liệu</div>
+                    <p class="install-desc">Mở phpMyAdmin → Tạo database <code>truong_caodang</code> → Import file <code>if0_41796593_truong_caodang.sql</code></p>
+                </div>
+            </li>
+            <li class="install-step">
+                <div class="install-content">
+                    <div class="install-title">Cấu hình kết nối</div>
+                    <p class="install-desc">Chỉnh file <code>tkb/config.php</code>: host = <code>localhost</code>, user = <code>root</code>, password rỗng, db = <code>truong_caodang</code></p>
+                </div>
+            </li>
+            <li class="install-step">
+                <div class="install-content">
+                    <div class="install-title">Truy cập ứng dụng</div>
+                    <p class="install-desc">Mở trình duyệt → <code>http://localhost/tkb/</code></p>
+                </div>
+            </li>
+        </ol>
+
+        <h4 class="subsection-title" style="margin-top:28px;">▸ Tài Khoản Dùng Thử</h4>
+        <div class="account-cards">
+            <div class="account-card admin">
+                <div class="account-role">⭐ Quản Trị Viên (Admin)</div>
+                <div class="account-cred"><span class="account-cred-label">Tên đăng nhập</span><span class="account-cred-val">admin</span></div>
+                <div class="account-cred"><span class="account-cred-label">Mật khẩu</span><span class="account-cred-val">admin123</span></div>
+                <div style="margin-top:10px; font-size:0.76rem; color:var(--text-muted);">Toàn quyền: SV, TKB, điểm, điểm danh, tài chính, thông báo</div>
+            </div>
+            <div class="account-card member">
+                <div class="account-role">👤 Sinh Viên (Student)</div>
+                <div class="account-cred"><span class="account-cred-label">Tên đăng nhập</span><span class="account-cred-val">lenhutkhanh</span></div>
+                <div class="account-cred"><span class="account-cred-label">Mật khẩu</span><span class="account-cred-val">Ngày sinh (ddmmyyyy)</span></div>
+                <div style="margin-top:10px; font-size:0.76rem; color:var(--text-muted);">Xem TKB, điểm, điểm danh, hồ sơ cá nhân</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CHƯƠNG 7: KẾT LUẬN ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num">07</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Chương Bảy</div>
+            <div class="chapter-title">Kết Luận</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <div class="section">
+        <p>Qua quá trình xây dựng, đồ án đã hoàn thành một hệ thống thông tin trường học toàn diện, tích hợp thành công công nghệ AI nhận diện khuôn mặt vào nghiệp vụ điểm danh — một tính năng mang tính ứng dụng thực tiễn cao và là điểm khác biệt nổi bật so với các đồ án thông thường.</p>
+
+        <div class="conclusion-card">
+            <div class="conclusion-emoji">🏆</div>
+            <div class="conclusion-title">Kết Quả Đạt Được</div>
+            <ul class="achievement-list" style="text-align:left; margin-top:0;">
+                <li class="achievement-item"><span class="achievement-icon">✅</span><p class="achievement-text"><strong>Website trường học chuyên nghiệp</strong> với 8+ trang public đầy đủ: giới thiệu, đào tạo, tuyển sinh, sự kiện, thư viện, liên hệ</p></li>
+                <li class="achievement-item"><span class="achievement-icon">✅</span><p class="achievement-text"><strong>Hệ thống phân quyền 2 cấp</strong>: Admin (8 module) và Student (6 module) với session bảo mật</p></li>
+                <li class="achievement-item"><span class="achievement-icon">✅</span><p class="achievement-text"><strong>CRUD đầy đủ</strong>: Thêm, xóa, cập nhật, tìm kiếm mẫu tin theo điều kiện, nhóm theo loại</p></li>
+                <li class="achievement-item"><span class="achievement-icon">✅</span><p class="achievement-text"><strong>Điểm danh AI khuôn mặt</strong> (Face-api.js): đăng ký, điểm danh và đăng nhập bằng khuôn mặt</p></li>
+                <li class="achievement-item"><span class="achievement-icon">✅</span><p class="achievement-text"><strong>CSDL 9 bảng chuẩn hóa</strong> với khóa ngoại, đã deploy thực tế lên InfinityFree</p></li>
+                <li class="achievement-item"><span class="achievement-icon">✅</span><p class="achievement-text"><strong>Bảo mật tốt</strong>: mật khẩu bcrypt, PDO prepared statements chống SQL Injection</p></li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🚀 Hướng Phát Triển Tiếp Theo</div>
+            <ul class="achievement-list">
+                <li class="achievement-item"><span class="achievement-icon">📱</span><p class="achievement-text">Phát triển ứng dụng di động (React Native) kết nối với REST API backend</p></li>
+                <li class="achievement-item"><span class="achievement-icon">📧</span><p class="achievement-text">Gửi email thông báo tự động khi điểm danh vắng, học phí chưa nộp (PHPMailer)</p></li>
+                <li class="achievement-item"><span class="achievement-icon">📊</span><p class="achievement-text">Biểu đồ thống kê tỷ lệ điểm danh, học phí bằng Chart.js</p></li>
+                <li class="achievement-item"><span class="achievement-icon">🔗</span><p class="achievement-text">Tích hợp đăng ký học phần online và tra cứu kết quả thi</p></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ==================== PHỤ LỤC ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num" style="font-size:3rem;">PL</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Phụ Lục</div>
+            <div class="chapter-title">Mã Nguồn Dự Án</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <div class="section">
+        <h3 class="section-title">Cấu Trúc Thư Mục Dự Án</h3>
+        <div class="code-block">
+            <span class="code-label">Cấu trúc</span>
+tkb/                            <span class="cmt"># Thư mục gốc dự án</span>
+├── baocao.html                 <span class="cmt"># Báo cáo đồ án</span>
+├── if0_41796593_truong_caodang.sql  <span class="cmt"># File SQL xuất từ hosting</span>
+├── config.php                  <span class="cmt"># Cấu hình CSDL, hàm phân quyền</span>
+├── login.php                   <span class="cmt"># Đăng nhập (username + khuôn mặt AI)</span>
+├── index.php                   <span class="cmt"># Trang chủ public mới</span>
+├── gioi_thieu.php              <span class="cmt"># Giới thiệu trường mới</span>
+├── dao_tao.php                 <span class="cmt"># Chương trình đào tạo mới</span>
+├── tuyen_sinh.php              <span class="cmt"># Thông tin tuyển sinh mới</span>
+├── su_kien.php                 <span class="cmt"># Sự kiện &amp; tin tức mới</span>
+├── thu_vien.php                <span class="cmt"># Thư viện tài liệu mới</span>
+├── lien_he.php                 <span class="cmt"># Liên hệ mới</span>
+├── forgot_password.php         <span class="cmt"># Gửi yêu cầu khôi phục mật khẩu</span>
+├── reset_password.php          <span class="cmt"># Đặt lại mật khẩu mới bằng token</span>
+├── admin/                      <span class="cmt"># Phân hệ quản trị viên (Admin)</span>
+│   ├── dashboard.php           <span class="cmt"># Tổng quan thống kê</span>
+│   ├── students.php            <span class="cmt"># Quản lý sinh viên (CRUD)</span>
+│   ├── monhoc.php              <span class="cmt"># Quản lý môn học (CRUD)</span>
+│   ├── tkb.php                 <span class="cmt"># Quản lý thời khóa biểu</span>
+│   ├── diem.php                <span class="cmt"># Nhập &amp; quản lý điểm số</span>
+│   ├── diemdanh.php            <span class="cmt"># Điểm danh (giáo viên nhập)</span>
+│   ├── taichinh.php            <span class="cmt"># Quản lý học phí</span>
+│   └── thongbao.php            <span class="cmt"># Quản lý thông báo nội bộ</span>
+├── teacher/                    <span class="cmt"># Phân hệ Giáo viên (Teacher - Giới hạn khoa)</span>
+│   ├── dashboard.php           <span class="cmt"># Dashboard giáo viên</span>
+│   ├── diem.php                <span class="cmt"># Nhập điểm sinh viên thuộc khoa mình</span>
+│   ├── diemdanh.php            <span class="cmt"># Điểm danh lớp thuộc khoa mình</span>
+│   ├── tkb.php                 <span class="cmt"># Lịch dạy môn phân công</span>
+│   └── profile.php             <span class="cmt"># Thông tin và đổi mật khẩu giáo viên</span>
+├── principal/                  <span class="cmt"># Phân hệ Hiệu trưởng (Principal - Giám sát)</span>
+│   ├── dashboard.php           <span class="cmt"># Tổng quan biểu đồ toàn trường</span>
+│   ├── admins.php              <span class="cmt"># Quản lý tài khoản Admin</span>
+│   ├── teachers.php            <span class="cmt"># Quản lý tài khoản Giáo viên</span>
+│   ├── diem.php                <span class="cmt"># Tra cứu điểm số sinh viên toàn trường</span>
+│   ├── taichinh.php            <span class="cmt"># Thống kê doanh thu học phí đóng, nợ</span>
+│   ├── thongbao.php            <span class="cmt"># Đăng thông báo chung / theo khoa</span>
+│   └── profile.php             <span class="cmt"># Thông tin và đổi mật khẩu hiệu trưởng</span>
+├── student/                    <span class="cmt"># Phân hệ sinh viên (Student)</span>
+│   ├── dashboard.php           <span class="cmt"># Dashboard cá nhân</span>
+│   ├── tkb.php                 <span class="cmt"># Xem thời khóa biểu</span>
+│   ├── diem.php                <span class="cmt"># Xem điểm số cá nhân</span>
+│   ├── diem_danh.php           <span class="cmt"># Xem lịch sử điểm danh</span>
+│   ├── tai_chinh.php           <span class="cmt"># Xem thông tin đóng học phí</span>
+│   ├── hoc_phan.php            <span class="cmt"># Xem chương trình môn học</span>
+│   └── profile.php             <span class="cmt"># Hồ sơ cá nhân &amp; đổi mật khẩu</span>
+├── api/                        <span class="cmt"># API endpoints cho AJAX</span>
+│   ├── face_login.php          <span class="cmt"># API đăng nhập bằng khuôn mặt</span>
+│   ├── get_student_info.php    <span class="cmt"># API lấy thông tin sinh viên</span>
+│   ├── login.php               <span class="cmt"># API đăng nhập</span>
+│   └── logout.php              <span class="cmt"># API đăng xuất</span>
+├── includes/                   <span class="cmt"># Các file dùng chung</span>
+│   ├── admin_nav.php           <span class="cmt"># Sidebar navigation admin</span>
+│   ├── student_nav.php         <span class="cmt"># Sidebar navigation sinh viên</span>
+│   ├── public_header.php       <span class="cmt"># Header trang public</span>
+│   └── public_footer.php       <span class="cmt"># Footer trang public</span>
+└── assets/                     <span class="cmt"># Tài nguyên tĩnh</span>
+    ├── home.css                <span class="cmt"># CSS giao diện public mới</span>
+    ├── style.css               <span class="cmt"># CSS giao diện quản trị</span>
+    ├── img/                    <span class="cmt"># Hình ảnh, logo, ảnh đại diện</span>
+    └── models/                 <span class="cmt"># Models Face-api.js (AI)</span>
+        </div>
+
+        <div class="info-box">
+            📁 <strong>Lưu ý khi nộp bài:</strong> Nén toàn bộ thư mục <code>tkb/</code> và file SQL thành file <code>.zip</code>, đính kèm cùng báo cáo. Đảm bảo bao gồm thư mục <code>assets/models/</code> chứa các model AI của Face-api.js (tiny_face_detector, face_landmark_68, face_recognition).
+        </div>
+    </div>
+
+    <!-- ==================== PHỤ LỤC: LIÊN KẾT GITHUB & CẤU TRÚC MÃ NGUỒN ==================== -->
+    <div class="page-break"></div>
+    <div class="chapter-header">
+        <div class="chapter-num" style="font-size:3rem;">PL</div>
+        <div class="chapter-info">
+            <div class="chapter-label">Phụ Lục</div>
+            <div class="chapter-title">Mã Nguồn Dự Án &amp; Kho Lưu Trữ</div>
+        </div>
+    </div>
+    <hr class="section-hr">
+
+    <div class="section">
+        <h3 class="section-title">Mã Nguồn Trực Tuyến (GitHub Repository)</h3>
+        <p>Để tối ưu hóa dung lượng in ấn của báo cáo đồ án (tiết kiệm hơn 70 trang giấy mã nguồn) và nâng cao tính minh bạch, chuyên nghiệp của dự án lập trình, toàn bộ mã nguồn của hệ thống <strong>"Website Trường Cao Đẳng Nghề Việt Nam – Hàn Quốc Cà Mau"</strong> đã được lưu trữ công khai trên nền tảng GitHub.</p>
+
+        <!-- GitHub Repo Card Mockup -->
+        <div class="card" style="border-left: 5px solid #24292e; background: #fafbfc; padding: 24px; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <span style="font-size: 1.6rem; color: #24292e;">🐱</span>
+                        <h4 style="font-size: 1.25rem; font-weight: 800; color: #24292e; margin: 0;">NhutKhanh-Coder/viet-han-camau-tkb</h4>
+                        <span class="badge badge-green" style="font-size: 0.65rem; background: #e6ffed; color: #22863a; border-color: #acf2bd; text-transform: capitalize;">Public</span>
+                    </div>
+                    <p style="font-size: 0.88rem; color: #586069; margin-bottom: 16px; text-align: left;">
+                        Hệ thống quản lý thời khóa biểu, điểm số, học phí và tích hợp điểm danh khuôn mặt AI (Face-api.js) trên nền tảng PHP &amp; MySQL.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="cover-tag">PHP 7.4+</span>
+                        <span class="cover-tag">MySQL / MariaDB</span>
+                        <span class="cover-tag">Bootstrap 5</span>
+                        <span class="cover-tag">Face-api.js</span>
+                        <span class="cover-tag gold">AJAX &amp; jQuery</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <a href="https://github.com/NhutKhanh-Coder/viet-han-camau-tkb" target="_blank" class="print-btn" style="position: static; display: inline-flex; background: #24292e; box-shadow: 0 4px 15px rgba(36, 41, 46, 0.3); font-size: 0.8rem; padding: 10px 18px;">
+                        🌐 Ghé thăm GitHub Repo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">Lợi Ích Của Việc Lưu Trữ Trực Tuyến</h3>
+        <div class="tech-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="tech-item" style="align-items: flex-start; flex-direction: column; gap: 6px;">
+                <span class="badge badge-blue">Quản lý phiên bản (Git)</span>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; text-align: left;">
+                    Lưu trữ lịch sử thay đổi code thông qua các Commit, giúp theo dõi tiến độ lập trình và khôi phục mã nguồn dễ dàng khi phát sinh lỗi.
+                </p>
+            </div>
+            <div class="tech-item" style="align-items: flex-start; flex-direction: column; gap: 6px;">
+                <span class="badge badge-blue">Tối ưu dung lượng báo cáo</span>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; text-align: left;">
+                    Tránh làm phình tệp báo cáo PDF/HTML (giảm 4.400 dòng code thừa), giúp người đọc và giám khảo dễ dàng tập trung vào phần lý thuyết và nghiệp vụ chính.
+                </p>
+            </div>
+            <div class="tech-item" style="align-items: flex-start; flex-direction: column; gap: 6px;">
+                <span class="badge badge-blue">Triển khai dễ dàng (Clone)</span>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; text-align: left;">
+                    Hỗ trợ triển khai nhanh lên hosting hoặc máy chủ local thông qua câu lệnh <code>git clone</code> thay vì sao chép thủ công qua USB.
+                </p>
+            </div>
+            <div class="tech-item" style="align-items: flex-start; flex-direction: column; gap: 6px;">
+                <span class="badge badge-blue">Bảo mật mã nguồn</span>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; text-align: left;">
+                    Mật khẩu kết nối CSDL và các thông số nhạy cảm được quản lý qua tệp cấu hình riêng biệt hoặc biến môi trường, bảo vệ dữ liệu sản xuất.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" style="page-break-before: always;">
+        <h3 class="section-title">Hướng Dẫn Cài Đặt &amp; Chạy Dự Án Từ GitHub</h3>
+        <p>Để chạy thử nghiệm hoặc phát triển tiếp dự án từ mã nguồn trên GitHub, vui lòng thực hiện các bước sau:</p>
+        
+        <ol class="num-list">
+            <li>
+                <div>
+                    <strong>Tải mã nguồn (Clone Repository):</strong>
+                    <p style="margin: 4px 0 8px 0;">Mở Git Bash hoặc CMD/Terminal tại thư mục máy chủ (ví dụ: <code>C:/xampp/htdocs/</code>) và chạy lệnh:</p>
+                    <div class="code-block" style="margin: 8px 0; padding: 12px 18px;">
+                        <span class="code-label">Terminal</span>
+                        git clone https://github.com/NhutKhanh-Coder/viet-han-camau-tkb.git
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <strong>Import Cơ sở dữ liệu:</strong>
+                    <p style="margin: 4px 0 8px 0;">Truy cập vào <code>http://localhost/phpmyadmin</code>, tạo một cơ sở dữ liệu mới tên là <code>truong_caodang</code> và import tệp tin cơ sở dữ liệu <code>if0_41796593_truong_caodang.sql</code> được đính kèm ở thư mục gốc.</p>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <strong>Cấu hình kết nối:</strong>
+                    <p style="margin: 4px 0 8px 0;">Mở tệp cấu hình <code>config.php</code> ở thư mục gốc và cấu hình lại các thông số kết nối CSDL MySQL ở môi trường local của bạn:</p>
+                    <div class="code-block" style="margin: 8px 0; padding: 12px 18px;">
+                        <span class="code-label">config.php</span>
+                        define('DB_HOST', 'localhost');<br>
+                        define('DB_USER', 'root');<br>
+                        define('DB_PASS', '');<br>
+                        define('DB_NAME', 'truong_caodang');
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <strong>Khởi chạy hệ thống:</strong>
+                    <p style="margin: 4px 0 8px 0;">Bật module Apache và MySQL trên XAMPP Control Panel, sau đó truy cập đường dẫn: <code>http://localhost/tkb/</code> trên trình duyệt web.</p>
+                </div>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section" style="page-break-before: always;">
+        <h3 class="section-title">Bản Đồ Cấu Trúc Mã Nguồn (Code Map)</h3>
+        <p>Bản đồ dưới đây phân tích cấu trúc hoạt động và chức năng của các tệp mã nguồn cốt lõi được lưu trữ trên kho GitHub:</p>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 250px;">Đường dẫn tệp (File Path)</th>
+                    <th>Vai Trò &amp; Mô Tả Chức Năng Cốt Lõi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>config.php</code></td>
+                    <td>Cấu hình kết nối cơ sở dữ liệu (tự động nhận diện local/production), thiết lập session, danh sách ngành học và định nghĩa các hàm phân quyền <code>isLoggedIn()</code>, <code>isAdmin()</code>, <code>isTeacher()</code>, <code>isStudent()</code>.</td>
+                </tr>
+                <tr>
+                    <td><code>login.php</code></td>
+                    <td>Giao diện đăng nhập đa chức năng, hỗ trợ chuyển đổi vai trò (Sinh viên/Giáo viên/Hiệu trưởng/Admin), tích hợp xác thực mật khẩu bcrypt và gọi camera quét khuôn mặt FaceID.</td>
+                </tr>
+                <tr>
+                    <td><code>admin/students.php</code></td>
+                    <td>Màn hình quản lý hồ sơ sinh viên toàn trường: Thực hiện CRUD, upload ảnh đại diện và tìm kiếm sinh viên realtime bằng AJAX.</td>
+                </tr>
+                <tr>
+                    <td><code>admin/monhoc.php</code></td>
+                    <td>Trang quản lý các môn học và phân ngành/khoa tương ứng phục vụ cấu hình đào tạo.</td>
+                </tr>
+                <tr>
+                    <td><code>admin/tkb.php</code></td>
+                    <td>Chức năng xếp lịch học (Thời khóa biểu): Admin có thể cấu hình phòng học, tiết học, thứ học và gán giảng viên phụ trách cho từng môn học của lớp.</td>
+                </tr>
+                <tr>
+                    <td><code>admin/diemdanh.php</code></td>
+                    <td>Màn hình điểm danh tích hợp camera nhận diện khuôn mặt của sinh viên bằng Face-api.js, tự động đối chiếu vector 128 số từ DB và ghi nhận chuyên cần realtime.</td>
+                </tr>
+                <tr>
+                    <td><code>admin/taichinh.php</code></td>
+                    <td>Quản lý học phí và các khoản nợ tài chính của sinh viên theo từng lớp học.</td>
+                </tr>
+                <tr>
+                    <td><code>teacher/diem.php</code></td>
+                    <td>Module dành riêng cho giảng viên nhập, cập nhật điểm thi (giữa kỳ, cuối kỳ, chuyên cần) của các sinh viên thuộc khoa chuyên môn của giảng viên đó (bảo mật dữ liệu chéo).</td>
+                </tr>
+                <tr>
+                    <td><code>teacher/diemdanh.php</code></td>
+                    <td>Hỗ trợ giáo viên điểm danh chuyên cần thủ công cho sinh viên các môn học mình dạy trong ngày.</td>
+                </tr>
+                <tr>
+                    <td><code>student/profile.php</code></td>
+                    <td>Hồ sơ cá nhân sinh viên, hỗ trợ sinh viên mở camera thiết bị để chụp ảnh và đăng ký vector đặc trưng khuôn mặt lưu vào DB làm dữ liệu FaceID mẫu.</td>
+                </tr>
+                <tr>
+                    <td><code>api/face_login.php</code></td>
+                    <td>Endpoint API xử lý đăng nhập khuôn mặt: nhận vector đầu vào từ client, dùng thuật toán tính khoảng cách Euclid để đối chiếu với trường <code>face_descriptor</code> trong DB, trả về kết quả đăng nhập tự động nếu khớp.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="text-align:center; padding:36px 0; border-top:2px solid var(--border); margin-top:36px;">
+        <div style="font-size:0.73rem; color:var(--primary); letter-spacing:1.5px; font-weight:700;">
+            BÁO CÁO ĐỒ ÁN MÔN HỌC &nbsp;·&nbsp; WEBSITE TRƯỜNG CAO ĐẲNG NGHỀ VN – HQ CÀ MAU
+        </div>
+        <div style="font-size:0.68rem; color:var(--text-muted); margin-top:7px; letter-spacing:1px;">
+            CÀ MAU — NĂM HỌC 2025 – 2026 &nbsp;·&nbsp; SINH VIÊN: LÊ NHỰT KHÁNH
+        </div>
+    </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
