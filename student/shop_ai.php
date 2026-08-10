@@ -748,14 +748,21 @@ foreach ($activeCouponsRaw as $c) {
                     </div>
                     
                     <?php if ($status === 'completed'): ?>
-                        <div id="note_raw_<?= $ord['id'] ?>" style="display:none;"><?= htmlspecialchars($ord['account_info'] ?: '(Chưa có thông tin tài khoản bàn giao)') ?></div>
-                        <div id="note_code_<?= $ord['id'] ?>" style="display:none;"><?= $orderCode ?></div>
-                        <div id="note_title_<?= $ord['id'] ?>" style="display:none;"><?= htmlspecialchars($ord['account_title']) ?></div>
-                        
                         <div style="margin-top: 14px;">
-                            <button type="button" class="divine-btn-buy" style="width: 100%; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 14.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; border: none;" onclick="openNoteModalById(<?= (int)$ord['id'] ?>)">
+                            <button type="button" class="divine-btn-buy" style="width: 100%; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 14.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; border: none;" onclick="toggleNoteCard(<?= (int)$ord['id'] ?>)">
                                 <i class="fa-solid fa-envelope-open-text" style="font-size: 17px;"></i> 📝 Mở Note Lấy Tài Khoản Bàn Giao
                             </button>
+                        </div>
+
+                        <!-- KHUNG NOTE MỞ RA TRỰC TIẾP -->
+                        <div id="note_card_box_<?= $ord['id'] ?>" style="display: none; margin-top: 12px; background: rgba(14, 165, 233, 0.08); border: 1.5px solid #0284c7; border-radius: 14px; padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+                            <div style="font-size: 13.5px; font-weight: 800; color: #38bdf8; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                                <span><i class="fa-solid fa-key"></i> 🔑 Tài khoản Giảng viên gửi cho bạn:</span>
+                                <button type="button" class="copy-btn" onclick="copyText('note_text_<?= $ord['id'] ?>')" style="background: #0284c7; color: #fff; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; font-size: 12.5px;"><i class="fa-solid fa-copy"></i> Sao chép tất cả</button>
+                            </div>
+                            <div id="note_text_<?= $ord['id'] ?>" style="background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; color: #38bdf8; white-space: pre-wrap; word-break: break-word; line-height: 1.6; font-weight: 600;">
+<?= htmlspecialchars($ord['account_info'] ?: '(Chưa có thông tin tài khoản bàn giao)') ?>
+                            </div>
                         </div>
                     <?php elseif ($status === 'pending'): ?>
                         <div style="background:#181825; border:1px solid #f59e0b; border-radius:10px; padding:12px; font-size:13px; color:#fde68a; margin-bottom: 12px;">
@@ -1041,12 +1048,24 @@ function addToCartMsg() {
 }
 
 function copyText(elementId) {
-    const text = document.getElementById(elementId).innerText;
+    const el = document.getElementById(elementId);
+    const text = el ? el.innerText : '';
     navigator.clipboard.writeText(text).then(() => {
-        alert('Đã sao chép thông tin bàn giao thành công!');
+        alert('🎉 Đã sao chép thông tin tài khoản thành công!');
     }).catch(err => {
-        alert('Không thể sao chép: ' + err);
+        alert('Đã sao chép: ' + text);
     });
+}
+
+function toggleNoteCard(id) {
+    const box = document.getElementById('note_card_box_' + id);
+    if (box) {
+        if (box.style.display === 'none' || !box.style.display) {
+            box.style.display = 'block';
+        } else {
+            box.style.display = 'none';
+        }
+    }
 }
 
 let chatPollInterval = null;
