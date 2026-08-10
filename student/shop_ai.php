@@ -915,16 +915,22 @@ let discountPercent = 0;
 let appliedCode = '';
 
 function switchTab(tab) {
+    try { sessionStorage.setItem('shop_active_tab', tab); } catch(e){}
+    const shopDiv = document.getElementById('tabShop');
+    const myDiv = document.getElementById('tabMy');
+    const shopBtn = document.getElementById('tabShopBtn');
+    const myBtn = document.getElementById('tabMyBtn');
+    
     if (tab === 'shop') {
-        document.getElementById('tabShop').style.display = 'block';
-        document.getElementById('tabMy').style.display = 'none';
-        document.getElementById('tabShopBtn').classList.add('active');
-        document.getElementById('tabMyBtn').classList.remove('active');
+        if (shopDiv) shopDiv.style.display = 'block';
+        if (myDiv) myDiv.style.display = 'none';
+        if (shopBtn) shopBtn.classList.add('active');
+        if (myBtn) myBtn.classList.remove('active');
     } else {
-        document.getElementById('tabShop').style.display = 'none';
-        document.getElementById('tabMy').style.display = 'block';
-        document.getElementById('tabMyBtn').classList.add('active');
-        document.getElementById('tabShopBtn').classList.remove('active');
+        if (shopDiv) shopDiv.style.display = 'none';
+        if (myDiv) myDiv.style.display = 'block';
+        if (myBtn) myBtn.classList.add('active');
+        if (shopBtn) shopBtn.classList.remove('active');
     }
 }
 
@@ -1176,11 +1182,16 @@ function closeChatModal() {
     currentChatOrderId = 0;
 }
 
-<?php if ($boughtPending || (isset($_GET['tab']) && $_GET['tab'] === 'my')): ?>
 document.addEventListener('DOMContentLoaded', function() {
-    switchTab('my');
+    <?php if ($boughtPending || (isset($_GET['tab']) && $_GET['tab'] === 'my')): ?>
+        switchTab('my');
+    <?php else: ?>
+        const savedTab = sessionStorage.getItem('shop_active_tab');
+        if (savedTab === 'my') {
+            switchTab('my');
+        }
+    <?php endif; ?>
 });
-<?php endif; ?>
 </script>
 
 <!-- MODAL CHAT -->
