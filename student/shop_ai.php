@@ -813,7 +813,7 @@ foreach ($activeCouponsRaw as $c) {
     <div class="ai-modal">
         <div class="ai-modal-header">
             <h3><i class="fa-solid fa-box-open" style="color:#ef4444;"></i> Chọn Gói & Thanh Toán MMO</h3>
-            <button class="ai-modal-close" onclick="closeBuyModal()"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="ai-modal-close" onclick="closeBuyModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <!-- STEP 1: CHỌN GÓI & SỐ LƯỢNG (DIVINE STYLE) -->
@@ -1152,10 +1152,7 @@ function fetchChatMessages() {
     .catch(err => console.error(err));
 }
 
-let savedScrollPos = 0;
-
 function openChatModal(orderData) {
-    savedScrollPos = window.scrollY || document.documentElement.scrollTop;
     currentChatOrderId = orderData.id;
     document.getElementById('chatOrderId').value = orderData.id;
     document.getElementById('chatOrderTitle').textContent = orderData.title;
@@ -1165,11 +1162,8 @@ function openChatModal(orderData) {
     document.getElementById('chatModal').classList.add('active');
     setTimeout(() => {
         const chatBox = document.getElementById('chatMessagesBox');
-        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
-        const input = document.getElementById('chatInputMessage');
-        if (input) {
-            try { input.focus({ preventScroll: true }); } catch(e) { input.focus(); }
-        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+        document.getElementById('chatInputMessage').focus();
     }, 100);
     
     if (chatPollInterval) clearInterval(chatPollInterval);
@@ -1180,7 +1174,6 @@ function closeChatModal() {
     document.getElementById('chatModal').classList.remove('active');
     if (chatPollInterval) clearInterval(chatPollInterval);
     currentChatOrderId = 0;
-    window.scrollTo(0, savedScrollPos || 0);
 }
 
 <?php if ($boughtPending || (isset($_GET['tab']) && $_GET['tab'] === 'my')): ?>
@@ -1198,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h3 style="margin-bottom: 4px;"><i class="fa-solid fa-comments" style="color:#38bdf8;"></i> Chat với Giảng viên</h3>
                 <div style="font-size: 13px; color: #94a3b8; font-weight: normal;" id="chatOrderTitle"></div>
             </div>
-            <button class="ai-modal-close" onclick="closeChatModal()"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="ai-modal-close" onclick="closeChatModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <div id="chatMessagesBox" style="flex: 1; overflow-y: auto; padding: 16px 0; min-height: 300px; display: flex; flex-direction: column;">
@@ -1220,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="ai-modal" style="max-width: 540px; border-color: #0284c7;">
         <div class="ai-modal-header" style="border-color: rgba(2, 132, 199, 0.3);">
             <h3 style="color: #38bdf8;"><i class="fa-solid fa-envelope-open-text"></i> Note Bàn Giao Tài Khoản</h3>
-            <button class="ai-modal-close" onclick="closeNoteModal()"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="ai-modal-close" onclick="closeNoteModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <div style="margin-bottom: 16px;">
