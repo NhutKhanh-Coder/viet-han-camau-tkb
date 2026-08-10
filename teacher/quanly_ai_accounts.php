@@ -762,6 +762,16 @@ Gemini 1 Năm Full BH | 350000"></textarea>
                                         </a>
                                     <?php else: ?>
                                         <span style="font-size: 12px; color: #94a3b8; margin-right: 10px;"><?= date('d/m H:i', strtotime($ord['created_at'])) ?></span>
+                                        <?php if ($status === 'completed'): ?>
+                                        <button class="mmo-btn" style="padding: 7px 10px; font-size: 12px; background: #64748b; color: #fff; border: none; cursor: pointer; margin-right: 4px;" onclick='openApproveModal(<?= htmlspecialchars(json_encode([
+                                            "id" => $ord["id"],
+                                            "student" => $ord["student_name"],
+                                            "price" => $ord["price"],
+                                            "account_info" => $ord["account_info"]
+                                        ]), ENT_QUOTES, "UTF-8") ?>)'>
+                                            <i class="fa-solid fa-pen"></i> Sửa bàn giao
+                                        </button>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                     
                                     <button class="mmo-btn" style="padding: 7px 10px; font-size: 12px; background: #3b82f6; color: #fff; margin-right: 4px;" onclick='openChatModal(<?= htmlspecialchars(json_encode([
@@ -1159,7 +1169,7 @@ function closeApproveModal() {
         <div class="mmo-header">
             <div class="mmo-title">
                 <i class="fa-solid fa-check-double" style="color:#10b981;"></i>
-                <span>Phê Duyệt & Bàn Giao</span>
+                <span>Phê Duyệt / Sửa Bàn Giao</span>
             </div>
             <button type="button" style="border:none; background:transparent; font-size:18px; cursor:pointer;" onclick="closeApproveModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
@@ -1186,7 +1196,7 @@ function closeApproveModal() {
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
                 <button type="button" class="mmo-btn" style="background:#cbd5e1; color:#334155;" onclick="closeApproveModal()">Hủy</button>
                 <button type="submit" class="mmo-btn mmo-btn-primary" style="background:linear-gradient(135deg, #10b981, #059669);">
-                    <i class="fa-solid fa-paper-plane"></i> Phê Duyệt & Bàn Giao
+                    <i class="fa-solid fa-paper-plane"></i> Lưu Ghi Chú & Bàn Giao
                 </button>
             </div>
         </form>
