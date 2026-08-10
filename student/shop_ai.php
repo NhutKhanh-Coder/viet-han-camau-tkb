@@ -488,10 +488,10 @@ foreach ($activeCouponsRaw as $c) {
     background: rgba(0,0,0,0.85);
     backdrop-filter: blur(8px);
     display: flex; align-items: center; justify-content: center;
-    z-index: 9999; opacity: 0; pointer-events: none;
-    transition: opacity 0.3s ease;
+    z-index: 999999; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
 }
-.ai-modal-backdrop.active { opacity: 1; pointer-events: auto; }
+.ai-modal-backdrop.active { opacity: 1 !important; pointer-events: auto !important; display: flex !important; }
 
 .ai-modal {
     background: #181825;
@@ -748,13 +748,12 @@ foreach ($activeCouponsRaw as $c) {
                     </div>
                     
                     <?php if ($status === 'completed'): ?>
+                        <div id="note_raw_<?= $ord['id'] ?>" style="display:none;"><?= htmlspecialchars($ord['account_info'] ?: '(Chưa có thông tin tài khoản bàn giao)') ?></div>
+                        <div id="note_code_<?= $ord['id'] ?>" style="display:none;"><?= $orderCode ?></div>
+                        <div id="note_title_<?= $ord['id'] ?>" style="display:none;"><?= htmlspecialchars($ord['account_title']) ?></div>
+                        
                         <div style="margin-top: 14px;">
-                            <button type="button" class="divine-btn-buy" style="width: 100%; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 14.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer;" onclick='openNoteModal(<?= htmlspecialchars(json_encode([
-                                "id" => $ord["id"],
-                                "order_code" => $orderCode,
-                                "title" => $ord["account_title"],
-                                "account_info" => $ord["account_info"] ?: "(Chưa có thông tin tài khoản)"
-                            ]), ENT_QUOTES, "UTF-8") ?>)'>
+                            <button type="button" class="divine-btn-buy" style="width: 100%; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 14.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; border: none;" onclick="openNoteModalById(<?= (int)$ord['id'] ?>)">
                                 <i class="fa-solid fa-envelope-open-text" style="font-size: 17px;"></i> 📝 Mở Note Lấy Tài Khoản Bàn Giao
                             </button>
                         </div>
@@ -1198,15 +1197,40 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script>
+function openNoteModalById(id) {
+    const rawEl = document.getElementById('note_raw_' + id);
+    const codeEl = document.getElementById('note_code_' + id);
+    const titleEl = document.getElementById('note_title_' + id);
+    
+    document.getElementById('noteOrderCode').innerText = codeEl ? codeEl.innerText : ('#MMO-' + id);
+    document.getElementById('noteOrderTitle').innerText = titleEl ? titleEl.innerText : 'Sản phẩm MMO';
+    document.getElementById('noteContentBox').innerText = rawEl ? rawEl.innerText : '(Chưa có nội dung note)';
+    
+    const modal = document.getElementById('viewNoteModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
 function openNoteModal(data) {
-    document.getElementById('noteOrderCode').innerText = data.order_code;
-    document.getElementById('noteOrderTitle').innerText = data.title;
-    document.getElementById('noteContentBox').innerText = data.account_info;
-    document.getElementById('viewNoteModal').classList.add('active');
+    if (typeof data === 'number' || typeof data === 'string') {
+        openNoteModalById(data);
+        return;
+    }
+    document.getElementById('noteOrderCode').innerText = data.order_code || '';
+    document.getElementById('noteOrderTitle').innerText = data.title || '';
+    document.getElementById('noteContentBox').innerText = data.account_info || '';
+    const modal = document.getElementById('viewNoteModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
 }
 
 function closeNoteModal() {
-    document.getElementById('viewNoteModal').classList.remove('active');
+    const modal = document.getElementById('viewNoteModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
 }
 
 function copyNoteContent() {
