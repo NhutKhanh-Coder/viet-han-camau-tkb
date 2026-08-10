@@ -748,14 +748,15 @@ foreach ($activeCouponsRaw as $c) {
                     </div>
                     
                     <?php if ($status === 'completed'): ?>
-                        <div style="background: rgba(14, 165, 233, 0.08); border: 1.5px solid #0284c7; border-radius: 14px; padding: 14px 16px; margin-top: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
-                            <div style="font-size: 13.5px; font-weight: 800; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                                <span><i class="fa-solid fa-key"></i> 🔑 Tài khoản Giảng viên gửi:</span>
-                                <button class="copy-btn" onclick="copyText('code_<?= $ord['id'] ?>')" style="background: #0284c7; color: #fff; padding: 5px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none;"><i class="fa-solid fa-copy"></i> Sao chép</button>
-                            </div>
-                            <div id="code_<?= $ord['id'] ?>" style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; color: #38bdf8; white-space: pre-wrap; word-break: break-word; line-height: 1.6; font-weight: 600;">
-<?= htmlspecialchars($ord['account_info'] ?: '(Chưa có thông tin tài khoản)') ?>
-                            </div>
+                        <div style="margin-top: 14px;">
+                            <button type="button" class="divine-btn-buy" style="width: 100%; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 14.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer;" onclick='openNoteModal(<?= htmlspecialchars(json_encode([
+                                "id" => $ord["id"],
+                                "order_code" => $orderCode,
+                                "title" => $ord["account_title"],
+                                "account_info" => $ord["account_info"] ?: "(Chưa có thông tin tài khoản)"
+                            ]), ENT_QUOTES, "UTF-8") ?>)'>
+                                <i class="fa-solid fa-envelope-open-text" style="font-size: 17px;"></i> 📝 Mở Note Lấy Tài Khoản Bàn Giao
+                            </button>
                         </div>
                     <?php elseif ($status === 'pending'): ?>
                         <div style="background:#181825; border:1px solid #f59e0b; border-radius:10px; padding:12px; font-size:13px; color:#fde68a; margin-bottom: 12px;">
@@ -1166,6 +1167,57 @@ document.addEventListener('DOMContentLoaded', function() {
         </form>
     </div>
 </div>
+
+<!-- MODAL XEM NOTE BÀN GIAO TÀI KHOẢN -->
+<div class="ai-modal-backdrop" id="viewNoteModal">
+    <div class="ai-modal" style="max-width: 540px; border-color: #0284c7;">
+        <div class="ai-modal-header" style="border-color: rgba(2, 132, 199, 0.3);">
+            <h3 style="color: #38bdf8;"><i class="fa-solid fa-envelope-open-text"></i> Note Bàn Giao Tài Khoản</h3>
+            <button class="ai-modal-close" onclick="closeNoteModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+            <div style="font-size: 13px; color: #94a3b8; margin-bottom: 4px;">Đơn hàng: <strong id="noteOrderCode" style="color: #fff; font-family: monospace;"></strong></div>
+            <div style="font-size: 16px; font-weight: 800; color: #f8fafc;" id="noteOrderTitle"></div>
+        </div>
+
+        <div style="background: rgba(14, 165, 233, 0.08); border: 1.5px solid #0284c7; border-radius: 14px; padding: 16px; margin-bottom: 18px;">
+            <div style="font-size: 13.5px; font-weight: 800; color: #38bdf8; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-key"></i> Thông tin tài khoản & Mật khẩu:</span>
+                <button class="copy-btn" onclick="copyNoteContent()" style="background: #0284c7; color: #fff; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; font-size: 12.5px;"><i class="fa-solid fa-copy"></i> Sao chép tất cả</button>
+            </div>
+            <div id="noteContentBox" style="background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; color: #38bdf8; white-space: pre-wrap; word-break: break-word; line-height: 1.6; max-height: 250px; overflow-y: auto; font-weight: 600;"></div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end;">
+            <button type="button" class="divine-btn-buy" style="background: #0284c7; padding: 11px 24px; font-size: 14px; border-radius: 10px; font-weight: 800;" onclick="closeNoteModal()">
+                <i class="fa-solid fa-check"></i> Đã nhận được tài khoản
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openNoteModal(data) {
+    document.getElementById('noteOrderCode').innerText = data.order_code;
+    document.getElementById('noteOrderTitle').innerText = data.title;
+    document.getElementById('noteContentBox').innerText = data.account_info;
+    document.getElementById('viewNoteModal').classList.add('active');
+}
+
+function closeNoteModal() {
+    document.getElementById('viewNoteModal').classList.remove('active');
+}
+
+function copyNoteContent() {
+    const text = document.getElementById('noteContentBox').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('🎉 Đã sao chép thông tin tài khoản thành công!');
+    }).catch(() => {
+        alert('Đã sao chép: ' + text);
+    });
+}
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
