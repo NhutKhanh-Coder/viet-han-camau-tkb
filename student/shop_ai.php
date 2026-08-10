@@ -748,12 +748,14 @@ foreach ($activeCouponsRaw as $c) {
                     </div>
                     
                     <?php if ($status === 'completed'): ?>
-                        <div style="margin-top: 12px; margin-bottom: 6px; font-size: 13px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa-solid fa-key"></i> 📌 Ghi chú & Thông tin bàn giao tài khoản:
-                        </div>
-                        <div class="my-account-code" style="white-space: pre-wrap; word-break: break-word; line-height: 1.5;">
-                            <span id="code_<?= $ord['id'] ?>"><?= nl2br(htmlspecialchars($ord['account_info'] ?: '(Chưa có thông tin ghi chú)')) ?></span>
-                            <button class="copy-btn" onclick="copyText('code_<?= $ord['id'] ?>')"><i class="fa-solid fa-copy"></i> Sao chép</button>
+                        <div style="background: rgba(14, 165, 233, 0.08); border: 1.5px solid #0284c7; border-radius: 14px; padding: 14px 16px; margin-top: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+                            <div style="font-size: 13.5px; font-weight: 800; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                                <span><i class="fa-solid fa-note-sticky"></i> 📝 Note bàn giao tài khoản từ Giảng viên:</span>
+                                <button class="copy-btn" onclick="copyText('code_<?= $ord['id'] ?>')" style="background: #0284c7; color: #fff; padding: 5px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none;"><i class="fa-solid fa-copy"></i> Sao chép Note</button>
+                            </div>
+                            <div id="code_<?= $ord['id'] ?>" style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13.5px; color: #38bdf8; white-space: pre-wrap; word-break: break-word; line-height: 1.6;">
+<?= htmlspecialchars($ord['account_info'] ?: '(Chưa có thông tin ghi chú bàn giao)') ?>
+                            </div>
                         </div>
                     <?php elseif ($status === 'pending'): ?>
                         <div style="background:#181825; border:1px solid #f59e0b; border-radius:10px; padding:12px; font-size:13px; color:#fde68a; margin-bottom: 12px;">

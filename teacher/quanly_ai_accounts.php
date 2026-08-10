@@ -716,7 +716,7 @@ Gemini 1 Năm Full BH | 350000"></textarea>
                             <th>Sản phẩm & Gói đã chọn</th>
                             <th>Tổng tiền</th>
                             <th>Trạng thái</th>
-                            <th>Ghi chú & Tài khoản bàn giao</th>
+                            <th>Note gửi tài khoản cho SV</th>
                             <th style="text-align: right;">Hành động Phê duyệt</th>
                         </tr>
                     </thead>
@@ -744,16 +744,16 @@ Gemini 1 Năm Full BH | 350000"></textarea>
                                 </td>
                                 <td>
                                     <div style="display: flex; align-items: center; gap: 6px;">
-                                        <span style="background: #f1f5f9; padding: 5px 8px; border-radius: 6px; font-size: 12px; max-width: 170px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border: 1px solid #cbd5e1; color: #0f172a; font-family: monospace; font-weight: 600;">
-                                            <?= htmlspecialchars($ord['account_info'] ?: 'Chưa có ghi chú') ?>
+                                        <span style="background: #f1f5f9; padding: 5px 8px; border-radius: 6px; font-size: 12px; max-width: 160px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border: 1px solid #cbd5e1; color: #0f172a; font-family: monospace; font-weight: 600;">
+                                            <?= htmlspecialchars($ord['account_info'] ?: '(Chưa có note)') ?>
                                         </span>
-                                        <button type="button" class="mmo-btn" style="padding: 5px 8px; font-size: 11px; background: #6366f1; color: #fff; border: none; cursor: pointer; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;" title="Chỉnh sửa ghi chú bàn giao" onclick='openApproveModal(<?= htmlspecialchars(json_encode([
+                                        <button type="button" class="mmo-btn" style="padding: 5px 8px; font-size: 11px; background: #6366f1; color: #fff; border: none; cursor: pointer; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 700;" title="Nhập Note gửi tài khoản cho SV" onclick='openApproveModal(<?= htmlspecialchars(json_encode([
                                             "id" => $ord["id"],
                                             "student" => $ord["student_name"],
                                             "price" => $ord["price"],
                                             "account_info" => $ord["account_info"]
                                         ]), ENT_QUOTES, "UTF-8") ?>)'>
-                                            <i class="fa-solid fa-pen-to-square"></i> Ghi chú
+                                            <i class="fa-solid fa-note-sticky"></i> Note gửi SV
                                         </button>
                                     </div>
                                 </td>
@@ -1175,11 +1175,11 @@ function closeApproveModal() {
 
 <!-- MODAL APPROVE & HANDOVER -->
 <div class="mmo-modal-backdrop" id="approveModal">
-    <div class="mmo-modal-box" style="max-width: 520px;">
+    <div class="mmo-modal-box" style="max-width: 540px;">
         <div class="mmo-header">
             <div class="mmo-title">
-                <i class="fa-solid fa-file-pen" style="color:#10b981;"></i>
-                <span>Ghi Chú Bàn Giao Tài Khoản</span>
+                <i class="fa-solid fa-note-sticky" style="color:#6366f1;"></i>
+                <span>Note Bàn Giao Tài Khoản Cho Sinh Viên</span>
             </div>
             <button type="button" style="border:none; background:transparent; font-size:18px; cursor:pointer;" onclick="closeApproveModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
@@ -1193,20 +1193,20 @@ function closeApproveModal() {
             </div>
 
             <div class="mmo-form-group">
-                <label class="mmo-label" style="font-weight: 800; color: #0f172a;">📝 Ghi chú thông tin tài khoản bàn giao cho khách: <span style="color:red;">*</span></label>
-                <textarea name="account_info" id="approveAccountInfo" class="mmo-textarea" required style="min-height: 100px; font-family: monospace; font-size: 13px;" placeholder="Nhập tài khoản, mật khẩu, cookie, link kích hoạt hoặc lời dặn dò cho khách tại đây..."></textarea>
-                <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">💡 Khách hàng sẽ nhìn thấy nội dung ghi chú này ngay trên đơn hàng của họ kèm nút 'Sao chép'.</small>
+                <label class="mmo-label" style="font-weight: 800; color: #0f172a;">📝 Note thông tin tài khoản gửi cho sinh viên: <span style="color:red;">*</span></label>
+                <textarea name="account_info" id="approveAccountInfo" class="mmo-textarea" required style="min-height: 110px; font-family: 'Consolas', monospace; font-size: 13.5px; border: 2px solid #6366f1;" placeholder="Nhập: Tài khoản | Mật khẩu | Cookie | Link kích hoạt | Hướng dẫn sử dụng cho sinh viên..."></textarea>
+                <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">💡 Nội dung note này sẽ hiển thị trực tiếp trong mục <strong>'Note bàn giao tài khoản'</strong> của sinh viên kèm nút Copy.</small>
             </div>
 
             <div class="mmo-form-group">
                 <label class="mmo-label" style="font-weight: 700;">💬 Gửi thêm tin nhắn chat thông báo (Tùy chọn):</label>
-                <textarea name="chat_message" class="mmo-textarea" style="min-height: 60px;" placeholder="Ví dụ: Thầy gửi em thông tin tài khoản rồi nhé, cần hỗ trợ gì cứ nhắn thầy!"></textarea>
+                <textarea name="chat_message" class="mmo-textarea" style="min-height: 60px;" placeholder="Ví dụ: Thầy vừa gửi tài khoản trong phần Note bàn giao, em kiểm tra và đăng nhập nhé!"></textarea>
             </div>
 
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
                 <button type="button" class="mmo-btn" style="background:#cbd5e1; color:#334155;" onclick="closeApproveModal()">Đóng</button>
-                <button type="submit" class="mmo-btn mmo-btn-primary" style="background:linear-gradient(135deg, #10b981, #059669); font-weight: 800;">
-                    <i class="fa-solid fa-paper-plane"></i> Lưu Ghi Chú & Bàn Giao
+                <button type="submit" class="mmo-btn mmo-btn-primary" style="background:linear-gradient(135deg, #6366f1, #4f46e5); font-weight: 800;">
+                    <i class="fa-solid fa-paper-plane"></i> Lưu Note & Bàn Giao
                 </button>
             </div>
         </form>
