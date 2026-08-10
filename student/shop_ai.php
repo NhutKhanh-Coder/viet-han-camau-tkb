@@ -1152,7 +1152,10 @@ function fetchChatMessages() {
     .catch(err => console.error(err));
 }
 
+let savedScrollPos = 0;
+
 function openChatModal(orderData) {
+    savedScrollPos = window.scrollY || document.documentElement.scrollTop;
     currentChatOrderId = orderData.id;
     document.getElementById('chatOrderId').value = orderData.id;
     document.getElementById('chatOrderTitle').textContent = orderData.title;
@@ -1162,8 +1165,11 @@ function openChatModal(orderData) {
     document.getElementById('chatModal').classList.add('active');
     setTimeout(() => {
         const chatBox = document.getElementById('chatMessagesBox');
-        chatBox.scrollTop = chatBox.scrollHeight;
-        document.getElementById('chatInputMessage').focus();
+        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        const input = document.getElementById('chatInputMessage');
+        if (input) {
+            try { input.focus({ preventScroll: true }); } catch(e) { input.focus(); }
+        }
     }, 100);
     
     if (chatPollInterval) clearInterval(chatPollInterval);
@@ -1174,6 +1180,7 @@ function closeChatModal() {
     document.getElementById('chatModal').classList.remove('active');
     if (chatPollInterval) clearInterval(chatPollInterval);
     currentChatOrderId = 0;
+    window.scrollTo(0, savedScrollPos || 0);
 }
 
 <?php if ($boughtPending || (isset($_GET['tab']) && $_GET['tab'] === 'my')): ?>
