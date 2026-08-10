@@ -747,7 +747,29 @@ foreach ($activeCouponsRaw as $c) {
                         </div>
                     </div>
                     
-                    <?php if ($status === 'completed'): ?>
+                    <?php if ($status === 'completed'): 
+                        $chatList = json_decode($ord['chat_messages'] ?? '[]', true) ?: [];
+                        $teacherChatTexts = [];
+                        foreach ($chatList as $msgItem) {
+                            if (($msgItem['sender'] ?? '') === 'teacher' && !empty(trim($msgItem['text'] ?? ''))) {
+                                $teacherChatTexts[] = trim($msgItem['text']);
+                            }
+                        }
+
+                        $noteDisplayParts = [];
+                        if (!empty($teacherChatTexts)) {
+                            $noteDisplayParts[] = implode("\n\n", $teacherChatTexts);
+                        }
+
+                        $defaultPlaceholder = 'Chờ Duyệt | Đang Kiểm Duyệt | Chờ Lấy Tài Khoản | Hoàn Thành';
+                        if (!empty($ord['account_info']) && trim($ord['account_info']) !== $defaultPlaceholder) {
+                            if (!in_array(trim($ord['account_info']), $teacherChatTexts)) {
+                                $noteDisplayParts[] = trim($ord['account_info']);
+                            }
+                        }
+
+                        $finalNoteText = !empty($noteDisplayParts) ? implode("\n\n---\n\n", $noteDisplayParts) : ($ord['account_info'] ?: '(Chưa có thông tin tài khoản bàn giao)');
+                    ?>
                         <div style="margin-top: 14px;">
                             <button type="button" class="divine-btn-buy" style="width: 100%; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 14.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer; border: none;" onclick="toggleNoteCard(<?= (int)$ord['id'] ?>)">
                                 <i class="fa-solid fa-envelope-open-text" style="font-size: 17px;"></i> 📝 Mở Note Lấy Tài Khoản Bàn Giao
@@ -755,13 +777,13 @@ foreach ($activeCouponsRaw as $c) {
                         </div>
 
                         <!-- KHUNG NOTE MỞ RA TRỰC TIẾP -->
-                        <div id="note_card_box_<?= $ord['id'] ?>" style="display: none; margin-top: 12px; background: rgba(14, 165, 233, 0.08); border: 1.5px solid #0284c7; border-radius: 14px; padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+                        <div id="note_card_box_<?= $ord['id'] ?>" style="display: block; margin-top: 12px; background: rgba(14, 165, 233, 0.08); border: 1.5px solid #0284c7; border-radius: 14px; padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
                             <div style="font-size: 13.5px; font-weight: 800; color: #38bdf8; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                                <span><i class="fa-solid fa-key"></i> 🔑 Tài khoản Giảng viên gửi cho bạn:</span>
+                                <span><i class="fa-solid fa-key"></i> 🔑 Note & Tin nhắn tài khoản từ Giảng viên:</span>
                                 <button type="button" class="copy-btn" onclick="copyText('note_text_<?= $ord['id'] ?>')" style="background: #0284c7; color: #fff; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; font-size: 12.5px;"><i class="fa-solid fa-copy"></i> Sao chép tất cả</button>
                             </div>
                             <div id="note_text_<?= $ord['id'] ?>" style="background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; color: #38bdf8; white-space: pre-wrap; word-break: break-word; line-height: 1.6; font-weight: 600;">
-<?= htmlspecialchars($ord['account_info'] ?: '(Chưa có thông tin tài khoản bàn giao)') ?>
+<?= htmlspecialchars($finalNoteText) ?>
                             </div>
                         </div>
                     <?php elseif ($status === 'pending'): ?>
