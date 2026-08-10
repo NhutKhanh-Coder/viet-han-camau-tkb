@@ -487,7 +487,9 @@ foreach ($activeCouponsRaw as $c) {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.85);
     backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: center;
+    -webkit-backdrop-filter: blur(8px);
+    display: none !important;
+    align-items: center; justify-content: center;
     z-index: 999999; opacity: 0; pointer-events: none;
     transition: opacity 0.25s ease;
 }
