@@ -67,13 +67,35 @@ $teacher_name = $_SESSION['ho_ten'] ?? 'Giảng viên';
 $msg = $_GET['msg'] ?? '';
 $error = $_GET['err'] ?? '';
 
-// Xử lý XÁC NHẬN ĐÃ NHẬN TIỀN
-if (isset($_GET['action']) && $_GET['action'] === 'approve_order' && isset($_GET['id'])) {
-    $ord_id = (int)$_GET['id'];
-    $db->query("UPDATE ai_account_orders SET status = 'completed' WHERE id = $ord_id");
-    header("Location: quanly_ai_accounts.php?msg=" . urlencode("Đã xác nhận nhận tiền cho đơn hàng #MMO-$ord_id! Tài khoản đã được bàn giao cho sinh viên."));
-    exit;
+// Xử lý XÁC NHẬN ĐÃ NHẬN TIỀN VÀ BÀN GIAO TÀI KHOẢN
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'approve_order') {
+    $ord_id = (int)($_POST['order_id'] ?? 0);
+    $new_account_info = $db->real_escape_string(trim($_POST['account_info'] ?? ''));
+    $chat_message = trim($_POST['chat_message'] ?? '');
+    
+    if ($ord_id > 0) {
+        $db->query("UPDATE ai_account_orders SET status = 'completed', account_info = '$new_account_info' WHERE id = $ord_id");
+        
+        if (!empty($chat_message)) {
+            $ordRow = $db->query("SELECT chat_messages FROM ai_account_orders WHERE id = $ord_id")->fetch_assoc();
+            if ($ordRow) {
+                $chatHistory = json_decode($ordRow['chat_messages'] ?? '[]', true) ?: [];
+                $chatHistory[] = [
+                    'sender' => 'teacher',
+                    'name' => $teacher_name,
+                    'text' => $chat_message,
+                    'time' => date('Y-m-d H:i:s')
+                ];
+                $newChatJson = $db->real_escape_string(json_encode($chatHistory, JSON_UNESCAPED_UNICODE));
+                $db->query("UPDATE ai_account_orders SET chat_messages = '$newChatJson' WHERE id = $ord_id");
+            }
+        }
+        
+        header("Location: quanly_ai_accounts.php?msg=" . urlencode("Đã phê duyệt và bàn giao tài khoản cho đơn hàng #MMO-$ord_id thành công!"));
+        exit;
+    }
 }
+
 
 // Xử lý HỦY ĐƠN HÀNG
 if (isset($_GET['action']) && $_GET['action'] === 'cancel_order' && isset($_GET['id'])) {
@@ -727,9 +749,14 @@ Gemini 1 Năm Full BH | 350000"></textarea>
                                 </td>
                                 <td style="text-align: right;">
                                     <?php if ($status === 'pending'): ?>
-                                        <a href="?action=approve_order&id=<?= $ord['id'] ?>" class="mmo-btn" style="padding: 7px 14px; font-size: 12px; background: #10b981; color: #fff;" onclick="return confirm('Bạn xác nhận đã nhận đủ <?= number_format($ord['price']) ?>đ từ Sinh viên <?= htmlspecialchars($ord['student_name']) ?>?');">
-                                            <i class="fa-solid fa-check-double"></i> Duyệt
-                                        </a>
+                                        <button class="mmo-btn" style="padding: 7px 14px; font-size: 12px; background: #10b981; color: #fff; border: none; cursor: pointer;" onclick='openApproveModal(<?= htmlspecialchars(json_encode([
+                                            "id" => $ord["id"],
+                                            "student" => $ord["student_name"],
+                                            "price" => $ord["price"],
+                                            "account_info" => $ord["account_info"]
+                                        ]), ENT_QUOTES, "UTF-8") ?>)'>
+                                            <i class="fa-solid fa-check-double"></i> Duyệt & Bàn giao
+                                        </button>
                                         <a href="?action=cancel_order&id=<?= $ord['id'] ?>" class="mmo-btn" style="padding: 7px 10px; font-size: 12px; background: #f59e0b; color: #fff;" onclick="return confirm('Hủy đơn hàng này và hoàn kho?');">
                                             <i class="fa-solid fa-xmark"></i> Hủy
                                         </a>
@@ -1112,7 +1139,60 @@ function closeChatModal() {
     if (chatPollInterval) clearInterval(chatPollInterval);
     currentChatOrderId = 0;
 }
+
+function openApproveModal(ord) {
+    document.getElementById('approveOrderId').value = ord.id;
+    document.getElementById('approveOrderTitle').innerText = 'Đơn hàng #MMO-' + String(ord.id).padStart(5, '0') + ' của ' + ord.student;
+    document.getElementById('approvePriceText').innerText = new Intl.NumberFormat('vi-VN').format(ord.price) + 'đ';
+    document.getElementById('approveAccountInfo').value = ord.account_info;
+    document.getElementById('approveModal').classList.add('active');
+}
+
+function closeApproveModal() {
+    document.getElementById('approveModal').classList.remove('active');
+}
 </script>
+
+<!-- MODAL APPROVE & HANDOVER -->
+<div class="mmo-modal-backdrop" id="approveModal">
+    <div class="mmo-modal-box" style="max-width: 500px;">
+        <div class="mmo-header">
+            <div class="mmo-title">
+                <i class="fa-solid fa-check-double" style="color:#10b981;"></i>
+                <span>Phê Duyệt & Bàn Giao</span>
+            </div>
+            <button type="button" style="border:none; background:transparent; font-size:18px; cursor:pointer;" onclick="closeApproveModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form action="" method="POST">
+            <input type="hidden" name="action" value="approve_order">
+            <input type="hidden" name="order_id" id="approveOrderId">
+            
+            <div style="background: #ecfdf5; border: 1px solid #10b981; padding: 12px; border-radius: 8px; margin-bottom: 16px; color: #065f46; font-size: 13.5px;">
+                <i class="fa-solid fa-circle-info"></i> Xác nhận bạn đã nhận đủ <strong id="approvePriceText" style="color: #ef4444; font-size: 15px;"></strong> từ sinh viên cho <strong id="approveOrderTitle"></strong>.
+            </div>
+
+            <div class="mmo-form-group">
+                <label class="mmo-label">Thông tin tài khoản bàn giao (Ghi chú gửi khách) <span style="color:red;">*</span></label>
+                <textarea name="account_info" id="approveAccountInfo" class="mmo-textarea" required style="min-height: 80px;" placeholder="Ví dụ: Tài khoản: user@gmail.com | Mật khẩu: 123456..."></textarea>
+                <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">Thông tin này sẽ được hiển thị trong mục "Ghi chú/Thông tin bàn giao" của sinh viên.</small>
+            </div>
+
+            <div class="mmo-form-group">
+                <label class="mmo-label">Gửi tin nhắn kèm theo (Tùy chọn)</label>
+                <textarea name="chat_message" class="mmo-textarea" style="min-height: 60px;" placeholder="Ví dụ: Thầy gửi em tài khoản, có gì thắc mắc cứ nhắn thầy nhé!"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+                <button type="button" class="mmo-btn" style="background:#cbd5e1; color:#334155;" onclick="closeApproveModal()">Hủy</button>
+                <button type="submit" class="mmo-btn mmo-btn-primary" style="background:linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fa-solid fa-paper-plane"></i> Phê Duyệt & Bàn Giao
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <!-- MODAL CHAT -->
 <div class="mmo-modal-backdrop" id="chatModal">
