@@ -794,7 +794,7 @@ foreach ($activeCouponsRaw as $c) {
                         <div style="color:#f87171; font-size:13px; margin-bottom: 12px;">Đơn hàng <?= $orderCode ?> này đã bị hủy.</div>
                     <?php endif; ?>
                     
-                    <button class="mmo-chip" style="margin-top: 8px; width: 100%; border-radius: 8px; justify-content: center; background: #334155; color: #fff; border: 1px solid #475569;" onclick='openChatModal(<?= htmlspecialchars(json_encode([
+                    <button type="button" class="mmo-chip" style="margin-top: 8px; width: 100%; border-radius: 8px; justify-content: center; background: #334155; color: #fff; border: 1px solid #475569; cursor: pointer;" onclick='openChatModal(<?= htmlspecialchars(json_encode([
                         "id" => $ord["id"],
                         "title" => $orderCode . " - " . $ord["account_title"],
                         "messages" => json_decode($ord["chat_messages"] ?? "[]", true)
@@ -1159,6 +1159,7 @@ function fetchChatMessages() {
 }
 
 function openChatModal(orderData) {
+    switchTab('my');
     currentChatOrderId = orderData.id;
     document.getElementById('chatOrderId').value = orderData.id;
     document.getElementById('chatOrderTitle').textContent = orderData.title;
@@ -1168,8 +1169,9 @@ function openChatModal(orderData) {
     document.getElementById('chatModal').classList.add('active');
     setTimeout(() => {
         const chatBox = document.getElementById('chatMessagesBox');
-        chatBox.scrollTop = chatBox.scrollHeight;
-        document.getElementById('chatInputMessage').focus();
+        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        const input = document.getElementById('chatInputMessage');
+        if (input) input.focus();
     }, 100);
     
     if (chatPollInterval) clearInterval(chatPollInterval);
@@ -1183,12 +1185,14 @@ function closeChatModal() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    <?php if ($boughtPending || (isset($_GET['tab']) && $_GET['tab'] === 'my')): ?>
+    <?php if ($boughtPending || !empty($myOrders) || (isset($_GET['tab']) && $_GET['tab'] === 'my')): ?>
         switchTab('my');
     <?php else: ?>
         const savedTab = sessionStorage.getItem('shop_active_tab');
-        if (savedTab === 'my') {
-            switchTab('my');
+        if (savedTab) {
+            switchTab(savedTab);
+        } else {
+            switchTab('shop');
         }
     <?php endif; ?>
 });
