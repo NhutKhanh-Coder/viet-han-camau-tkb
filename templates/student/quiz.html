@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Đang Làm Bài Trắc Nghiệm{% endblock %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('submit_quiz', attempt_id=attempt['id']) }}" id="quiz-form">
+    <input type="hidden" name="time_spent_seconds" id="time_spent_seconds" value="0">
+
+    <!-- STICKY QUIZ HEADER -->
+    <div class="quiz-header-bar d-flex justify-content-between align-items-center rounded-3">
+        <div>
+            <h4 class="fw-bold text-primary mb-0">
+                <i class="bi bi-journal-check me-2"></i>{{ attempt['subject_name'] }}
+            </h4>
+            <div class="text-muted small">
+                {{ attempt['chapter_name'] or 'Ôn tập tổng hợp môn học' }} • {{ questions|length }} câu hỏi
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="timer-badge">
+                <i class="bi bi-clock-history"></i>
+                <span id="quiz-timer">00:00</span>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm px-4">
+                <i class="bi bi-send-fill me-2"></i>NỘP BÀI THI
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- MAIN QUESTIONS LIST (LEFT) -->
+        <div class="col-lg-8">
+            {% for q in questions %}
+                <div class="question-card" id="q-card-{{ q['question_id'] }}" data-q-id="{{ q['question_id'] }}">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="question-number">
+                            <span class="badge bg-primary fs-6 me-2">Câu {{ loop.index }}</span>
+                            <span class="badge-vh-type text-uppercase">
+                                {% if q['question_type'] == 'single' %}
+                                    <i class="bi bi-ui-radios me-1"></i>Trắc nghiệm 1 lựa chọn
+                                {% elif q['question_type'] == 'multiple' %}
+                                    <i class="bi bi-ui-checks me-1"></i>Trắc nghiệm nhiều lựa chọn
+                                {% elif q['question_type'] == 'true_false' %}
+                                    <i class="bi bi-toggle-on me-1"></i>Đúng / Sai
+                                {% elif q['question_type'] == 'fill_code' %}
+                                    <i class="bi bi-input-cursor-text me-1"></i>Điền Code / Từ còn thiếu
+                                {% endif %}
+                            </span>
+                        </div>
+                        <span class="badge bg-light text-secondary border">Chủ đề: {{ q['topic_name'] }}</span>
+                    </div>
+
+                    <!-- Question Text -->
+                    <h5 class="fw-bold text-dark mb-3">{{ q['question_text'] }}</h5>
+
+                    <!-- Code Snippet if present -->
+                    {% if q['code_snippet'] %}
+                        <pre class="code-block"><code class="language-python">{{ q['code_snippet'] }}</code></pre>
+                    {% endif %}
+
+                    <!-- RENDER BASED ON QUESTION TYPE -->
+                    <div class="options-container mt-3">
+                        {% if q['question_type'] == 'single' %}
+                            {% for opt in q['options'] %}
+                                <label class="option-box">
+                                    <input type="radio" name="question_{{ q['question_id'] }}" value="{{ opt }}">
+                                    <span class="fw-medium text-dark">{{ opt }}</span>
+                                </label>
+                            {% endfor %}
+
+                        {% elif q['question_type'] == 'multiple' %}
+                            <div class="alert alert-warning py-1 px-3 mb-2 small fw-semibold text-dark">
+                                <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i> Câu hỏi này có thể có NHIỀU đáp án đúng. Hãy chọn tất cả đáp án đúng.
+                            </div>
+                            {% for opt in q['options'] %}
+                                <label class="option-box">
+                                    <input type="checkbox" name="question_{{ q['question_id'] }}" value="{{ opt }}">
+                                    <span class="fw-medium text-dark">{{ opt }}</span>
+                                </label>
+                            {% endfor %}
+
+                        {% elif q['question_type'] == 'true_false' %}
+                            <div class="d-flex gap-3">
+                                <label class="option-box flex-fill text-center justify-content-center py-3">
+                                    <input type="radio" name="question_{{ q['question_id'] }}" value="Đúng">
+                                    <span class="fw-bold fs-5 text-success">👍 ĐÚNG</span>
+                                </label>
+                                <label class="option-box flex-fill text-center justify-content-center py-3">
+                                    <input type="radio" name="question_{{ q['question_id'] }}" value="Sai">
+                                    <span class="fw-bold fs-5 text-danger">👎 SAI</span>
+                                </label>
+                            </div>
+
+                        {% elif q['question_type'] == 'fill_code' %}
+                            <div class="fill-code-box">
+                                <div class="mb-2 fw-semibold text-muted">Nhập từ khóa / mã lệnh chính xác còn thiếu vào ô bên dưới:</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="text-secondary fw-mono">Đáp án của bạn:</span>
+                                    <input type="text" 
+                                           name="question_{{ q['question_id'] }}" 
+                                           class="fill-code-input" 
+                                           placeholder="[___]" 
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- RIGHT SIDEBAR: QUESTION NAVIGATOR GRID -->
+        <div class="col-lg-4">
+            <div class="vh-card p-3 sticky-top" style="top: 90px;">
+                <h5 class="fw-bold text-primary mb-3">
+                    <i class="bi bi-grid-3x3-gap-fill me-2"></i>Danh Sách Câu Hỏi
+                </h5>
+                <p class="text-muted small">Nhấn vào số câu để chuyển nhanh đến vị trí câu đó:</p>
+
+                <div class="mb-3">
+                    {% for q in questions %}
+                        <button type="button" class="q-nav-btn" data-target="{{ q['question_id'] }}">
+                            {{ loop.index }}
+                        </button>
+                    {% endfor %}
+                </div>
+
+                <div class="border-top pt-3 mt-3">
+                    <div class="d-flex align-items-center gap-2 small text-muted mb-2">
+                        <span class="q-nav-btn answered" style="width: 20px; height: 20px;"></span>
+                        <span>Đã chọn câu trả lời</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 small text-muted">
+                        <span class="q-nav-btn" style="width: 20px; height: 20px;"></span>
+                        <span>Chưa trả lời</span>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
+                        <i class="bi bi-check-circle-fill me-2"></i> HOÀN THÀNH & NỘP BÀI
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}

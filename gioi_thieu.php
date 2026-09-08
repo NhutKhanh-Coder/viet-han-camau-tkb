@@ -10,15 +10,15 @@
     <div class="container" style="position: relative; z-index: 2;">
         <div class="section-header centered">
             <div class="section-tag"><i class="fas fa-info-circle"></i> Giới thiệu</div>
-            <h2 class="section-title">Về Cao Đẳng Nghề <em>Việt Nam - Hàn Quốc</em> Cà Mau</h2>
+            <h2 class="section-title">Về <em>Trường Cao Đẳng Cà Mau</em></h2>
             <div class="divider-line center"></div>
         </div>
         
         <div class="about-split" style="margin-bottom: 80px;">
             <div class="about-lead-col">
                 <h3 style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 850; color: var(--ink); margin-bottom: 20px;">Khởi Nguồn Đam Mê - Kiến Tạo Tương Lai</h3>
-                <p class="about-lead">Trường Cao Đẳng Nghề Việt Nam - Hàn Quốc Cà Mau tự hào là môi trường giáo dục nghề nghiệp chất lượng cao hàng đầu khu vực, mang đến chương trình đào tạo bám sát thực tiễn công nghệ và kinh tế hiện đại. Chúng tôi tập trung vào việc trang bị cho sinh viên không chỉ kiến thức chuyên môn sâu rộng mà còn là những kỹ năng tay nghề vững chắc, đáp ứng nhu cầu khắt khe của thị trường lao động toàn cầu.</p>
-                <p class="about-lead">Với đội ngũ giảng viên giàu kinh nghiệm đạt chuẩn quốc tế, cơ sở vật chất hiện đại bậc nhất được đầu tư bởi chính phủ Việt Nam và Hàn Quốc, cùng mạng lưới đối tác doanh nghiệp rộng khắp, nhà trường cam kết đồng hành cùng bạn trên con đường phát triển sự nghiệp bền vững.</p>
+                <p class="about-lead">Trường Cao Đẳng Cà Mau tự hào là môi trường giáo dục nghề nghiệp chất lượng cao hàng đầu khu vực, mang đến chương trình đào tạo bám sát thực tiễn công nghệ và kinh tế hiện đại. Chúng tôi tập trung vào việc trang bị cho sinh viên không chỉ kiến thức chuyên môn sâu rộng mà còn là những kỹ năng tay nghề vững chắc, đáp ứng nhu cầu khắt khe của thị trường lao động toàn cầu.</p>
+                <p class="about-lead">Với đội ngũ giảng viên giàu kinh nghiệm đạt chuẩn quốc tế, cơ sở vật chất hiện đại bậc nhất, cùng mạng lưới đối tác doanh nghiệp rộng khắp, nhà trường cam kết đồng hành cùng bạn trên con đường phát triển sự nghiệp bền vững.</p>
                 <a href="/tkb/dao_tao.php" class="btn-primary" style="margin-top: 10px;">Khám phá chương trình đào tạo <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="about-image-wrap">
@@ -57,7 +57,7 @@
                     <div class="timeline-badge">2015</div>
                     <div class="timeline-content-card">
                         <h4>Đặt Viên Đá Đầu Tiên</h4>
-                        <p>Dự án thành lập trường Cao đẳng Nghề Việt Nam - Hàn Quốc Cà Mau chính thức khởi công với sự tài trợ nguồn vốn ODA từ Chính phủ Hàn Quốc.</p>
+                        <p>Dự án phát triển trường Cao đẳng Cà Mau chính thức khởi công với mục tiêu kiến tạo môi trường đào tạo nghề nghiệp chuẩn mực và hiện đại.</p>
                     </div>
                 </div>
                 
@@ -144,7 +144,7 @@
                             <span>Cựu SV Khoa Điện tử · Khóa 2017</span>
                         </div>
                     </div>
-                    <p class="alumni-quote">"Hệ thống điều khiển PLC và cánh tay robot tự động hóa phòng Lab Siemens của trường giúp tôi nắm vững tay nghề thực tế. Cảm ơn Việt - Hàn đã nâng cánh ước mơ của tôi."</p>
+                    <p class="alumni-quote">"Hệ thống điều khiển PLC và cánh tay robot tự động hóa phòng Lab Siemens của trường giúp tôi nắm vững tay nghề thực tế. Cảm ơn Trường Cao Đẳng Cà Mau đã nâng cánh ước mơ của tôi."</p>
                     <div class="alumni-success-tag">
                         <i class="fas fa-briefcase"></i> Giám sát hệ thống tự động tại Samsung Vina (Lương: 25M+)
                     </div>

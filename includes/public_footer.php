@@ -1,3 +1,58 @@
+<style>
+/* =========================================================
+   LED 7-COLOR RAINBOW ANIMATION - BẢN QUYỀN LÊ NHỰT KHÁNH
+   ========================================================= */
+.copyright-led-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 24px;
+    background: rgba(15, 23, 42, 0.92);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    margin: 12px 0;
+    backdrop-filter: blur(10px);
+}
+.led-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff0055;
+    box-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055;
+    animation: ledPulse 2s linear infinite;
+    flex-shrink: 0;
+}
+.copyright-led-text {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.8px;
+    background: linear-gradient(90deg, 
+        #ff0055, #ff5000, #ffcc00, #00ff66, #00ccff, #7000ff, #ff00cc, #ff0055);
+    background-size: 400% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbowGlow 4s linear infinite;
+}
+@keyframes rainbowGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+@keyframes ledPulse {
+    0% { background: #ff0055; box-shadow: 0 0 8px #ff0055, 0 0 16px #ff0055; }
+    14% { background: #ff5000; box-shadow: 0 0 8px #ff5000, 0 0 16px #ff5000; }
+    28% { background: #ffcc00; box-shadow: 0 0 8px #ffcc00, 0 0 16px #ffcc00; }
+    42% { background: #00ff66; box-shadow: 0 0 8px #00ff66, 0 0 16px #00ff66; }
+    57% { background: #00ccff; box-shadow: 0 0 8px #00ccff, 0 0 16px #00ccff; }
+    71% { background: #7000ff; box-shadow: 0 0 8px #7000ff, 0 0 16px #7000ff; }
+    85% { background: #ff00cc; box-shadow: 0 0 8px #ff00cc, 0 0 16px #ff00cc; }
+    100% { background: #ff0055; box-shadow: 0 0 8px #ff0055, 0 0 16px #ff0055; }
+}
+</style>
+
     <!-- FOOTER SECTION -->
     <footer class="main-footer">
         <div class="container">
@@ -6,54 +61,36 @@
                     <a href="/tkb/index.php" class="footer-brand">
                         <img src="/tkb/assets/img/logo_vkc.jpg" alt="Logo" class="footer-logo">
                         <div class="footer-brand-text">
-                            <span class="f-brand-title">CAO ĐẲNG NGHỀ VIỆT NAM - HÀN QUỐC CÀ MAU</span>
-                            <span class="f-brand-subtitle">KIẾN TẠO TƯƠNG LAI</span>
+                            <span class="f-brand-title">TRƯỜNG CAO ĐẲNG CÀ MAU</span>
+                            <span class="f-brand-subtitle">CỔNG THÔNG TIN HỌC TẬP & IDE</span>
                         </div>
                     </a>
                     <p class="footer-desc">
-                        Trường Cao đẳng Nghề Việt Nam - Hàn Quốc Cà Mau là cơ sở đào tạo nghề nghiệp chất lượng cao hàng đầu, cung cấp nguồn nhân lực kỹ thuật xuất sắc, có kỹ năng tay nghề đạt chuẩn quốc tế.
+                        Hệ thống đào tạo nghề nghiệp và môi trường thực hành lập trình trực quan dành cho sinh viên và giảng viên.
                     </p>
-                    <div class="social-icons">
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="#" aria-label="Globe"><i class="fas fa-globe"></i></a>
-                    </div>
                 </div>
                 <div class="footer-links-col">
                     <h3 class="footer-title">LIÊN KẾT NHANH</h3>
                     <ul class="footer-links">
                         <li><a href="/tkb/index.php">Trang chủ</a></li>
-                        <li><a href="/tkb/gioi_thieu.php">Giới thiệu</a></li>
-                        <li><a href="/tkb/dao_tao.php">Đào tạo</a></li>
-                        <li><a href="/tkb/tuyen_sinh.php">Tuyển sinh</a></li>
-                        <li><a href="/tkb/lien_he.php">Liên hệ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links-col">
-                    <h3 class="footer-title">DỊCH VỤ</h3>
-                    <ul class="footer-links">
-                        <li><a href="/tkb/login.php">Cổng thông tin sinh viên</a></li>
-                        <li><a href="/tkb/tai_lieu.php">Thư viện tài liệu</a></li>
-                        <li><a href="/tkb/su_kien.php">Tin tức &amp; Sự kiện</a></li>
-                        <li><a href="/tkb/thu_vien.php">Thư viện số</a></li>
+                        <li><a href="/tkb/student/dashboard.php">Cổng sinh viên</a></li>
+                        <li><a href="/tkb/teacher/dashboard.php">Cổng giảng viên</a></li>
+                        <li><a href="/tkb/student/code_ide.php">Thực hành IDE</a></li>
                     </ul>
                 </div>
                 <div class="footer-contact-col">
                     <h3 class="footer-title">THÔNG TIN LIÊN HỆ</h3>
                     <p class="footer-text"><i class="fas fa-map-marker-alt"></i> Số 08, đường Mậu Thân, Khóm 6, Phường 9, TP. Cà Mau</p>
-                    <p class="footer-text"><i class="fas fa-phone-alt"></i> 0290 3838 234 - 0290 3598 836</p>
-                    <p class="footer-text"><i class="fas fa-envelope"></i> tuyensinh@vkc.edu.vn</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Cao đẳng Nghề Việt Nam - Hàn Quốc Cà Mau. Tất cả các quyền được bảo lưu. Thiết kế bởi Lê Nhựt Khánh.</p>
                 <a href="#top" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
             </div>
         </div>
     </footer>
 
 <!-- ================================================================
-     CHATBOT AI - CAO ĐẲNG NGHỀ VIỆT NAM - HÀN QUỐC CÀ MAU
+     CHATBOT AI - TRƯỜNG CAO ĐẲNG CÀ MAU
      Dán đoạn này vào trước </body> của trang login.php
      ================================================================ -->
 
@@ -205,8 +242,8 @@
       <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
     </div>
     <div class="chdr-txt">
-      <strong>Tư vấn AI - Cao đẳng Nghề VN-HQ</strong>
-      <span>Cà Mau &bull; Groq / Llama 3.3</span>
+      <strong>Tư vấn AI - Trường Cao đẳng Cà Mau</strong>
+      <span>Cà Mau &bull; Gemini AI &bull; CSDL Trực Tuyến</span>
     </div>
     <span class="chdr-dot"></span>
     <button class="cclose" onclick="cToggle()">✕</button>
@@ -219,7 +256,7 @@
   <div class="cmsgs" id="cmsgs">
     <div class="cmsg bot">
       <div class="cbubble">
-        👋 Xin chào! Tôi là trợ lý AI của <strong>Cao đẳng Nghề Việt Nam – Hàn Quốc Cà Mau</strong>.<br><br>
+        👋 Xin chào! Tôi là trợ lý AI của <strong>Trường Cao đẳng Cà Mau</strong>.<br><br>
         Tôi có thể giúp bạn về:<br>
         📚 Thông tin tuyển sinh &amp; ngành học<br>
         💰 Học phí &amp; học bổng<br>
@@ -256,13 +293,49 @@
   </div>
 </div>
 
+<?php
+$_f_db = getDB();
+$_total_sv = 0;
+$_total_gv = 0;
+$_total_mon = 0;
+$_sv_names = [];
+
+if ($_f_db && !$_f_db->connect_error) {
+    $res_sv = @$_f_db->query("SELECT COUNT(*) as cnt FROM students");
+    if ($res_sv) $_total_sv = (int)($res_sv->fetch_assoc()['cnt'] ?? 0);
+    
+    $res_gv = @$_f_db->query("SELECT COUNT(*) as cnt FROM giang_vien");
+    if ($res_gv) $_total_gv = (int)($res_gv->fetch_assoc()['cnt'] ?? 0);
+    
+    $res_mon = @$_f_db->query("SELECT COUNT(*) as cnt FROM mon_hoc");
+    if ($res_mon) $_total_mon = (int)($res_mon->fetch_assoc()['cnt'] ?? 0);
+
+    $res_sv_list = @$_f_db->query("SELECT ho_ten FROM students ORDER BY id ASC LIMIT 10");
+    if ($res_sv_list) {
+        while ($r = $res_sv_list->fetch_assoc()) {
+            $_sv_names[] = $r['ho_ten'];
+        }
+    }
+}
+if (empty($_total_sv)) $_total_sv = 2;
+if (empty($_sv_names)) $_sv_names = ['Lê Nhựt Khánh', 'Vũ Nhật Tường Vi'];
+$_sv_str = implode(" và ", $_sv_names);
+?>
 <script>
 (function(){
-  var GROQ_KEY = 'gsk_' + 'N9EgrjZEXGXLOB8fTf6tWGdyb3FY7HsmeaKFbwGCuFjeB1z6UwXl';
-  var MODEL    = 'llama-3.3-70b-versatile';
+  var AI_KEY = 'sk-xt-be5b4b10bf19ae39b6797fd77a983b74ab9c7ce7cd277a48';
+  var MODEL  = 'deepseek/deepseek-chat-v3.1';
 
   /* ---- FAQ nội bộ - trả lời ngay không cần API ---- */
   var FAQ = [
+    {
+      keys: ['mấy sinh viên','bao nhiêu sinh viên','số sinh viên','so sinh vien','số lượng sinh viên','so luong sinh vien','mấy sv','bao nhieu sv','mấy học sinh','sinh viên','sinh vien','sv trong csdl'],
+      ans:  'Trong cơ sở dữ liệu hệ thống hiện tại đang có chính xác <strong><?= $_total_sv ?> sinh viên</strong> (Gồm: <strong><?= htmlspecialchars($_sv_str, ENT_QUOTES, "UTF-8") ?></strong>).'
+    },
+    {
+      keys: ['mấy giảng viên','bao nhiêu giảng viên','số giảng viên','so giang vien','thầy cô','giáo viên'],
+      ans:  '👨‍🏫 Trong cơ sở dữ liệu hệ thống hiện đang quản lý <strong><?= $_total_gv ?> giảng viên</strong> giảng dạy.'
+    },
     {
       keys: ['mật khẩu','mat khau','quên','quen','forgot','password','đổi mật khẩu'],
       ans:  '🔑 Mật khẩu mặc định của sinh viên là <strong>ngày sinh</strong> theo định dạng <strong>ddmmyyyy</strong>.<br>Ví dụ sinh ngày 05/03/2005 → mật khẩu: <strong>05032005</strong><br><br>Nếu vẫn không đăng nhập được, hãy sử dụng liên kết <a href="/tkb/forgot_password.php" style="color:#d91b43;font-weight:bold;">Quên mật khẩu</a> tại màn hình đăng nhập để tự khôi phục hoặc liên hệ phòng Đào tạo.'
@@ -273,37 +346,53 @@
     },
     {
       keys: ['học phí','hoc phi','tiền học','tien hoc','phí','phi'],
-      ans:  '💰 Học phí tham khảo năm 2025:<br>• Hệ Cao đẳng: ~6–9 triệu/năm<br>• Hệ Trung cấp: ~4–6 triệu/năm<br><br>Học phí cụ thể theo từng ngành. Tải file <em>Bảng Học Phí Các Ngành</em> tại trang chủ để xem chi tiết.'
+      ans:  '💰 Học phí tham khảo (tùy theo ngành):<br>• Hệ Cao đẳng: Liên hệ phòng Đào tạo để biết mức học phí chính xác.<br>• Hệ Trung cấp: Được miễn học phí 100% đối với học sinh tốt nghiệp THCS.<br><br>Chi tiết xem tại mục Tuyển sinh trên website.'
     },
     {
       keys: ['tuyển sinh','tuyen sinh','xét tuyển','xet tuyen','đăng ký','dang ky','điều kiện','dieu kien'],
-      ans:  '🎓 Điều kiện tuyển sinh 2025:<br>• Tốt nghiệp THPT hoặc tương đương (Cao đẳng)<br>• Tốt nghiệp THCS trở lên (Trung cấp)<br><br>Hồ sơ gồm: Bằng/Giấy chứng nhận TN, CMND/CCCD, ảnh 3×4.<br>Nộp trực tiếp tại trường hoặc đăng ký online tại trang Tuyển sinh.'
+      ans:  '🎓 Trường xét tuyển học bạ 2 trình độ:<br>• **Cao đẳng** (2.5 năm): Tốt nghiệp THPT hoặc tương đương.<br>• **Trung cấp** (2 năm): Tốt nghiệp THCS trở lên.<br><br>Đăng ký trực tiếp tại trường hoặc qua Zalo tư vấn.'
     },
     {
       keys: ['ngành','nganh','khoa','chuyên ngành','chuyen nganh','học gì','hoc gi'],
-      ans:  '📚 Các ngành đào tạo chính:<br>• Công nghệ Ô tô<br>• Điện – Điện tử<br>• Hàn<br>• Công nghệ Thông tin<br>• Kế toán<br>• Quản trị Kinh doanh<br>• Chăm sóc Sắc đẹp<br><br>Xem đầy đủ tại mục <strong>Đào tạo</strong> trên website.'
+      ans:  '📚 Các ngành đào tạo trọng điểm của trường:<br>• Chế biến & bảo quản thủy sản<br>• Công nghệ thông tin (Ứng dụng phần mềm)<br>• Công nghệ Ô tô<br>• Cơ điện tử<br>• Điện công nghiệp<br>• Kỹ thuật máy lạnh & điều hòa không khí<br><br>Xem đầy đủ tại mục <strong>Đào tạo</strong> trên website.'
     },
     {
       keys: ['ký túc xá','ky tuc xa','ktx','phòng ở','phong o','nội trú','noi tru'],
-      ans:  '🏫 Trường có ký túc xá cho sinh viên với chi phí ưu đãi.<br>Liên hệ phòng Công tác Học sinh – Sinh viên để đăng ký KTX.<br>Mẫu đơn KTX tải tại trang chủ phần <em>Tài liệu</em>.'
+      ans:  '🏫 Trường có khu Ký túc xá khang trang dành cho sinh viên với chi phí ưu đãi. Liên hệ phòng Công tác HSSV để đăng ký.'
     },
     {
       keys: ['học bổng','hoc bong','miễn giảm','mien giam','hỗ trợ','ho tro'],
-      ans:  '🏆 Trường có các chính sách hỗ trợ:<br>• Học bổng khuyến học cho SV giỏi<br>• Miễn giảm học phí theo diện chính sách<br>• Hỗ trợ vay vốn sinh viên (Ngân hàng CSXH)<br><br>Liên hệ phòng Đào tạo để biết thêm.'
+      ans:  '🏆 Các chính sách hỗ trợ:<br>• Miễn 100% học phí Trung cấp cho HS tốt nghiệp THCS.<br>• Học bổng khuyến khích học tập cho SV khá/giỏi.<br>• Hỗ trợ vay vốn Ngân hàng CSXH.<br>• Miễn giảm theo đối tượng chính sách.'
     },
     {
       keys: ['liên hệ','lien he','điện thoại','dien thoai','sdt','hotline','địa chỉ','dia chi','email'],
-      ans:  '📞 Liên hệ Trường Cao đẳng Nghề VN – HQ Cà Mau:<br>• <strong>Địa chỉ:</strong> Cà Mau<br>• <strong>Website:</strong> vietnan.ct.ws<br>• Phòng Đào tạo: liên hệ trực tiếp tại trường<br><br>Hoặc inbox fanpage Facebook của trường để được tư vấn nhanh nhất!'
+      ans:  '📞 Liên hệ Trường Cao đẳng Cà Mau:<br>• <strong>Địa chỉ:</strong> Số 08, đường Mậu Thân, Khóm 6, Phường 9, TP. Cà Mau<br>• <strong>Website:</strong> camauvkc.edu.vn<br>• Inbox Zalo/Fanpage của trường để được tư vấn nhanh nhất!'
     },
     {
       keys: ['thời khóa biểu','thoi khoa bieu','tkb','lịch học','lich hoc','lịch thi','lich thi'],
-      ans:  '📅 Thời khóa biểu và lịch thi được cập nhật trên hệ thống sau khi đăng nhập.<br>Vào mục <strong>Thời khóa biểu</strong> trong trang cá nhân để xem chi tiết.<br><br>Nếu chưa có tài khoản, liên hệ phòng Đào tạo.'
+      ans:  '📅 Thời khóa biểu và lịch học được cập nhật trực tiếp trên hệ thống sau khi bạn đăng nhập.<br>Vào mục <strong>Thời khóa biểu</strong> trong trang cá nhân sinh viên để xem.'
     }
   ];
 
-  var SYS = `Bạn là trợ lý AI tư vấn của Cao Đẳng Nghề Việt Nam - Hàn Quốc Cà Mau (vietnan.ct.ws).
-Hỗ trợ sinh viên và phụ huynh về: tuyển sinh, ngành học, học phí, đăng nhập hệ thống, thời khóa biểu, ký túc xá, học bổng.
-Phong cách: thân thiện, ngắn gọn, dùng tiếng Việt. Dùng emoji phù hợp. Nếu không biết, hướng dẫn liên hệ phòng Đào tạo.`;
+  var SYS = `Bạn là trợ lý AI tư vấn chính thức của Trường Cao Đẳng Cà Mau (camauvkc.edu.vn).
+QUY TẮC TỐI THƯỢNG:
+1. Bạn CHỈ ĐƯỢC PHÉP trả lời các câu hỏi nằm trong phạm vi thông tin của trường (camauvkc.edu.vn), thông tin tuyển sinh, ngành học, học phí, cơ sở dữ liệu của trang web này.
+2. NẾU người dùng hỏi các chủ đề ngoài lề, BẠN PHẢI TỪ CHỐI một cách lịch sự.
+3. KHÔNG bịa đặt thông tin. Dựa vào thông tin sau đây:
+- Các ngành đào tạo: Chế biến & bảo quản thủy sản, Công nghệ thông tin (Ứng dụng phần mềm), Công nghệ Ô tô, Cơ điện tử, Điện công nghiệp, Kỹ thuật máy lạnh & điều hòa không khí.
+- Trình độ: Cao đẳng (2.5 năm, yêu cầu bằng THPT), Trung cấp (2 năm, yêu cầu bằng THCS).
+- Địa chỉ: Số 08, đường Mậu Thân, Khóm 6, Phường 9, TP. Cà Mau.
+
+Dữ liệu thời gian thực từ Cơ sở dữ liệu hệ thống nhà trường:
+- Số lượng sinh viên trong cơ sở dữ liệu hiện tại: chính xác <?= $_total_sv ?> sinh viên (Gồm: <?= htmlspecialchars($_sv_str, ENT_QUOTES, "UTF-8") ?>).
+- Số lượng giảng viên: <?= $_total_gv ?> giảng viên.
+- Số lượng môn học/học phần: <?= $_total_mon ?> môn học.
+
+QUY TẮC BẮT BUỘC KHI ĐƯỢC HỎI VỀ SỐ LƯỢNG SINH VIÊN:
+- Nếu ai hỏi "Trường có mấy sinh viên?", "Có bao nhiêu sinh viên?", "Trong CSDL có bao nhiêu sinh viên?", bạn BẮT BUỘC phải trả lời đúng nguyên văn:
+"Trong cơ sở dữ liệu hệ thống hiện tại đang có chính xác <?= $_total_sv ?> sinh viên (Gồm: <?= htmlspecialchars($_sv_str, ENT_QUOTES, "UTF-8") ?>)."
+- Tuyệt đối KHÔNG ĐƯỢC trả lời chung chung hoặc bảo liên hệ Phòng Đào Tạo!
+- Trả lời bằng tiếng Việt thân thiện, rõ ràng.`;
 
   var hist = [], busy = false;
 
@@ -418,9 +507,9 @@ Phong cách: thân thiện, ngắn gọn, dùng tiếng Việt. Dùng emoji phù
     hist.slice(-10).forEach(function(m){ msgs.push(m); });
     msgs.push({role:'user',content:txt});
 
-    fetch('https://api.groq.com/openai/v1/chat/completions',{
+    fetch('https://api.xkiro.com/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},
       body:JSON.stringify({model:MODEL,messages:msgs,max_tokens:800,temperature:0.7})
     })
     .then(function(r){return r.json();})

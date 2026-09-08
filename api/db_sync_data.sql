@@ -163,6 +163,7 @@ CREATE TABLE `lessons` (
   `giang_vien_id` int(11) NOT NULL,
   `mon_hoc_id` int(11) NOT NULL,
   `tieu_de` varchar(255) NOT NULL,
+  `video_url` varchar(500) DEFAULT NULL,
   `noi_dung` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
@@ -357,6 +358,20 @@ CREATE TABLE `quizzes` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `quizzes` (`id`, `giang_vien_id`, `mon_hoc_id`, `tieu_de`, `created_at`) VALUES ('14', '1', '9', 'Quiz tạo tự động bởi AI - 16/07/2026 19:15', '2026-07-16 19:15:48');
+
+DROP TABLE IF EXISTS `quiz_exam_codes`;
+CREATE TABLE `quiz_exam_codes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `quiz_id` int(11) NOT NULL,
+  `ma_de` varchar(50) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `question_count` int(11) NOT NULL DEFAULT 0,
+  `matrix_data` longtext NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `quiz_id` (`quiz_id`),
+  KEY `ma_de` (`ma_de`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
@@ -622,5 +637,62 @@ INSERT INTO `users` (`id`, `username`, `ho_ten`, `password`, `role`, `created_at
 INSERT INTO `users` (`id`, `username`, `ho_ten`, `password`, `role`, `created_at`, `avatar`, `face_descriptor`, `email`, `sdt`, `reset_token`, `reset_token_expires`) VALUES ('12', 'gv003', 'Lê Hoàng Cường', '$2y$10$Z6UDNt87iXdDanH1LNxA1OYBEgpHvHzVIC5.10OjGy0wpZoGm4rQ6', 'teacher', '2026-06-16 07:19:47', NULL, NULL, 'gv003@vkc.edu.vn', NULL, NULL, NULL);
 INSERT INTO `users` (`id`, `username`, `ho_ten`, `password`, `role`, `created_at`, `avatar`, `face_descriptor`, `email`, `sdt`, `reset_token`, `reset_token_expires`) VALUES ('13', 'gv004', 'Phạm Thị Dung', '$2y$10$Z6UDNt87iXdDanH1LNxA1OYBEgpHvHzVIC5.10OjGy0wpZoGm4rQ6', 'teacher', '2026-06-16 07:19:47', NULL, NULL, 'gv004@vkc.edu.vn', NULL, NULL, NULL);
 INSERT INTO `users` (`id`, `username`, `ho_ten`, `password`, `role`, `created_at`, `avatar`, `face_descriptor`, `email`, `sdt`, `reset_token`, `reset_token_expires`) VALUES ('15', 'leduykhanh', NULL, '$2y$10$dFS3NXH4dJ54/2ZqL0dJU.rmDILxG6PuP7vCyrcGKzQexPigBv82W', 'student', '2026-07-29 21:32:53', NULL, NULL, NULL, NULL, NULL, NULL);
+
+DROP TABLE IF EXISTS `ai_accounts_store`;
+CREATE TABLE `ai_accounts_store` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `ai_type` varchar(50) DEFAULT 'ChatGPT',
+  `image_url` varchar(500) DEFAULT NULL,
+  `category` varchar(50) DEFAULT 'AI',
+  `price` int(11) NOT NULL DEFAULT 50000,
+  `variants` text DEFAULT NULL,
+  `stock` int(11) NOT NULL DEFAULT 1,
+  `account_info` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `bank_info` varchar(255) DEFAULT 'MBBank - 0392826609 - LE NHUT KHANH',
+  `teacher_id` int(11) DEFAULT 0,
+  `teacher_name` varchar(100) DEFAULT 'Quản trị viên',
+  `status` varchar(20) DEFAULT 'approved',
+  `reject_reason` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `mmo_coupons`;
+CREATE TABLE `mmo_coupons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(50) NOT NULL,
+  `discount_percent` int(11) NOT NULL DEFAULT 10,
+  `max_uses` int(11) DEFAULT 100,
+  `used_count` int(11) DEFAULT 0,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `ai_account_orders`;
+CREATE TABLE `ai_account_orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `store_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `student_name` varchar(100) DEFAULT 'Sinh viên',
+  `account_title` varchar(255) NOT NULL,
+  `price` int(11) NOT NULL,
+  `admin_fee` int(11) NOT NULL DEFAULT 30000,
+  `teacher_earnings` int(11) NOT NULL DEFAULT 0,
+  `is_teacher_product` tinyint(1) DEFAULT 0,
+  `teacher_id` int(11) DEFAULT 0,
+  `teacher_name` varchar(100) DEFAULT NULL,
+  `teacher_payout_status` enum('unpaid','paid') DEFAULT 'unpaid',
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `account_info` text NOT NULL,
+  `payment_method` varchar(50) DEFAULT 'momo_qr',
+  `status` enum('pending','completed','cancelled') DEFAULT 'pending',
+  `chat_messages` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS=1;

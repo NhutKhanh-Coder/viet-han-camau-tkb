@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Trang Chủ Ôn Tập Sinh Viên{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+        <h2 class="fw-bold text-primary mb-1">
+            <i class="bi bi-journal-code me-2 text-warning"></i>DANH SÁCH MÔN HỌC ÔN TẬP
+        </h2>
+        <p class="text-muted mb-0">Chọn môn học, chương bài học hoặc chủ đề cụ thể để bắt đầu luyện tập trắc nghiệm tự động</p>
+    </div>
+    <a href="{{ url_for('student_statistics') }}" class="btn btn-vh-primary shadow-sm">
+        <i class="bi bi-graph-up-arrow me-2"></i>Xem Thống Kê Điểm Số
+    </a>
+</div>
+
+<!-- QUICK STATS WIDGETS -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="vh-card p-3 d-flex align-items-center gap-3 border-start border-4 border-primary">
+            <div class="bg-primary-subtle text-primary p-3 rounded-circle fs-3">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+            <div>
+                <div class="text-muted small fw-semibold">TỔNG BÀI LÀM ĐÃ THỰC HIỆN</div>
+                <div class="fs-3 fw-bold text-dark">{{ stats_summary['total_attempts'] }} Lần</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="vh-card p-3 d-flex align-items-center gap-3 border-start border-4 border-success">
+            <div class="bg-success-subtle text-success p-3 rounded-circle fs-3">
+                <i class="bi bi-award"></i>
+            </div>
+            <div>
+                <div class="text-muted small fw-semibold">ĐIỂM TRUNG BÌNH CÁ NHÂN</div>
+                <div class="fs-3 fw-bold text-dark">{{ "%.1f"|format(stats_summary['avg_score']) }} / 10</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="vh-card p-3 d-flex align-items-center gap-3 border-start border-4 border-warning">
+            <div class="bg-warning-subtle text-warning p-3 rounded-circle fs-3">
+                <i class="bi bi-trophy-fill"></i>
+            </div>
+            <div>
+                <div class="text-muted small fw-semibold">ĐIỂM CAO NHẤT ĐẠT ĐƯỢC</div>
+                <div class="fs-3 fw-bold text-dark">{{ "%.1f"|format(stats_summary['max_score']) }} / 10</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SUBJECTS GRID -->
+<h4 class="fw-bold text-dark mb-3"><i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Môn Học Trong Chương Trình Đào Tạo</h4>
+<div class="row g-4 mb-5">
+    {% for s in subjects %}
+        <div class="col-md-6 col-xl-3">
+            <div class="vh-card vh-card-hover h-100 d-flex flex-column">
+                <div class="vh-card-header bg-primary text-white py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi {{ s['icon'] }} fs-3 text-warning"></i>
+                        <h5 class="fw-bold mb-0">{{ s['name'] }}</h5>
+                    </div>
+                </div>
+                <div class="vh-card-body flex-grow-1 d-flex flex-direction-column">
+                    <p class="text-muted small mb-3 flex-grow-1">{{ s['description'] }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center small text-muted bg-light p-2 rounded mb-3">
+                        <span><i class="bi bi-layers-fill text-primary me-1"></i> {{ s['chapter_count'] }} Chương</span>
+                        <span><i class="bi bi-question-circle-fill text-success me-1"></i> {{ s['question_count'] }} Câu hỏi</span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-vh-primary btn-sm" data-bs-toggle="modal" data-bs-target="#subjectModal{{ s['id'] }}">
+                            <i class="bi bi-play-circle-fill me-1"></i> Chọn Bài & Ôn Tập
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL SELECTION FOR SUBJECT -->
+        <div class="modal fade" id="subjectModal{{ s['id'] }}" tabindex="-1" aria-labelledby="modalLabel{{ s['id'] }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0 shadow-lg">
+                    <form method="POST" action="{{ url_for('start_quiz') }}">
+                        <input type="hidden" name="subject_id" value="{{ s['id'] }}">
+
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title fw-bold" id="modalLabel{{ s['id'] }}">
+                                <i class="bi {{ s['icon'] }} text-warning me-2"></i>Tùy Chọn Ôn Tập: {{ s['name'] }}
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="alert alert-info border-0 bg-info-subtle mb-4">
+                                <i class="bi bi-info-circle-fill text-info me-2"></i>
+                                Bạn có thể chọn ôn tập <strong>toàn bộ môn</strong>, chọn theo từng <strong>Chương bài học</strong>, hoặc chi tiết đến từng <strong>Chủ đề (Vòng lặp, Hàm, Mảng, OOP...)</strong>.
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-dark">1. Chọn Phạm Vi Kiến Thức Ôn Tập:</label>
+                                <select name="chapter_id" class="form-select form-select-lg fs-6 mb-3" onchange="filterTopics(this, {{ s['id'] }})">
+                                    <option value="">-- Tất cả các Chương (Ôn tập tổng hợp) --</option>
+                                    {% for item in subject_details[s['id']] %}
+                                        <option value="{{ item['chapter']['id'] }}">
+                                            {{ item['chapter']['name'] }} ({{ item['chapter']['question_count'] }} câu)
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-dark">2. Chọn Chủ Đề Chi Tiết (Tùy chọn):</label>
+                                <select name="topic_id" id="topicSelect{{ s['id'] }}" class="form-select">
+                                    <option value="">-- Tất cả chủ đề trong chương --</option>
+                                    {% for item in subject_details[s['id']] %}
+                                        {% for tp in item['topics'] %}
+                                            <option value="{{ tp['id'] }}" data-chapter="{{ item['chapter']['id'] }}">
+                                                👉 {{ item['chapter']['name'] }} » {{ tp['name'] }}
+                                            </option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark">3. Số Lượng Câu Hỏi Trong Đề Thi:</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="question_count" id="qc5_{{ s['id'] }}" value="5">
+                                        <label class="form-check-label fw-semibold" for="qc5_{{ s['id'] }}">5 câu (Nhanh)</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="question_count" id="qc10_{{ s['id'] }}" value="10" checked>
+                                        <label class="form-check-label fw-semibold" for="qc10_{{ s['id'] }}">10 câu (Khuyên dùng)</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="question_count" id="qc15_{{ s['id'] }}" value="15">
+                                        <label class="form-check-label fw-semibold" for="qc15_{{ s['id'] }}">15 câu (Đầy đủ)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                            <button type="submit" class="btn btn-vh-primary px-4 fw-bold">
+                                <i class="bi bi-play-fill me-1"></i> BẮT ĐẦU LÀM BÀI
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- RECENT ATTEMPTS TABLE -->
+<div class="vh-card">
+    <div class="vh-card-header">
+        <h5 class="fw-bold text-primary mb-0"><i class="bi bi-clock-history me-2"></i>Lịch Sử Làm Bài Gần Đây</h5>
+        <a href="{{ url_for('student_statistics') }}" class="btn btn-link btn-sm fw-bold text-decoration-none">Xem tất cả lịch sử →</a>
+    </div>
+    <div class="vh-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Môn Học</th>
+                        <th>Chương / Chủ Đề</th>
+                        <th>Điểm Số</th>
+                        <th>Tỷ Lệ Đúng</th>
+                        <th>Thời Gian</th>
+                        <th>Ngày Làm</th>
+                        <th class="text-end pe-4">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in recent_attempts %}
+                        <tr>
+                            <td class="ps-4 fw-bold text-primary">{{ a['subject_name'] }}</td>
+                            <td>{{ a['chapter_name'] or 'Tất cả các chương' }}</td>
+                            <td>
+                                <span class="badge {{ 'bg-success' if a['score'] >= 8.0 else 'bg-warning text-dark' if a['score'] >= 5.0 else 'bg-danger' }} fs-6">
+                                    {{ "%.1f"|format(a['score']) }} / 10
+                                </span>
+                            </td>
+                            <td>{{ "%.1f"|format(a['percentage']) }}% ({{ a['correct_count'] }}/{{ a['total_questions'] }})</td>
+                            <td>{{ a['time_spent_seconds'] }} giây</td>
+                            <td class="text-muted small">{{ a['completed_at'] }}</td>
+                            <td class="text-end pe-4">
+                                <a href="{{ url_for('quiz_result', attempt_id=a['id']) }}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                    <i class="bi bi-file-earmark-check me-1"></i>Xem Đáp Án
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">Bạn chưa làm bài trắc nghiệm nào. Hãy chọn môn học ở trên để bắt đầu!</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterTopics(chapterSelect, subjectId) {
+    const selectedChapId = chapterSelect.value;
+    const topicSelect = document.getElementById('topicSelect' + subjectId);
+    const options = topicSelect.querySelectorAll('option');
+
+    options.forEach(opt => {
+        if (!opt.value) {
+            opt.style.display = 'block'; // Keep all option
+            return;
+        }
+        const chapAttr = opt.getAttribute('data-chapter');
+        if (!selectedChapId || chapAttr === selectedChapId) {
+            opt.style.display = 'block';
+        } else {
+            opt.style.display = 'none';
+        }
+    });
+    topicSelect.value = "";
+}
+</script>
+{% endblock %}

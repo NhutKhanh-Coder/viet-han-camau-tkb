@@ -1,0 +1,673 @@
+{
+  "metadata": {
+    "system_name": "SmartEdu AI Learning Analytics Pipeline",
+    "competition_track": "Bảng C - Hackathon AI & Data Science",
+    "evaluation_timestamp": "2026-09-08 13:47:43",
+    "dataset_samples": 750,
+    "train_samples": 600,
+    "test_samples": 150,
+    "model_version": "RandomForest-Ensemble-v2.4"
+  },
+  "proposed_model_metrics": {
+    "accuracy": 0.96,
+    "accuracy_percentage": 96.0,
+    "precision_weighted": 0.9599,
+    "recall_weighted": 0.96,
+    "f1_score_weighted": 0.9597,
+    "confusion_matrix": [
+      [
+        77,
+        1,
+        0
+      ],
+      [
+        2,
+        38,
+        2
+      ],
+      [
+        0,
+        1,
+        29
+      ]
+    ],
+    "class_metrics": {
+      "low_risk": {
+        "precision": 0.975,
+        "recall": 0.987,
+        "f1_score": 0.981,
+        "support": 78
+      },
+      "moderate_risk": {
+        "precision": 0.95,
+        "recall": 0.905,
+        "f1_score": 0.927,
+        "support": 42
+      },
+      "high_risk": {
+        "precision": 0.935,
+        "recall": 0.967,
+        "f1_score": 0.951,
+        "support": 30
+      }
+    }
+  },
+  "baseline_comparison": [
+    {
+      "model_name": "Heuristic Rule-Based (Baseline 1)",
+      "type": "Cố định / Luật thô",
+      "accuracy": 80.0,
+      "precision": 0.8275,
+      "recall": 0.8,
+      "f1_score": 0.8032,
+      "latency_ms": 0.05
+    },
+    {
+      "model_name": "Logistic Regression (Baseline 2)",
+      "type": "Mô hình Tuyến tính",
+      "accuracy": 94.67,
+      "precision": 0.9462,
+      "recall": 0.9467,
+      "f1_score": 0.9462,
+      "latency_ms": 0.42
+    },
+    {
+      "model_name": "Decision Tree CART (Baseline 3)",
+      "type": "Cây quyết định đơn lẻ",
+      "accuracy": 88.0,
+      "precision": 0.86,
+      "recall": 0.87,
+      "f1_score": 0.8786,
+      "latency_ms": 0.65
+    },
+    {
+      "model_name": "Random Forest Ensemble (Mô hình Đề xuất)",
+      "type": "Học kết hợp (Bagging Ensemble)",
+      "accuracy": 96.0,
+      "precision": 0.9599,
+      "recall": 0.96,
+      "f1_score": 0.9597,
+      "latency_ms": 1.85,
+      "is_proposed": true
+    }
+  ],
+  "ablation_study": [
+    {
+      "configuration": "Đầy đủ đặc trưng (Full Features)",
+      "features_used": "7/7 đặc trưng",
+      "accuracy": 96.0,
+      "f1_score": 0.9597,
+      "delta_f1": "0.0000 (Mốc chuẩn)"
+    },
+    {
+      "configuration": "Loại bỏ thời gian phản xạ (w/o Time Per Question)",
+      "features_used": "6/7 đặc trưng",
+      "accuracy": 95.33,
+      "f1_score": 0.9528,
+      "delta_f1": "-0.0069"
+    },
+    {
+      "configuration": "Loại bỏ tỷ lệ chuyên cần (w/o Attendance Rate)",
+      "features_used": "6/7 đặc trưng",
+      "accuracy": 95.33,
+      "f1_score": 0.9531,
+      "delta_f1": "-0.0066"
+    },
+    {
+      "configuration": "Loại bỏ tính đúng hạn bài tập (w/o Assignment Timeliness)",
+      "features_used": "6/7 đặc trưng",
+      "accuracy": 95.33,
+      "f1_score": 0.9528,
+      "delta_f1": "-0.0069"
+    },
+    {
+      "configuration": "Chỉ dùng duy nhất điểm Quiz (Quiz-Score Only)",
+      "features_used": "1/7 đặc trưng",
+      "accuracy": 75.33,
+      "f1_score": 0.7444,
+      "delta_f1": "-0.2153"
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "Chỉ số kiên trì",
+      "importance": 0.1965,
+      "percentage": 19.65
+    },
+    {
+      "feature": "Đúng hạn bài tập",
+      "importance": 0.1914,
+      "percentage": 19.14
+    },
+    {
+      "feature": "Tỷ lệ hoàn thành môn",
+      "importance": 0.1871,
+      "percentage": 18.71
+    },
+    {
+      "feature": "Điểm trung bình Quiz",
+      "importance": 0.1676,
+      "percentage": 16.76
+    },
+    {
+      "feature": "Tỷ lệ chuyên cần",
+      "importance": 0.1166,
+      "percentage": 11.66
+    },
+    {
+      "feature": "Thời gian phản xạ/câu",
+      "importance": 0.0914,
+      "percentage": 9.14
+    },
+    {
+      "feature": "Số lượt làm Quiz",
+      "importance": 0.0494,
+      "percentage": 4.94
+    }
+  ],
+  "clustering_profiles": [
+    {
+      "cluster_id": 0,
+      "title": "Sinh viên Tiêu biểu (Exemplary Achievers)",
+      "description": "Điểm quiz cao, nộp bài đúng hạn 95%+, chuyên cần tuyệt đối, thời gian làm bài cẩn trọng.",
+      "color": "#10b981",
+      "count": 159,
+      "avg_quiz": 4.4,
+      "attendance": 57.2
+    },
+    {
+      "cluster_id": 1,
+      "title": "Sinh viên Tiềm năng (Consistent Explorers)",
+      "description": "Năng lực ổn định, chuyên cần tốt, cần mở rộng giải quyết câu hỏi nâng cao.",
+      "color": "#3b82f6",
+      "count": 170,
+      "avg_quiz": 8.0,
+      "attendance": 89.8
+    },
+    {
+      "cluster_id": 2,
+      "title": "Sinh viên Cần Đồng hành (Needs Encouragement)",
+      "description": "Điểm trung bình dao động 5.0-6.5, nộp bài sát hạn chót, cần đôn đốc thường xuyên.",
+      "color": "#f59e0b",
+      "count": 254,
+      "avg_quiz": 7.8,
+      "attendance": 88.7
+    },
+    {
+      "cluster_id": 3,
+      "title": "Sinh viên Báo động Đỏ (Critical Risk - Early Action)",
+      "description": "Chuyên cần dưới 65%, vắng nộp bài tập, làm bài dưới 20s/câu, nguy cơ trượt môn > 80%.",
+      "color": "#ef4444",
+      "count": 167,
+      "avg_quiz": 5.9,
+      "attendance": 72.5
+    }
+  ],
+  "student_diagnostics": [
+    {
+      "student_id": 1000,
+      "student_name": "Lê Nhựt Khánh",
+      "student_code": "SV24CD1000",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 6.78,
+      "attendance": 97.1,
+      "timeliness": 86.4,
+      "predicted_risk_level": 0,
+      "risk_score": 5.4,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1001,
+      "student_name": "Nguyễn Văn An",
+      "student_code": "SV24CD1001",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 6.98,
+      "attendance": 87.0,
+      "timeliness": 85.1,
+      "predicted_risk_level": 0,
+      "risk_score": 4.6,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1002,
+      "student_name": "Trần Thị Mai",
+      "student_code": "SV24CD1002",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 10.0,
+      "attendance": 86.4,
+      "timeliness": 86.2,
+      "predicted_risk_level": 0,
+      "risk_score": 8.0,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1003,
+      "student_name": "Phạm Quốc Bảo",
+      "student_code": "SV24CD1003",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 7.3,
+      "attendance": 88.4,
+      "timeliness": 94.1,
+      "predicted_risk_level": 0,
+      "risk_score": 7.0,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1004,
+      "student_name": "Đỗ Minh Khang",
+      "student_code": "SV24CD1004",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 8.24,
+      "attendance": 78.9,
+      "timeliness": 97.2,
+      "predicted_risk_level": 0,
+      "risk_score": 2.7,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1005,
+      "student_name": "Hoàng Thảo Linh",
+      "student_code": "SV24CD1005",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 7.03,
+      "attendance": 96.3,
+      "timeliness": 97.0,
+      "predicted_risk_level": 0,
+      "risk_score": 2.8,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1006,
+      "student_name": "Vũ Hoàng Nam",
+      "student_code": "SV24CD1006",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 2.14,
+      "attendance": 49.7,
+      "timeliness": 62.5,
+      "predicted_risk_level": 1,
+      "risk_score": 66.0,
+      "ai_reasons": [
+        "Tỷ lệ chuyên cần thấp (49.7%)",
+        "Điểm quiz dưới chuẩn (2.14/10)",
+        "Làm bài quá vội (22.9s/câu)",
+        "Thường xuyên nộp bài tập muộn (62.5%)"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1007,
+      "student_name": "Bùi Kim Yến",
+      "student_code": "SV24CD1007",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 8.33,
+      "attendance": 100.0,
+      "timeliness": 93.7,
+      "predicted_risk_level": 0,
+      "risk_score": 5.4,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1008,
+      "student_name": "Ngô Đức Trọng",
+      "student_code": "SV24CD1008",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 6.44,
+      "attendance": 90.1,
+      "timeliness": 86.7,
+      "predicted_risk_level": 0,
+      "risk_score": 13.6,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1009,
+      "student_name": "Đặng Tuyết Nhi",
+      "student_code": "SV24CD1009",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 8.82,
+      "attendance": 91.8,
+      "timeliness": 93.5,
+      "predicted_risk_level": 0,
+      "risk_score": 4.0,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1010,
+      "student_name": "Lý Thanh Hải",
+      "student_code": "SV24CD1010",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 7.72,
+      "attendance": 88.0,
+      "timeliness": 70.0,
+      "predicted_risk_level": 0,
+      "risk_score": 16.6,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1011,
+      "student_name": "Dương Gia Huy",
+      "student_code": "SV24CD1011",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 3.72,
+      "attendance": 42.7,
+      "timeliness": 65.7,
+      "predicted_risk_level": 1,
+      "risk_score": 64.9,
+      "ai_reasons": [
+        "Tỷ lệ chuyên cần thấp (42.7%)",
+        "Điểm quiz dưới chuẩn (3.72/10)",
+        "Làm bài quá vội (8.0s/câu)"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1012,
+      "student_name": "Võ Thị Hằng",
+      "student_code": "SV24CD1012",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 8.11,
+      "attendance": 90.0,
+      "timeliness": 94.8,
+      "predicted_risk_level": 0,
+      "risk_score": 1.7,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1013,
+      "student_name": "Phan Văn Hậu",
+      "student_code": "SV24CD1013",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 3.55,
+      "attendance": 44.9,
+      "timeliness": 56.8,
+      "predicted_risk_level": 1,
+      "risk_score": 66.6,
+      "ai_reasons": [
+        "Tỷ lệ chuyên cần thấp (44.9%)",
+        "Điểm quiz dưới chuẩn (3.55/10)",
+        "Làm bài quá vội (11.2s/câu)",
+        "Thường xuyên nộp bài tập muộn (56.8%)"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1014,
+      "student_name": "Trịnh Thảo Vy",
+      "student_code": "SV24CD1014",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 4.84,
+      "attendance": 82.2,
+      "timeliness": 88.0,
+      "predicted_risk_level": 1,
+      "risk_score": 33.6,
+      "ai_reasons": [
+        "Điểm quiz dưới chuẩn (4.84/10)"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1015,
+      "student_name": "Hồ Văn Cường",
+      "student_code": "SV24CD1015",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 5.46,
+      "attendance": 79.2,
+      "timeliness": 66.1,
+      "predicted_risk_level": 1,
+      "risk_score": 38.2,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1016,
+      "student_name": "Lâm Mỹ Duyên",
+      "student_code": "SV24CD1016",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 3.64,
+      "attendance": 61.8,
+      "timeliness": 65.1,
+      "predicted_risk_level": 1,
+      "risk_score": 58.9,
+      "ai_reasons": [
+        "Tỷ lệ chuyên cần thấp (61.8%)",
+        "Điểm quiz dưới chuẩn (3.64/10)"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1017,
+      "student_name": "Mai Nhật Quang",
+      "student_code": "SV24CD1017",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 3.83,
+      "attendance": 71.9,
+      "timeliness": 33.9,
+      "predicted_risk_level": 2,
+      "risk_score": 69.2,
+      "ai_reasons": [
+        "Điểm quiz dưới chuẩn (3.83/10)",
+        "Thường xuyên nộp bài tập muộn (33.9%)"
+      ],
+      "recommended_action": "CẢNH BÁO ĐỎ: Giáo viên chủ nhiệm cần gặp trực tiếp & Giao lộ trình phụ đạo"
+    },
+    {
+      "student_id": 1018,
+      "student_name": "Đinh Hữu Phước",
+      "student_code": "SV24CD1018",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 8.25,
+      "attendance": 81.5,
+      "timeliness": 99.4,
+      "predicted_risk_level": 0,
+      "risk_score": 4.8,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1019,
+      "student_name": "Cao Kim Cúc",
+      "student_code": "SV24CD1019",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 6.95,
+      "attendance": 93.0,
+      "timeliness": 98.5,
+      "predicted_risk_level": 0,
+      "risk_score": 3.3,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1020,
+      "student_name": "Lê Nhựt Khánh",
+      "student_code": "SV24CD1020",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 8.97,
+      "attendance": 93.8,
+      "timeliness": 100.0,
+      "predicted_risk_level": 0,
+      "risk_score": 8.3,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1021,
+      "student_name": "Nguyễn Văn An",
+      "student_code": "SV24CD1021",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 7.96,
+      "attendance": 89.1,
+      "timeliness": 96.9,
+      "predicted_risk_level": 0,
+      "risk_score": 2.3,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1022,
+      "student_name": "Trần Thị Mai",
+      "student_code": "SV24CD1022",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 2.9,
+      "attendance": 56.2,
+      "timeliness": 54.8,
+      "predicted_risk_level": 2,
+      "risk_score": 67.7,
+      "ai_reasons": [
+        "Tỷ lệ chuyên cần thấp (56.2%)",
+        "Điểm quiz dưới chuẩn (2.9/10)",
+        "Thường xuyên nộp bài tập muộn (54.8%)"
+      ],
+      "recommended_action": "CẢNH BÁO ĐỎ: Giáo viên chủ nhiệm cần gặp trực tiếp & Giao lộ trình phụ đạo"
+    },
+    {
+      "student_id": 1023,
+      "student_name": "Phạm Quốc Bảo",
+      "student_code": "SV24CD1023",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 7.11,
+      "attendance": 96.1,
+      "timeliness": 99.5,
+      "predicted_risk_level": 0,
+      "risk_score": 6.5,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1024,
+      "student_name": "Đỗ Minh Khang",
+      "student_code": "SV24CD1024",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 6.27,
+      "attendance": 81.7,
+      "timeliness": 85.2,
+      "predicted_risk_level": 1,
+      "risk_score": 36.2,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1025,
+      "student_name": "Hoàng Thảo Linh",
+      "student_code": "SV24CD1025",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 5.38,
+      "attendance": 57.1,
+      "timeliness": 34.0,
+      "predicted_risk_level": 2,
+      "risk_score": 70.3,
+      "ai_reasons": [
+        "Tỷ lệ chuyên cần thấp (57.1%)",
+        "Làm bài quá vội (8.0s/câu)",
+        "Thường xuyên nộp bài tập muộn (34.0%)"
+      ],
+      "recommended_action": "CẢNH BÁO ĐỎ: Giáo viên chủ nhiệm cần gặp trực tiếp & Giao lộ trình phụ đạo"
+    },
+    {
+      "student_id": 1026,
+      "student_name": "Vũ Hoàng Nam",
+      "student_code": "SV24CD1026",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 7.54,
+      "attendance": 87.7,
+      "timeliness": 100.0,
+      "predicted_risk_level": 0,
+      "risk_score": 4.3,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1027,
+      "student_name": "Bùi Kim Yến",
+      "student_code": "SV24CD1027",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 6.6,
+      "attendance": 99.5,
+      "timeliness": 97.6,
+      "predicted_risk_level": 0,
+      "risk_score": 11.9,
+      "ai_reasons": [
+        "Tiến độ học tập ổn định, phong độ tốt"
+      ],
+      "recommended_action": "Khen thưởng & Giao bài tập mở rộng"
+    },
+    {
+      "student_id": 1028,
+      "student_name": "Ngô Đức Trọng",
+      "student_code": "SV24CD1028",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 5.37,
+      "attendance": 89.6,
+      "timeliness": 64.0,
+      "predicted_risk_level": 1,
+      "risk_score": 37.6,
+      "ai_reasons": [
+        "Thường xuyên nộp bài tập muộn (64.0%)"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    },
+    {
+      "student_id": 1029,
+      "student_name": "Đặng Tuyết Nhi",
+      "student_code": "SV24CD1029",
+      "class_name": "K24CDCNTT",
+      "avg_quiz": 4.0,
+      "attendance": 59.7,
+      "timeliness": 88.0,
+      "predicted_risk_level": 1,
+      "risk_score": 39.2,
+      "ai_reasons": [
+        "Tỷ lệ chuyên cần thấp (59.7%)",
+        "Điểm quiz dưới chuẩn (4.0/10)"
+      ],
+      "recommended_action": "Cố vấn 1-1 & Đôn đốc tiến độ nộp bài"
+    }
+  ]
+}

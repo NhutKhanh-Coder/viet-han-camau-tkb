@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test Folder Picker</title>
+</head>
+<body>
+<h2>Test chọn Folder</h2>
+
+<h3>Test 1: input webkitdirectory từ HTML</h3>
+<input type="file" id="test1" webkitdirectory directory multiple>
+
+<h3>Test 2: input webkitdirectory từ JavaScript</h3>
+<button onclick="testJsFolder()">Bấm để chọn Folder (JS)</button>
+
+<h3>Test 3: showDirectoryPicker API</h3>
+<button onclick="testShowDirPicker()">Bấm để chọn Folder (API)</button>
+
+<div id="result" style="margin-top:20px; padding:15px; background:#f0f0f0; border-radius:8px;"></div>
+
+<script>
+function testJsFolder() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.webkitdirectory = true;
+    input.setAttribute('webkitdirectory', '');
+    input.setAttribute('directory', '');
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    
+    input.addEventListener('change', function() {
+        var files = Array.from(this.files);
+        var result = '<b>Test 2 Result:</b><br>';
+        result += 'Số file: ' + files.length + '<br>';
+        if (files[0]) {
+            result += 'Folder: ' + files[0].webkitRelativePath.split('/')[0] + '<br>';
+        }
+        files.forEach(function(f) {
+            result += '📄 ' + f.webkitRelativePath + ' (' + (f.size/1024).toFixed(1) + ' KB)<br>';
+        });
+        document.getElementById('result').innerHTML = result;
+        document.body.removeChild(input);
+    });
+    
+    input.click();
+}
+
+async function testShowDirPicker() {
+    if (!window.showDirectoryPicker) {
+        document.getElementById('result').innerHTML = '<b>showDirectoryPicker không khả dụng trên trình duyệt này</b>';
+        return;
+    }
+    try {
+        var dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+        document.getElementById('result').innerHTML = '<b>Test 3: Đã chọn folder: ' + dirHandle.name + '</b>';
+    } catch(err) {
+        document.getElementById('result').innerHTML = '<b>Test 3 Error:</b> ' + err.name + ': ' + err.message;
+    }
+}
+
+document.getElementById('test1').addEventListener('change', function() {
+    var files = Array.from(this.files);
+    var result = '<b>Test 1 Result:</b><br>';
+    result += 'Số file: ' + files.length + '<br>';
+    if (files[0]) {
+        result += 'Folder: ' + files[0].webkitRelativePath.split('/')[0] + '<br>';
+    }
+    files.forEach(function(f) {
+        result += '📄 ' + f.webkitRelativePath + ' (' + (f.size/1024).toFixed(1) + ' KB)<br>';
+    });
+    document.getElementById('result').innerHTML = result;
+});
+</script>
+</body>
+</html>

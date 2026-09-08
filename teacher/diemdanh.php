@@ -7,11 +7,14 @@ $gv_id = $_SESSION['giang_vien_id'] ?? 0;
 $action = $_POST['action'] ?? '';
 
 // Fetch teacher department
-$st_t = $db->prepare("SELECT khoa FROM giang_vien WHERE id = ?");
-$st_t->bind_param("i", $gv_id);
-$st_t->execute();
-$t_row = $st_t->get_result()->fetch_assoc();
-$teacher_khoa = $t_row['khoa'] ?? '';
+$teacher_khoa = '';
+if (!isAdmin()) {
+    $st_t = $db->prepare("SELECT khoa FROM giang_vien WHERE id = ?");
+    $st_t->bind_param("i", $gv_id);
+    $st_t->execute();
+    $t_row = $st_t->get_result()->fetch_assoc();
+    $teacher_khoa = $t_row['khoa'] ?? '';
+}
 
 if ($action === 'save_attendance') {
     $mon_hoc_id = (int)$_POST['mon_hoc_id'];
@@ -19,8 +22,8 @@ if ($action === 'save_attendance') {
     $statuses = $_POST['status'] ?? [];
     $notes = $_POST['ghi_chu'] ?? [];
     
-    // Secure check: verify if students belong to teacher's department
-    if ($teacher_khoa) {
+    // Secure check: verify if students belong to teacher's department (only for teacher)
+    if (!isAdmin() && $teacher_khoa) {
         foreach ($statuses as $student_id => $status) {
             $student_id = (int)$student_id;
             $st_chk = $db->prepare("SELECT id FROM students WHERE id = ? AND LOWER(khoa) = LOWER(?)");
@@ -33,35 +36,43 @@ if ($action === 'save_attendance') {
         }
     }
     
-    if (!$msg) {
+    if (!$msg && !isAdmin()) {
         // Secure check: verify if this teacher teaches this subject
         $checkTaught = $db->prepare("SELECT id FROM thoi_khoa_bieu WHERE giang_vien_id = ? AND mon_hoc_id = ?");
         $checkTaught->bind_param("ii", $gv_id, $mon_hoc_id);
         $checkTaught->execute();
         if ($checkTaught->get_result()->num_rows === 0) {
-            $msg = 'error:Bạn không có quyền thực hiện điểm danh cho môn học này!';
-        } else {
-            $db->begin_transaction();
-            try {
-                $st_del = $db->prepare("DELETE FROM diem_danh WHERE mon_hoc_id=? AND ngay_diem_danh=? AND student_id=?");
-                $st_ins = $db->prepare("INSERT INTO diem_danh (student_id, mon_hoc_id, ngay_diem_danh, trang_thai, ghi_chu) VALUES (?, ?, ?, ?, ?)");
-                
-                foreach ($statuses as $student_id => $status) {
-                    $student_id = (int)$student_id;
-                    $note = $notes[$student_id] ?? '';
-                    
-                    $st_del->bind_param("isi", $mon_hoc_id, $ngay_diem_danh, $student_id);
-                    $st_del->execute();
-                    
-                    $st_ins->bind_param("iisss", $student_id, $mon_hoc_id, $ngay_diem_danh, $status, $note);
-                    $st_ins->execute();
-                }
-                $db->commit();
-                $msg = 'success:Đã lưu điểm danh thành công!';
-            } catch(Exception $e) {
-                $db->rollback();
-                $msg = 'error:Lỗi lưu điểm danh: ' . $e->getMessage();
+            // Fallback: check if the subject belongs to the teacher's department
+            $st_sub = $db->prepare("SELECT id FROM mon_hoc WHERE id = ? AND LOWER(khoa) = LOWER(?)");
+            $st_sub->bind_param("is", $mon_hoc_id, $teacher_khoa);
+            $st_sub->execute();
+            if ($st_sub->get_result()->num_rows === 0) {
+                $msg = 'error:Bạn không có quyền thực hiện điểm danh cho môn học này!';
             }
+        }
+    }
+    
+    if (!$msg) {
+        $db->begin_transaction();
+        try {
+            $st_del = $db->prepare("DELETE FROM diem_danh WHERE mon_hoc_id=? AND ngay_diem_danh=? AND student_id=?");
+            $st_ins = $db->prepare("INSERT INTO diem_danh (student_id, mon_hoc_id, ngay_diem_danh, trang_thai, ghi_chu) VALUES (?, ?, ?, ?, ?)");
+            
+            foreach ($statuses as $student_id => $status) {
+                $student_id = (int)$student_id;
+                $note = $notes[$student_id] ?? '';
+                
+                $st_del->bind_param("isi", $mon_hoc_id, $ngay_diem_danh, $student_id);
+                $st_del->execute();
+                
+                $st_ins->bind_param("iisss", $student_id, $mon_hoc_id, $ngay_diem_danh, $status, $note);
+                $st_ins->execute();
+            }
+            $db->commit();
+            $msg = 'success:Đã lưu điểm danh thành công!';
+        } catch(Exception $e) {
+            $db->rollback();
+            $msg = 'error:Lỗi lưu điểm danh: ' . $e->getMessage();
         }
     }
 }
@@ -70,28 +81,51 @@ $flop = $_GET['lop'] ?? '';
 $fmon = $_GET['mon_hoc_id'] ?? '';
 $fngay = $_GET['ngay_diem_danh'] ?? date('Y-m-d');
 
-// Get classes list (restricted to teacher's department)
+// Get classes list
 $lopList = [];
-if ($teacher_khoa) {
+if (!isAdmin() && $teacher_khoa) {
     $st_l = $db->prepare("SELECT DISTINCT lop FROM students WHERE LOWER(khoa) = LOWER(?) ORDER BY lop");
     $st_l->bind_param("s", $teacher_khoa);
     $st_l->execute();
     $lopList = $st_l->get_result()->fetch_all(MYSQLI_ASSOC);
 } else {
-    $lopList = $db->query("SELECT DISTINCT lop FROM students ORDER BY lop")->fetch_all(MYSQLI_ASSOC);
+    $lopList = $db->query("SELECT DISTINCT lop FROM students WHERE lop IS NOT NULL AND lop != '' ORDER BY lop")->fetch_all(MYSQLI_ASSOC);
 }
 
-// Get subjects list assigned to this teacher
-$st_mon = $db->prepare("
-    SELECT DISTINCT m.id, m.ten_mon 
-    FROM thoi_khoa_bieu tkb 
-    JOIN mon_hoc m ON tkb.mon_hoc_id = m.id 
-    WHERE tkb.giang_vien_id = ? 
-    ORDER BY m.ten_mon
-");
-$st_mon->bind_param("i", $gv_id);
-$st_mon->execute();
-$monList = $st_mon->get_result()->fetch_all(MYSQLI_ASSOC);
+// Get subjects list
+$monList = [];
+if (isAdmin()) {
+    $res_m = $db->query("SELECT id, ten_mon FROM mon_hoc ORDER BY ten_mon");
+    $monList = $res_m ? $res_m->fetch_all(MYSQLI_ASSOC) : [];
+} else {
+    $st_mon = $db->prepare("
+        SELECT DISTINCT m.id, m.ten_mon 
+        FROM thoi_khoa_bieu tkb 
+        JOIN mon_hoc m ON tkb.mon_hoc_id = m.id 
+        WHERE tkb.giang_vien_id = ? 
+        ORDER BY m.ten_mon
+    ");
+    $st_mon->bind_param("i", $gv_id);
+    $st_mon->execute();
+    $monList = $st_mon->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    if (empty($monList)) {
+        if (!empty($teacher_khoa)) {
+            $st_mon = $db->prepare("SELECT id, ten_mon FROM mon_hoc WHERE LOWER(khoa) = LOWER(?) ORDER BY ten_mon");
+            $st_mon->bind_param("s", $teacher_khoa);
+            $st_mon->execute();
+            $monList = $st_mon->get_result()->fetch_all(MYSQLI_ASSOC);
+        }
+        if (empty($monList)) {
+            $monList = $db->query("SELECT id, ten_mon FROM mon_hoc ORDER BY ten_mon")->fetch_all(MYSQLI_ASSOC);
+        }
+    }
+}
+    if (empty($monList)) {
+        $res = $db->query("SELECT id, ten_mon FROM mon_hoc ORDER BY ten_mon");
+        $monList = $res->fetch_all(MYSQLI_ASSOC);
+    }
+}
 
 $students = [];
 $attendanceMap = [];
@@ -135,9 +169,13 @@ $db->close();
       .att-vang-mat { color: #f87171; font-weight: 600; }
       .att-phep { color: #fbbf24; font-weight: 600; }
     </style>
-</head>
-<body>
-    <?php include '../includes/teacher_nav.php'; ?>
+<body class="<?= isAdmin() ? 'admin-portal' : '' ?>">
+    <?php if (isAdmin()): ?>
+        <?php include '../includes/admin_nav.php'; ?>
+        <div class="main-content">
+    <?php else: ?>
+        <?php include '../includes/teacher_nav.php'; ?>
+    <?php endif; ?>
     <div class="page-header">
         <div>
             <h1 class="page-title"><i class="fa-solid fa-user-check" style="color:var(--accent)"></i> Điểm Danh Lớp Học</h1>

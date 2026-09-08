@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Ngân Hàng Câu Hỏi{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+        <h2 class="fw-bold text-primary mb-1">
+            <i class="bi bi-database-fill-gear me-2 text-warning"></i>QUẢN LÝ NGÂN HÀNG CÂU HỎI
+        </h2>
+        <p class="text-muted mb-0">Thêm, sửa, xóa và sắp xếp câu hỏi theo môn học, bài học và dạng câu hỏi</p>
+    </div>
+    <a href="{{ url_for('teacher_add_question') }}" class="btn btn-success fw-bold shadow-sm px-4">
+        <i class="bi bi-plus-circle-fill me-2"></i>Thêm Câu Hỏi Mới
+    </a>
+</div>
+
+<!-- FILTERS CARD -->
+<div class="vh-card p-3 mb-4">
+    <form method="GET" action="{{ url_for('teacher_question_bank') }}" class="row g-3 align-items-center">
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted mb-1">Lọc theo Môn Học:</label>
+            <select name="subject_id" class="form-select">
+                <option value="">-- Tất cả Môn học --</option>
+                {% for s in subjects %}
+                    <option value="{{ s['id'] }}" {{ 'selected' if subject_filter == s['id'] else '' }}>
+                        {{ s['name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted mb-1">Lọc theo Dạng Câu Hỏi:</label>
+            <select name="question_type" class="form-select">
+                <option value="">-- Tất cả Dạng câu hỏi --</option>
+                <option value="single" {{ 'selected' if type_filter == 'single' else '' }}>Trắc nghiệm 1 lựa chọn</option>
+                <option value="multiple" {{ 'selected' if type_filter == 'multiple' else '' }}>Trắc nghiệm nhiều lựa chọn</option>
+                <option value="true_false" {{ 'selected' if type_filter == 'true_false' else '' }}>Đúng / Sai</option>
+                <option value="fill_code" {{ 'selected' if type_filter == 'fill_code' else '' }}>Điền code / Điền từ</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1">Tìm kiếm nội dung:</label>
+            <input type="text" name="query" class="form-control" placeholder="Nhập từ khóa câu hỏi hoặc mã code..." value="{{ search_query }}">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-vh-primary flex-fill fw-bold">
+                <i class="bi bi-search me-1"></i> Lọc
+            </button>
+            <a href="{{ url_for('teacher_question_bank') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- QUESTIONS TABLE -->
+<div class="vh-card">
+    <div class="vh-card-header d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold text-primary mb-0"><i class="bi bi-list-stars me-2"></i>Danh Sách {{ questions|length }} Câu Hỏi</h5>
+    </div>
+    <div class="vh-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4" style="width: 70px;">ID</th>
+                        <th style="width: 220px;">Môn / Chương / Chủ Đề</th>
+                        <th style="width: 170px;">Dạng Câu Hỏi</th>
+                        <th>Nội Dung Câu Hỏi & Code</th>
+                        <th style="width: 100px;">Độ Khó</th>
+                        <th class="text-end pe-4" style="width: 140px;">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for q in questions %}
+                        <tr>
+                            <td class="ps-4 fw-bold text-muted">#{{ q['id'] }}</td>
+                            <td>
+                                <div class="fw-bold text-primary">{{ q['subject_name'] }}</div>
+                                <div class="small text-muted">{{ q['chapter_name'] }}</div>
+                                <span class="badge bg-light text-dark border small">👉 {{ q['topic_name'] }}</span>
+                            </td>
+                            <td>
+                                <span class="badge-vh-type text-uppercase" style="font-size: 0.7rem;">
+                                    {% if q['question_type'] == 'single' %}
+                                        Single Choice (1 đáp án)
+                                    {% elif q['question_type'] == 'multiple' %}
+                                        Multiple Choice (Nhiều)
+                                    {% elif q['question_type'] == 'true_false' %}
+                                        Đúng / Sai
+                                    {% elif q['question_type'] == 'fill_code' %}
+                                        Điền Code / Điền từ
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark text-truncate mb-1" style="max-width: 450px;">
+                                    {{ q['question_text'] }}
+                                </div>
+                                {% if q['code_snippet'] %}
+                                    <span class="badge bg-dark font-monospace text-warning"><i class="bi bi-code me-1"></i>Có mã nguồn</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge {{ 'bg-success' if q['difficulty'] == 'easy' else 'bg-warning text-dark' if q['difficulty'] == 'medium' else 'bg-danger' }}">
+                                    {{ q['difficulty']|upper }}
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <a href="{{ url_for('teacher_edit_question', q_id=q['id']) }}" class="btn btn-outline-primary btn-sm" title="Chỉnh sửa">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form method="POST" action="{{ url_for('teacher_delete_question', q_id=q['id']) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa câu hỏi #{{ q['id'] }} không?');" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa câu hỏi">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">Không tìm thấy câu hỏi nào phù hợp với bộ lọc.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

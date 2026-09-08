@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Fetch</title></head>
+<body>
+    <pre id="out"></pre>
+    <script>
+        fetch('/tkb/api/code_storage_api.php?action=get&id=53')
+            .then(r => r.text())
+            .then(t => document.getElementById('out').innerText = "TEXT:\n" + t.substring(0, 500))
+            .catch(e => document.getElementById('out').innerText = "ERROR:\n" + e.message);
+    </script>
+</body>
+</html>

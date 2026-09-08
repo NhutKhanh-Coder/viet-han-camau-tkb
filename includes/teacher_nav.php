@@ -1,299 +1,231 @@
-<!-- Teacher Nav -->
-<style>
-/* Teacher Sidebar Dark Theme & Global Dark Mode for Teacher Portal */
-body.admin-portal {
-  --bg: #090d16;       /* Deep dark background */
-  --bg2: #111827;      /* Dark slate cards */
-  --bg3: #1f2937;      /* Dark inputs and headers */
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #f3f4f6;     /* Light text */
-  --text2: #9ca3af;    /* Muted text */
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.4);
-  background: var(--bg) !important;
-  color: var(--text) !important;
-}
-
-body.admin-portal td {
-  color: #e2e8f0 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
-}
-
-body.admin-portal tr:hover td {
-  background: rgba(255, 255, 255, 0.02) !important;
-}
-
-body.admin-portal th {
-  color: var(--accent) !important;
-  background: rgba(255, 255, 255, 0.02) !important;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-body.admin-portal .tkb-table th {
-  background: rgba(255, 255, 255, 0.02) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: var(--accent) !important;
-}
-
-body.admin-portal .tkb-table td {
-  background: var(--bg2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-body.admin-portal select.form-select option {
-  background: #111827 !important;
-  color: #f3f4f6 !important;
-}
-
-body.admin-portal .stat-card {
-  border: 1px solid var(--border) !important;
-  background: var(--bg2) !important;
-}
-
-body.admin-portal .btn-ghost {
-  background: var(--bg3) !important;
-  color: var(--text2) !important;
-  border: 1px solid var(--border) !important;
-}
-body.admin-portal .btn-ghost:hover {
-  background: var(--bg2) !important;
-  color: var(--text) !important;
-}
-
-body.admin-portal .modal-box {
-  background: var(--bg2) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow-lg) !important;
-}
-body.admin-portal .modal-title {
-  color: var(--text) !important;
-}
-body.admin-portal .form-label {
-  color: var(--text2) !important;
-}
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a0f1d; }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-
-/* Sidebar dark design */
-.sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    width: 260px; height: 100%;
-    background: #0f172a;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    flex-direction: column;
-    z-index: 200;
-    overflow-y: auto;
-    transition: transform 0.3s ease;
-}
-
-.admin-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.6);
-    z-index: 199;
-}
-.admin-overlay.active { display: block; }
-
-/* Logo row */
-.sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 18px 16px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(217, 27, 67, 0.03);
-}
-.logo-icon {
-    width: 42px; height: 42px;
-    border-radius: 12px;
-    background: #e11d48;
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 18px; flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
-}
-.logo-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 800; color: #ffffff; }
-.logo-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-
-/* User cards */
-.sidebar-users { padding: 14px 12px 8px; display: flex; flex-direction: column; gap: 8px; }
-.sidebar-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-}
-.user-av {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; overflow: hidden;
-}
-.user-av img { width: 100%; height: 100%; object-fit: cover; }
-.user-av i { font-size:14px; color:#fff; }
-.user-name { font-size: 13.5px; font-weight: 600; color: #ffffff; }
-.user-role { font-size: 11px; color: #38bdf8; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; flex-shrink: 0; }
-
-/* Nav list */
-.nav-list { list-style: none; padding: 10px 0; flex: 1; }
-.nav-list li a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 11px 18px;
-    font-size: 14px;
-    color: #94a3b8;
-    text-decoration: none;
-    border-left: 3px solid transparent;
-    transition: 0.15s;
-    font-weight: 600;
-}
-.nav-list li a i { width: 18px; text-align: center; font-size: 15px; }
-.nav-list li a:hover { background: rgba(217, 27, 67, 0.1); color: #ffffff; }
-.nav-link.active {
-    background: linear-gradient(90deg, rgba(217, 27, 67, 0.15), transparent) !important;
-    border-left: 3px solid var(--accent) !important;
-    color: #ffffff !important;
-}
-
-/* Bottom logout */
-.nav-bottom { padding: 14px 16px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-.btn-logout {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 14px;
-    background: rgba(248, 113, 113, 0.05);
-    border: 1px solid rgba(248, 113, 113, 0.1);
-    border-radius: 10px;
-    color: #f87171;
-    font-size: 13.5px; font-weight: 600;
-    text-decoration: none;
-    transition: 0.15s;
-}
-.btn-logout:hover {
-    background: rgba(248, 113, 113, 0.15);
-    color: #fca5a5;
-    transform: translateY(-1px);
-}
-
-/* Mobile topbar */
-.admin-topbar {
-    display: none;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: #0f172a;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    position: sticky;
-    top: 0; z-index: 50;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-}
-.admin-topbar-ham {
-    display: flex; flex-direction: column; gap: 5px;
-    cursor: pointer; background: none; border: none; padding: 4px;
-}
-.admin-topbar-ham span { display: block; width: 22px; height: 3px; background: #ffffff; border-radius: 3px; }
-.admin-topbar-title { color: #ffffff; font-weight: 800; font-size: 14px; flex: 1; letter-spacing: 0.5px; }
-
-/* Main */
-.main-content { margin-left: 260px; min-height: 100vh; background: var(--bg); padding: 40px 30px; }
-
-@media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
-    .main-content { margin-left: 0 !important; width: 100%; padding: 20px 15px; }
-    .admin-topbar { display: flex; }
-    body { display: block !important; overflow-x: hidden; }
-}
-</style>
-
 <?php
-  $_nav_db = getDB();
-  $teacher_uid = $_SESSION['user_id'];
-  $teacher_info = $_nav_db->query("SELECT u.avatar, g.ho_ten, g.ma_gv, g.khoa FROM users u JOIN giang_vien g ON g.user_id = u.id WHERE u.id = $teacher_uid")->fetch_assoc();
-  $_nav_db->close();
-  
-  $t_av = !empty($teacher_info['avatar']) ? '/tkb/assets/img/avatars/' . htmlspecialchars($teacher_info['avatar']) : '';
-  $t_name = !empty($teacher_info['ho_ten']) ? $teacher_info['ho_ten'] : ($_SESSION['ho_ten'] ?? 'Giảng viên');
-  $t_code = !empty($teacher_info['ma_gv']) ? $teacher_info['ma_gv'] : 'GV';
+$_nav_db = getDB();
+$teacher_uid = (int)($_SESSION['user_id'] ?? 0);
+$teacher_info = $_nav_db->query("SELECT u.avatar, g.ho_ten, g.ma_gv, g.khoa FROM users u JOIN giang_vien g ON g.user_id = u.id WHERE u.id = $teacher_uid")->fetch_assoc();
+$_nav_db->close();
+
+$is_admin_mode = isAdmin();
+$t_av   = !empty($teacher_info['avatar']) ? '/tkb/assets/img/avatars/' . htmlspecialchars($teacher_info['avatar']) : ($is_admin_mode ? '/tkb/assets/img/avatar_khanh.png' : '');
+$t_name = !empty($teacher_info['ho_ten']) ? $teacher_info['ho_ten'] : ($is_admin_mode ? ($_SESSION['ho_ten'] ?? 'Quản Trị Viên (Admin)') : ($_SESSION['ho_ten'] ?? 'Giảng viên'));
+$t_code = !empty($teacher_info['ma_gv']) ? $teacher_info['ma_gv'] : ($is_admin_mode ? 'ADMIN (Toàn quyền)' : 'GV');
+$cur    = basename($_SERVER['PHP_SELF']);
+
+function tp_nav_active($file) {
+    return basename($_SERVER['PHP_SELF']) === $file ? 'active' : '';
+}
 ?>
+<link rel="stylesheet" href="/tkb/assets/teacher_portal.css">
 
-<div class="admin-overlay" id="adminOverlay" onclick="toggleAdminSidebar()"></div>
+<!-- Overlay -->
+<div class="tp-overlay" id="tp-overlay" onclick="tpToggleSidebar()"></div>
 
-<nav class="sidebar" id="adminSidebar">
+<!-- Mobile Topbar -->
+<div class="tp-mobile-topbar">
+  <button class="tp-ham" onclick="tpToggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="tp-mobile-title"><?= $is_admin_mode ? 'Admin - Giảng Dạy &amp; Điểm' : 'Hệ thống Giảng viên' ?></span>
+  <a href="/tkb/teacher/profile.php" class="tp-topbar-btn">
+    <i class="fa-solid fa-user"></i>
+  </a>
+</div>
+
+<!-- Sidebar -->
+<nav class="tp-sidebar" id="tp-sidebar">
 
   <!-- Logo -->
-  <div class="sidebar-logo">
-    <div class="logo-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+  <div class="tp-sidebar-logo">
+    <div class="tp-logo-icon" style="<?= $is_admin_mode ? 'background: linear-gradient(135deg, #a855f7, #7c3aed);' : '' ?>"><i class="fa-solid fa-chalkboard-user"></i></div>
     <div>
-      <div class="logo-name">CAO ĐẲNG KT&CN</div>
-      <div class="logo-sub">Hệ thống Giảng viên</div>
+      <div class="tp-logo-name">CĐ KT&amp;CN</div>
+      <div class="tp-logo-sub"><?= $is_admin_mode ? 'Quản Trị / Giảng Dạy' : 'Giảng Viên' ?></div>
     </div>
   </div>
 
-  <!-- Teacher user info -->
-  <div class="sidebar-users">
-    <div class="sidebar-user">
-      <div class="user-av">
-        <?php if ($t_av): ?>
-          <img src="<?= $t_av ?>" alt="avatar">
-        <?php else: ?>
-          <i class="fa-solid fa-user-tie" style="font-size:15px;color:#fff;"></i>
-        <?php endif; ?>
-      </div>
-      <div>
-        <div class="user-name"><?= htmlspecialchars($t_name) ?></div>
-        <div class="user-role"><span class="dot"></span> Mã GV: <?= htmlspecialchars($t_code) ?></div>
+  <?php if ($is_admin_mode): ?>
+  <div style="margin: 0 12px 10px; padding: 6px 12px; background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.3); border-radius: 10px; font-size: 11px; color: #7c3aed; font-weight: 700; display: flex; align-items: center; justify-content: space-between;">
+    <span><i class="fa-solid fa-shield-halved"></i> Quyền Admin xem tất cả điểm</span>
+    <a href="/tkb/admin/dashboard.php" style="color: #7c3aed; text-decoration: none; font-size: 10.5px; font-weight: 800;"><i class="fa-solid fa-arrow-left"></i> Admin</a>
+  </div>
+  <?php endif; ?>
+
+  <!-- User profile -->
+  <div class="tp-sidebar-user">
+    <div class="tp-user-av">
+      <?php if ($t_av): ?>
+        <img src="<?= $t_av ?>" alt="avatar">
+      <?php else: ?>
+        <i class="fa-solid fa-user-tie"></i>
+      <?php endif; ?>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div class="tp-user-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= htmlspecialchars($t_name) ?></div>
+      <div class="tp-user-role">
+        <span class="tp-user-dot" style="<?= $is_admin_mode ? 'background:#a855f7;' : '' ?>"></span>
+        <?= htmlspecialchars($t_code) ?>
       </div>
     </div>
   </div>
 
-  <!-- Nav -->
-  <ul class="nav-list">
-    <li><a href="/tkb/teacher/dashboard.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='dashboard.php'?'active':'' ?>">
-      <i class="fa-solid fa-gauge"></i><span>Tổng quan</span></a></li>
-    <li><a href="/tkb/teacher/tkb.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='tkb.php'?'active':'' ?>">
-      <i class="fa-solid fa-calendar-days"></i><span>Lịch dạy</span></a></li>
-    <li><a href="/tkb/teacher/diem.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='diem.php'?'active':'' ?>">
-      <i class="fa-solid fa-star-half-stroke"></i><span>Nhập điểm</span></a></li>
-    <li><a href="/tkb/teacher/diemdanh.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='diemdanh.php'?'active':'' ?>">
-      <i class="fa-solid fa-user-check"></i><span>Điểm danh</span></a></li>
-    <li><a href="/tkb/teacher/profile.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='profile.php'?'active':'' ?>">
-      <i class="fa-solid fa-id-card"></i><span>Hồ sơ cá nhân</span></a></li>
-  </ul>
+  <!-- Main Nav -->
+  <div class="tp-nav-section">
+    <div class="tp-nav-label">Tổng quan</div>
+    <ul class="tp-nav-list">
+      <li>
+        <a href="/tkb/teacher/dashboard.php" class="<?= tp_nav_active('dashboard.php') ?>">
+          <span class="tp-nav-icon" style="color:<?= $cur==='dashboard.php' ? '' : '#6366f1' ?>"><i class="fa-solid fa-gauge-high"></i></span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/thongbao.php" class="<?= tp_nav_active('thongbao.php') ?>">
+          <span class="tp-nav-icon" style="color:<?= $cur==='thongbao.php' ? '' : '#e11d48' ?>"><i class="fa-solid fa-bullhorn"></i></span>
+          <span>Thông báo &amp; Lịch thi</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/baocao_tien_do.php" class="<?= tp_nav_active('baocao_tien_do.php') ?>">
+          <span class="tp-nav-icon" style="color:<?= $cur==='baocao_tien_do.php' ? '' : '#818cf8' ?>"><i class="fa-solid fa-chart-line"></i></span>
+          <span>Báo cáo tiến độ (DA)</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/ai_analytics.php" class="<?= tp_nav_active('ai_analytics.php') ?>" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(56, 189, 248, 0.08)); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 10px; margin: 4px 0;">
+          <span class="tp-nav-icon" style="color:#c084fc"><i class="fa-solid fa-brain"></i></span>
+          <span style="font-weight: 700; color: #c084fc;">AI Analytics Hub</span>
+          <span style="background: #8b5cf6; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 10px; margin-left: auto; font-weight: 800;">PRO</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 
-  <div class="nav-bottom">
-    <a href="/tkb/api/logout.php" class="btn-logout">
-      <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+  <div class="tp-nav-divider"></div>
+
+  <!-- Teaching Nav -->
+  <div class="tp-nav-section">
+    <div class="tp-nav-label">Giảng dạy</div>
+    <ul class="tp-nav-list">
+      <li>
+        <a href="/tkb/teacher/quanlylop.php" class="<?= tp_nav_active('quanlylop.php') ?>">
+          <span class="tp-nav-icon" style="color:#7c3aed"><i class="fa-solid fa-graduation-cap"></i></span>
+          <span>Quản lý lớp</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/baitap.php" class="<?= tp_nav_active('baitap.php') ?>">
+          <span class="tp-nav-icon" style="color:#0284c7"><i class="fa-solid fa-pen-to-square"></i></span>
+          <span>Giao bài tập</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/quanly_thuchanh.php" class="<?= tp_nav_active('quanly_thuchanh.php') ?>">
+          <span class="tp-nav-icon" style="color:#059669"><i class="fa-solid fa-code"></i></span>
+          <span>Quản lý thực hành</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/student/kho_code_cong_dong.php" class="<?= tp_nav_active('kho_code_cong_dong.php') ?>">
+          <span class="tp-nav-icon" style="color:#60a5fa"><i class="fa-solid fa-globe"></i></span>
+          <span>Kho Code Cộng Đồng</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/quiz.php" class="<?= tp_nav_active('quiz.php') ?>">
+          <span class="tp-nav-icon" style="color:#7c3aed"><i class="fa-solid fa-brain"></i></span>
+          <span>Quiz</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/diemdanh.php" class="<?= tp_nav_active('diemdanh.php') ?>">
+          <span class="tp-nav-icon" style="color:#d97706"><i class="fa-solid fa-user-check"></i></span>
+          <span>Điểm danh</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/tailieu.php" class="<?= tp_nav_active('tailieu.php') ?>">
+          <span class="tp-nav-icon" style="color:#0284c7"><i class="fa-solid fa-folder-open"></i></span>
+          <span>Tài liệu</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/doan.php" class="<?= tp_nav_active('doan.php') ?>">
+          <span class="tp-nav-icon" style="color:#6366f1"><i class="fa-solid fa-file-code"></i></span>
+          <span>Đồ án</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tp-nav-divider"></div>
+
+  <!-- Extra Nav -->
+  <div class="tp-nav-section">
+    <div class="tp-nav-label">Khác</div>
+    <ul class="tp-nav-list">
+      <li>
+        <a href="/tkb/teacher/quanly_nhac.php" class="<?= tp_nav_active('quanly_nhac.php') ?>">
+          <span class="tp-nav-icon" style="color:#ec4899"><i class="fa-solid fa-music"></i></span>
+          <span>Quản lý Âm nhạc</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/profile.php" class="<?= tp_nav_active('profile.php') ?>">
+          <span class="tp-nav-icon" style="color:#64748b"><i class="fa-solid fa-user"></i></span>
+          <span>Hồ sơ cá nhân</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tp-nav-divider"></div>
+
+  <!-- Admin section -->
+  <div class="tp-nav-section">
+    <div class="tp-nav-label"><i class="fa-solid fa-shield-halved" style="margin-right:4px;opacity:.6;"></i>Quản trị</div>
+    <ul class="tp-nav-list">
+      <li>
+        <a href="/tkb/teacher/quanly_sinhvien.php" class="<?= tp_nav_active('quanly_sinhvien.php') ?>">
+          <span class="tp-nav-icon" style="color:#059669"><i class="fa-solid fa-users"></i></span>
+          <span>Sinh viên</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/quanly_giangvien.php" class="<?= tp_nav_active('quanly_giangvien.php') ?>">
+          <span class="tp-nav-icon" style="color:#6366f1"><i class="fa-solid fa-chalkboard-user"></i></span>
+          <span>Giảng viên</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/quanly_monhoc.php" class="<?= tp_nav_active('quanly_monhoc.php') ?>">
+          <span class="tp-nav-icon" style="color:#0284c7"><i class="fa-solid fa-book"></i></span>
+          <span>Môn học</span>
+        </a>
+      </li>
+      <li>
+        <a href="/tkb/teacher/nhatky.php" class="<?= tp_nav_active('nhatky.php') ?>">
+          <span class="tp-nav-icon" style="color:#64748b"><i class="fa-solid fa-clock-rotate-left"></i></span>
+          <span>Nhật ký</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Logout -->
+  <div class="tp-sidebar-bottom">
+    <a href="/tkb/api/logout.php" class="tp-btn-logout" onclick="return confirm('Bạn có chắc muốn đăng xuất?')">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Đăng xuất
     </a>
   </div>
 </nav>
 
-<!-- Topbar mobile -->
-<div class="admin-topbar" id="adminTopbar">
-  <button class="admin-topbar-ham" onclick="toggleAdminSidebar()">
-    <span></span><span></span><span></span>
-  </button>
-  <span class="admin-topbar-title">
-    <i class="fa-solid fa-chalkboard-user" style="color:#e11d48;margin-right:6px;"></i> HỆ THỐNG GIẢNG VIÊN
-  </span>
-</div>
-
 <script>
-document.body.classList.add('admin-portal');
-function toggleAdminSidebar() {
-    document.getElementById('adminSidebar').classList.toggle('open');
-    document.getElementById('adminOverlay').classList.toggle('active');
+function tpToggleSidebar() {
+  const sidebar = document.getElementById('tp-sidebar');
+  const overlay = document.getElementById('tp-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('active');
 }
 </script>
 
-<div class="main-content">
+<div class="tp-main">

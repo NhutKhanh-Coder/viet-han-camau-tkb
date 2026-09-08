@@ -18,7 +18,7 @@ $res_students = $db->query("SELECT s.id, s.ma_sv, s.ho_ten, s.face_descriptor, u
 
 $res_users = $db->query("SELECT id as user_id, username as ma_sv, ho_ten, face_descriptor, role 
                    FROM users 
-                   WHERE role IN ('admin', 'teacher', 'principal') AND face_descriptor IS NOT NULL AND face_descriptor != ''");
+                   WHERE role IN ('admin', 'teacher') AND face_descriptor IS NOT NULL AND face_descriptor != ''");
 
 $threshold = 0.6; // Tăng độ bao dung (tolerance) để dễ nhận diện hơn
 $bestMatch = null;
@@ -29,7 +29,7 @@ $all_faces = [];
 if ($role === 'student' || !$role) {
     while ($row = $res_students->fetch_assoc()) $all_faces[] = $row;
 }
-if (in_array($role, ['admin', 'teacher', 'principal']) || !$role) {
+if (in_array($role, ['admin', 'teacher']) || !$role) {
     while ($row = $res_users->fetch_assoc()) {
         if (!$role || $row['role'] === $role) {
             $all_faces[] = $row;
@@ -61,6 +61,7 @@ if (!$hasFaceData) {
     $_SESSION['username'] = $bestMatch['ma_sv'];
     $_SESSION['role']     = $bestMatch['role'];
     $_SESSION['ho_ten']   = $bestMatch['ho_ten'];
+    writeSystemLog("Đăng nhập FaceID (Vai trò: " . $bestMatch['role'] . ")");
     
     if ($bestMatch['role'] === 'student') {
         $_SESSION['student_id'] = $bestMatch['id'];
@@ -75,8 +76,6 @@ if (!$hasFaceData) {
             $_SESSION['giang_vien_id'] = $gv['id'];
         }
         $redirect = '/tkb/teacher/dashboard.php';
-    } elseif ($bestMatch['role'] === 'principal') {
-        $redirect = '/tkb/principal/dashboard.php';
     } else {
         $redirect = '/tkb/admin/dashboard.php';
     }

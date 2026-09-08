@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Kết Quả Bài Trắc Nghiệm{% endblock %}
+
+{% block content %}
+<!-- SCORE OVERVIEW BANNER -->
+<div class="vh-card p-4 p-md-5 mb-4 text-center border-0 shadow-lg text-white" 
+     style="background: linear-gradient(135deg, var(--vh-primary) 0%, #001f3f 100%);">
+    
+    <div class="d-inline-flex p-3 rounded-circle bg-white text-primary shadow mb-3">
+        {% if attempt['score'] >= 8.0 %}
+            <i class="bi bi-trophy-fill fs-1 text-warning"></i>
+        {% elif attempt['score'] >= 5.0 %}
+            <i class="bi bi-star-fill fs-1 text-warning"></i>
+        {% else %}
+            <i class="bi bi-exclamation-triangle-fill fs-1 text-danger"></i>
+        {% endif %}
+    </div>
+
+    <h2 class="fw-bold mb-1">KẾT QUẢ ÔN TẬP: {{ attempt['subject_name'] }}</h2>
+    <p class="text-white-50 mb-4">{{ attempt['chapter_name'] or 'Ôn tập tổng hợp' }} • Ngày làm: {{ attempt['completed_at'] }}</p>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-6 col-md-3">
+            <div class="bg-white bg-opacity-10 rounded-3 p-3 border border-white border-opacity-25">
+                <div class="text-white-50 small font-weight-bold">ĐIỂM SỐ CỦA BẠN</div>
+                <div class="display-5 fw-extrabold text-warning">{{ "%.1f"|format(attempt['score']) }} <span class="fs-6 text-white">/ 10</span></div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="bg-white bg-opacity-10 rounded-3 p-3 border border-white border-opacity-25">
+                <div class="text-white-50 small font-weight-bold">TỶ LỆ ĐÚNG</div>
+                <div class="display-5 fw-extrabold text-success">{{ "%.1f"|format(attempt['percentage']) }}%</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="bg-white bg-opacity-10 rounded-3 p-3 border border-white border-opacity-25">
+                <div class="text-white-50 small font-weight-bold">SỐ CÂU ĐÚNG</div>
+                <div class="display-5 fw-extrabold text-info">{{ attempt['correct_count'] }} <span class="fs-6 text-white">/ {{ attempt['total_questions'] }}</span></div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="bg-white bg-opacity-10 rounded-3 p-3 border border-white border-opacity-25">
+                <div class="text-white-50 small font-weight-bold">THỜI GIAN LÀM BÀI</div>
+                <div class="display-5 fw-extrabold text-light">{{ attempt['time_spent_seconds'] }}s</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-dark mb-0">
+        <i class="bi bi-list-check text-primary me-2"></i>CHI TIẾT ĐÁP ÁN & GIẢI THÍCH CHUYÊN SÂU
+    </h4>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-vh-outline">
+            <i class="bi bi-arrow-left me-1"></i>Về Trang Chủ
+        </a>
+        <a href="{{ url_for('student_statistics') }}" class="btn btn-vh-primary shadow-sm">
+            <i class="bi bi-graph-up-arrow me-1"></i>Xem Phân Tích Lỗi Sai
+        </a>
+    </div>
+</div>
+
+<!-- DETAILED QUESTIONS EVALUATION -->
+{% for r in results %}
+    <div class="question-card {{ 'result-correct' if r['is_correct'] == 1 else 'result-wrong' }}">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <span class="badge bg-secondary me-2">Câu {{ loop.index }}</span>
+                <span class="badge {{ 'bg-success' if r['is_correct'] == 1 else 'bg-warning text-dark' if r['is_correct'] == 2 else 'bg-danger' }} fs-6">
+                    {% if r['is_correct'] == 1 %}
+                        <i class="bi bi-check-circle-fill me-1"></i>CHÍNH XÁC (+1.0 điểm)
+                    {% elif r['is_correct'] == 2 %}
+                        <i class="bi bi-exclamation-circle-fill me-1"></i>ĐÚNG MỘT PHẦN (+0.5 điểm)
+                    {% else %}
+                        <i class="bi bi-x-circle-fill me-1"></i>TRẢ LỜI SAI (0 điểm)
+                    {% endif %}
+                </span>
+            </div>
+            <span class="text-muted small">Chủ đề: {{ r['topic_name'] }}</span>
+        </div>
+
+        <h5 class="fw-bold text-dark mt-2 mb-3">{{ r['question_text'] }}</h5>
+
+        {% if r['code_snippet'] %}
+            <pre class="code-block"><code class="language-python">{{ r['code_snippet'] }}</code></pre>
+        {% endif %}
+
+        <div class="row g-3 my-2">
+            <div class="col-md-6">
+                <div class="p-3 rounded border {{ 'bg-success-subtle border-success' if r['is_correct'] == 1 else 'bg-danger-subtle border-danger' }}">
+                    <div class="fw-bold small text-uppercase mb-1">
+                        <i class="bi bi-person-fill me-1"></i>Câu trả lời của bạn:
+                    </div>
+                    <div class="fs-6 font-monospace fw-bold">
+                        {% if r['user_answer'] %}
+                            {{ r['user_answer'] }}
+                        {% else %}
+                            <span class="text-muted italic">(Bỏ trống - Chưa trả lời)</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="p-3 rounded border bg-primary-subtle border-primary">
+                    <div class="fw-bold small text-primary text-uppercase mb-1">
+                        <i class="bi bi-check-all me-1"></i>Đáp án chính xác:
+                    </div>
+                    <div class="fs-6 font-monospace fw-bold text-primary">
+                        {{ r['correct_answer'] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETAILED EXPLANATION BOX -->
+        <div class="explanation-box">
+            <div class="explanation-title">
+                <i class="bi bi-lightbulb-fill text-warning fs-5"></i> GIẢI THÍCH CHI TIẾT ĐÁP ÁN:
+            </div>
+            <div class="text-dark leading-relaxed">
+                {{ r['explanation'] }}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<div class="text-center my-5">
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-vh-primary btn-lg shadow px-5 py-3">
+        <i class="bi bi-arrow-repeat me-2"></i>TIẾP TỤC ÔN TẬP MÔN KHÁC
+    </a>
+</div>
+{% endblock %}

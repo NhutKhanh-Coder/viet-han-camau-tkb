@@ -1,0 +1,2108 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --mc-bg: #0b090e;
+    --mc-card-bg: #14101a;
+    --mc-card-inner: #1c1626;
+    --mc-sidebar-bg: #110d17;
+    --mc-red: #ff1a40;
+    --mc-red-dark: #8b0a20;
+    --mc-red-glow: rgba(255, 26, 64, 0.35);
+    --mc-gold: #ffcc00;
+    --mc-emerald: #22c55e;
+    --mc-diamond: #00ccff;
+    --mc-border: #261e33;
+    --mc-border-light: rgba(255, 255, 255, 0.1);
+    --mc-text: #f8fafc;
+    --mc-text-muted: #94a3b8;
+    --mc-pixel-font: 'Silkscreen', 'Press Start 2P', monospace;
+    --mc-body-font: 'Outfit', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--mc-bg);
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(255, 26, 64, 0.12) 0%, transparent 60%),
+        linear-gradient(rgba(11, 9, 14, 0.92), rgba(11, 9, 14, 0.96)),
+        repeating-linear-gradient(0deg, transparent, transparent 16px, rgba(255, 255, 255, 0.015) 16px, rgba(255, 255, 255, 0.015) 32px),
+        repeating-linear-gradient(90deg, transparent, transparent 16px, rgba(255, 255, 255, 0.015) 16px, rgba(255, 255, 255, 0.015) 32px);
+    color: var(--mc-text);
+    font-family: var(--mc-body-font);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Custom Minecraft Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0d0912;
+    border-left: 1px solid var(--mc-border);
+}
+::-webkit-scrollbar-thumb {
+    background: #8b0a20;
+    border: 2px solid #14101a;
+    border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--mc-red);
+}
+
+/* 3D Minecraft Beveled Panel Box */
+.mc-card {
+    background: var(--mc-card-bg);
+    border: 2px solid var(--mc-border);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mc-card-glow {
+    border-color: rgba(255, 26, 64, 0.4);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 20px var(--mc-red-glow);
+}
+
+.mc-card:hover {
+    border-color: var(--mc-red);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 26, 64, 0.3);
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 270px;
+    height: 100vh;
+    background: var(--mc-sidebar-bg);
+    border-right: 2px solid #ff1a40;
+    border-top: 3px solid #ff1a40;
+    box-shadow: 0 0 20px rgba(255, 26, 64, 0.35);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+.sidebar-logo-area {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 2px solid var(--mc-border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-logo-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--mc-red);
+    box-shadow: 0 0 12px var(--mc-red-glow);
+    object-fit: cover;
+    background: #ffffff;
+}
+
+.sidebar-brand {
+    font-family: var(--mc-pixel-font);
+    font-size: 11px;
+    color: #ffffff;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 0px #000;
+}
+
+.sidebar-sub {
+    font-size: 11px;
+    color: var(--mc-red);
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 15px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.mc-svg-icon {
+    width: 22px;
+    height: 22px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    margin-right: 8px;
+    image-rendering: pixelated;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+}
+
+.nav-link:hover .mc-svg-icon {
+    transform: scale(1.25) rotate(-4deg);
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.8));
+}
+
+.nav-link:hover {
+    background: rgba(255, 26, 64, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 26, 64, 0.3);
+    transform: translateX(4px);
+}
+
+.nav-link:hover i {
+    transform: scale(1.2);
+}
+
+.nav-link.active {
+    background: linear-gradient(90deg, var(--mc-red-dark) 0%, var(--mc-red) 100%);
+    color: #ffffff;
+    font-weight: 700;
+    border-color: #ff4d6d;
+    box-shadow: 0 4px 15px rgba(255, 26, 64, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.nav-link.active i {
+    color: #ffffff;
+}
+
+.nav-link.active::after {
+    content: '▶';
+    position: absolute;
+    right: 12px;
+    font-size: 10px;
+    color: #ffffff;
+    animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+}
+
+.nav-link-danger {
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.nav-link-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+}
+
+/* Sidebar Student Profile Card (Image 1 Bottom Left) */
+.sidebar-st-info {
+    margin: auto 12px 15px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1.5px solid var(--mc-border);
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+}
+
+.sidebar-st-title {
+    font-family: var(--mc-pixel-font);
+    font-size: 9px;
+    color: var(--mc-red);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-st-body {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-st-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 8px;
+    border: 2px solid var(--mc-red);
+    object-fit: cover;
+    background: #000;
+}
+
+.sidebar-st-details {
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.sidebar-st-details div {
+    color: #94a3b8;
+}
+
+.sidebar-st-details strong {
+    color: #ffffff;
+}
+
+/* Header Component */
+.main-content {
+    margin-left: 270px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-header {
+    height: 65px;
+    background: rgba(18, 14, 24, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--mc-border);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mc-pixel-font);
+    font-size: 12px;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 0px #000;
+}
+
+.header-left i {
+    color: var(--mc-red);
+    font-size: 16px;
+}
+
+.sidebar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+.sidebar-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #ffffff;
+    margin: 4px 0;
+    border-radius: 1px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.header-bell {
+    position: relative;
+    font-size: 18px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.header-bell:hover { color: var(--mc-red); }
+.header-bell-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--mc-red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #120e18;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 2px solid var(--mc-red);
+    object-fit: cover;
+    box-shadow: 0 0 10px var(--mc-red-glow);
+}
+
+.user-info {
+    line-height: 1.3;
+}
+.u-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+}
+.u-id {
+    font-size: 11px;
+    color: var(--mc-red);
+    font-weight: 600;
+}
+
+.btn-logout-header {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.btn-logout-header:hover {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+}
+
+/* Content Area Pad */
+.content-pad {
+    padding: 24px 28px;
+    flex: 1;
+}
+
+/* Hero Welcome Banner (Hero 240px Height) */
+.mc-hero-banner {
+    border: 2px solid var(--mc-red);
+    box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.65), 0 0 28px var(--mc-red-glow);
+    border-radius: 16px;
+    padding: 32px 40px !important;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 310px !important;
+    max-height: 310px !important;
+    min-height: 310px !important;
+    background: #0d0a12;
+}
+
+.mc-banner-blur-bg {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    filter: blur(25px) brightness(0.6) !important;
+    transform: scale(1.15) !important;
+    z-index: 0 !important;
+    pointer-events: none;
+}
+
+.mc-banner-full-img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    filter: contrast(1.04) brightness(1.02) !important;
+    image-rendering: -webkit-optimize-contrast !important;
+    z-index: 1 !important;
+    transition: transform 0.4s ease;
+}
+
+.mc-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(10, 8, 14, 0.82) 0%, rgba(10, 8, 14, 0.35) 45%, rgba(10, 8, 14, 0.65) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.mc-btn-change-banner {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    background: rgba(139, 10, 32, 0.85);
+    border: 1.5px solid var(--mc-red);
+    color: #ffffff;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--mc-body-font);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 10px var(--mc-red-glow);
+    transition: all 0.2s ease;
+}
+
+.mc-btn-change-banner:hover {
+    background: var(--mc-red);
+    box-shadow: 0 0 18px var(--mc-red);
+    transform: scale(1.05);
+}
+
+.mc-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 60%;
+}
+
+.mc-hero-sub {
+    display: block;
+    font-size: 12px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.mc-hero-title {
+    font-family: var(--mc-pixel-font);
+    font-size: 24px;
+    color: #ffffff;
+    line-height: 1.35;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0px #000;
+}
+
+.mc-hero-title span {
+    color: var(--mc-red);
+    text-shadow: 3px 3px 0px #000, 0 0 14px var(--mc-red);
+}
+
+.mc-hero-desc {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.mc-hero-badge {
+    position: relative;
+    z-index: 2;
+    background: rgba(120, 10, 28, 0.7);
+    border: 1.5px solid var(--mc-red);
+    box-shadow: 0 0 15px var(--mc-red-glow);
+    border-radius: 14px;
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
+
+.mc-hero-badge i {
+    font-size: 26px;
+    color: var(--mc-red);
+    filter: drop-shadow(0 0 8px var(--mc-red));
+}
+
+.mc-hero-badge strong {
+    display: block;
+    font-family: var(--mc-pixel-font);
+    font-size: 9px;
+    color: #ff99aa;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+}
+
+.mc-hero-badge span {
+    font-size: 14px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+}
+
+.d-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* 6 Action Menu Cards Grid (Image 1 Center) */
+.mc-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.mc-menu-card {
+    background: var(--mc-card-bg);
+    border: 2px solid var(--mc-border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+}
+
+.mc-menu-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: var(--mc-red);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7), 0 0 20px var(--mc-red-glow);
+}
+
+.mc-menu-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1.5px solid var(--mc-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.mc-menu-card:hover .mc-menu-icon {
+    transform: scale(1.15) rotate(-5deg);
+    border-color: var(--mc-red);
+}
+
+.mc-menu-title {
+    font-family: var(--mc-pixel-font);
+    font-size: 11px;
+    color: #ffffff;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.mc-menu-sub {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* Section Bottom Grid */
+.mc-bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* Minecraft XP Progress Bars */
+.mc-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 15px;
+}
+
+.mc-progress-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mc-progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.mc-progress-track {
+    height: 12px;
+    background: #09070c;
+    border: 1.5px solid #261e33;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.mc-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+    transition: width 0.8s ease;
+    position: relative;
+}
+
+.mc-progress-fill.warning {
+    background: linear-gradient(90deg, #b45309 0%, #eab308 100%);
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+}
+
+.mc-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(255,255,255,0.15) 4px, rgba(255,255,255,0.15) 8px);
+}
+
+/* Minecraft Announcements List */
+.mc-announcement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 15px;
+}
+
+.mc-announcement-item {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--mc-border);
+    border-left: 3px solid var(--mc-red);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    transition: border-color 0.2s;
+}
+
+.mc-announcement-item:hover {
+    border-color: var(--mc-red);
+}
+
+.mc-announcement-date {
+    font-size: 11px;
+    color: var(--mc-red);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+/* Student ID Minecraft Card (Image 1 Bottom Right) */
+.mc-id-card {
+    background: linear-gradient(145deg, #181220 0%, #0f0b15 100%);
+    border: 2px solid var(--mc-red);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 20px var(--mc-red-glow);
+    border-radius: 14px;
+    padding: 22px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.mc-id-header {
+    font-family: var(--mc-pixel-font);
+    font-size: 9px;
+    color: var(--mc-red);
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+}
+
+.mc-id-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    border: 3px solid var(--mc-red);
+    box-shadow: 0 0 15px var(--mc-red-glow);
+    object-fit: cover;
+    margin: 0 auto 12px;
+    background: #000;
+}
+
+.mc-id-name {
+    font-family: var(--mc-pixel-font);
+    font-size: 13px;
+    color: #ffffff;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.mc-id-badge {
+    background: rgba(255, 26, 64, 0.2);
+    border: 1px solid var(--mc-red);
+    color: #ff99aa;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+}
+
+.mc-id-qr {
+    background: #ffffff;
+    padding: 8px;
+    border-radius: 8px;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Footer Bedrock / Nether Strip (Image 1 Bottom) */
+.mc-footer {
+    margin-top: 40px;
+    background: #09070c;
+    border-top: 2px solid var(--mc-border);
+    padding: 24px 28px;
+    text-align: center;
+    font-size: 12px;
+    color: #94a3b8;
+    position: relative;
+}
+
+.mc-footer-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.mc-footer-text {
+    font-family: var(--mc-pixel-font);
+    font-size: 10px;
+    color: var(--mc-red);
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .mc-bottom-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    .sidebar-overlay.active {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(4px);
+        z-index: 999;
+    }
+    .main-content {
+        margin-left: 0;
+    }
+    .sidebar-toggle {
+        display: block;
+    }
+    .mc-menu-grid {
+        grid-template-columns: 1fr;
+    }
+    .mc-hero-banner {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px;
+    }
+    .mc-hero-content {
+        max-width: 65%;
+    }
+}
+
+/* ====================================================
+   COLOR THEME TONES (STUDENT COLOR PALETTE CUSTOMIZATION)
+   ==================================================== */
+
+/* 1. Nether Red (Default) */
+body[data-mc-theme="red"], html[data-mc-theme="red"] body {
+    --mc-bg: #0b090e;
+    --mc-card-bg: #14101a;
+    --mc-card-inner: #1c1626;
+    --mc-sidebar-bg: #110d17;
+    --mc-red: #ff1a40;
+    --mc-red-dark: #8b0a20;
+    --mc-red-glow: rgba(255, 26, 64, 0.35);
+    --mc-border: #261e33;
+}
+
+/* 2. Diamond Cyan (Xanh Ngọc Diamond) */
+body[data-mc-theme="cyan"], html[data-mc-theme="cyan"] body {
+    --mc-bg: #061118;
+    --mc-card-bg: #0b1a24;
+    --mc-card-inner: #112636;
+    --mc-sidebar-bg: #09151e;
+    --mc-red: #00d9ff;
+    --mc-red-dark: #005b7f;
+    --mc-red-glow: rgba(0, 217, 255, 0.35);
+    --mc-border: #143547;
+}
+
+/* 3. Emerald Green (Xanh Lục Emerald) */
+body[data-mc-theme="emerald"], html[data-mc-theme="emerald"] body {
+    --mc-bg: #06140d;
+    --mc-card-bg: #0c2116;
+    --mc-card-inner: #123020;
+    --mc-sidebar-bg: #081a11;
+    --mc-red: #10b981;
+    --mc-red-dark: #047857;
+    --mc-red-glow: rgba(16, 185, 129, 0.35);
+    --mc-border: #18472f;
+}
+
+/* 4. Ender Purple (Tím Ender) */
+body[data-mc-theme="purple"], html[data-mc-theme="purple"] body {
+    --mc-bg: #0f0717;
+    --mc-card-bg: #190c26;
+    --mc-card-inner: #241138;
+    --mc-sidebar-bg: #13091e;
+    --mc-red: #a855f7;
+    --mc-red-dark: #6b21a8;
+    --mc-red-glow: rgba(168, 85, 247, 0.35);
+    --mc-border: #361754;
+}
+
+/* 5. Gold Sun (Vàng Hoàng Gia) */
+body[data-mc-theme="gold"], html[data-mc-theme="gold"] body {
+    --mc-bg: #140f06;
+    --mc-card-bg: #211909;
+    --mc-card-inner: #30240d;
+    --mc-sidebar-bg: #191307;
+    --mc-red: #eab308;
+    --mc-red-dark: #854d0e;
+    --mc-red-glow: rgba(234, 179, 8, 0.35);
+    --mc-border: #473511;
+}
+
+/* 6. Ocean Blue (Xanh Biển Thẫm) */
+body[data-mc-theme="blue"], html[data-mc-theme="blue"] body {
+    --mc-bg: #060b14;
+    --mc-card-bg: #0c1524;
+    --mc-card-inner: #111f36;
+    --mc-sidebar-bg: #08101d;
+    --mc-red: #3b82f6;
+    --mc-red-dark: #1d4ed8;
+    --mc-red-glow: rgba(59, 130, 246, 0.35);
+    --mc-border: #193154;
+}
+
+/* 7. Neon Pink (Hồng Ruby Cyber) */
+body[data-mc-theme="pink"], html[data-mc-theme="pink"] body {
+    --mc-bg: #14070e;
+    --mc-card-bg: #210a17;
+    --mc-card-inner: #300f22;
+    --mc-sidebar-bg: #190812;
+    --mc-red: #f43f5e;
+    --mc-red-dark: #9f1239;
+    --mc-red-glow: rgba(244, 63, 94, 0.35);
+    --mc-border: #471330;
+}
+
+/* 8. Fire Orange (Cam Nham Thạch) */
+body[data-mc-theme="orange"], html[data-mc-theme="orange"] body {
+    --mc-bg: #140a06;
+    --mc-card-bg: #241109;
+    --mc-card-inner: #361a0d;
+    --mc-sidebar-bg: #1c0e07;
+    --mc-red: #f97316;
+    --mc-red-dark: #9a3412;
+    --mc-red-glow: rgba(249, 115, 22, 0.35);
+    --mc-border: #4a2110;
+}
+
+/* Header Theme Switcher Button */
+.btn-theme-switcher {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1.5px solid var(--mc-red);
+    color: #ffffff;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-family: var(--mc-body-font);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 10px var(--mc-red-glow);
+}
+
+.btn-theme-switcher i {
+    color: var(--mc-red);
+    font-size: 15px;
+    transition: transform 0.3s ease;
+}
+
+.btn-theme-switcher:hover {
+    background: var(--mc-red);
+    color: #ffffff;
+    box-shadow: 0 0 18px var(--mc-red);
+    transform: translateY(-2px);
+}
+
+.btn-theme-switcher:hover i {
+    color: #ffffff;
+    transform: rotate(45deg);
+}
+
+/* Theme Modal UI */
+.mc-theme-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    z-index: 999998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.mc-theme-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mc-theme-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -45%) scale(0.95);
+    width: 90%;
+    max-width: 620px;
+    background: var(--mc-card-bg);
+    border: 2px solid var(--mc-red);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px var(--mc-red-glow);
+    border-radius: 16px;
+    padding: 24px;
+    z-index: 999999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mc-theme-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.mc-theme-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--mc-border);
+    padding-bottom: 14px;
+}
+
+.mc-theme-modal-header h3 {
+    font-family: var(--mc-pixel-font);
+    font-size: 13px;
+    color: #ffffff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mc-theme-modal-header h3 i {
+    color: var(--mc-red);
+}
+
+.mc-theme-modal-header p {
+    font-size: 12px;
+    color: var(--mc-text-muted);
+    margin-top: 4px;
+}
+
+.mc-theme-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.mc-theme-close:hover {
+    color: var(--mc-red);
+}
+
+.mc-theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+@media (max-width: 580px) {
+    .mc-theme-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.mc-theme-item {
+    background: var(--mc-card-inner);
+    border: 1.5px solid var(--mc-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.mc-theme-item:hover {
+    border-color: var(--mc-red);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.mc-theme-item.active {
+    border-color: var(--mc-red);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 15px var(--mc-red-glow);
+}
+
+.mc-theme-preview {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mc-theme-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+.mc-theme-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.mc-theme-info strong {
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.mc-theme-info span {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.mc-theme-check {
+    color: var(--mc-red);
+    font-size: 18px;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: all 0.2s ease;
+}
+
+.mc-theme-item.active .mc-theme-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.mc-theme-toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: var(--mc-card-bg);
+    border: 2px solid var(--mc-red);
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px var(--mc-red-glow);
+    z-index: 999999;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.mc-theme-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ====================================================
+   BACKGROUND COLOR STYLES (MÀU NỀN THEME CUSTOMIZATION)
+   ==================================================== */
+
+/* 1. Midnight Dark (Default) */
+html[data-mc-bg="dark"] body, body[data-mc-bg="dark"] {
+    --mc-bg: #0b090e !important;
+    --mc-card-bg: #14101a !important;
+    --mc-card-inner: #1c1626 !important;
+    --mc-sidebar-bg: #110d17 !important;
+}
+
+/* 2. Obsidian Void (Tím Thạch Anh) */
+html[data-mc-bg="obsidian"] body, body[data-mc-bg="obsidian"] {
+    --mc-bg: #12091c !important;
+    --mc-card-bg: #1b1028 !important;
+    --mc-card-inner: #251738 !important;
+    --mc-sidebar-bg: #160c21 !important;
+}
+
+/* 3. Abyssal Navy (Xanh Đêm Thẫm) */
+html[data-mc-bg="navy"] body, body[data-mc-bg="navy"] {
+    --mc-bg: #08101e !important;
+    --mc-card-bg: #0e192c !important;
+    --mc-card-inner: #14243d !important;
+    --mc-sidebar-bg: #0b1424 !important;
+}
+
+/* 4. Forest Night (Rừng Đêm Minecraft) */
+html[data-mc-bg="forest"] body, body[data-mc-bg="forest"] {
+    --mc-bg: #07170f !important;
+    --mc-card-bg: #0e2419 !important;
+    --mc-card-inner: #143324 !important;
+    --mc-sidebar-bg: #0a1f15 !important;
+}
+
+/* 5. Lava Core (Nham Thạch Đỏ) */
+html[data-mc-bg="lava"] body, body[data-mc-bg="lava"] {
+    --mc-bg: #18080a !important;
+    --mc-card-bg: #260e12 !important;
+    --mc-card-inner: #36151a !important;
+    --mc-sidebar-bg: #1f0b0e !important;
+}
+
+/* 6. Charcoal Black (Xám Than Mịn) */
+html[data-mc-bg="charcoal"] body, body[data-mc-bg="charcoal"] {
+    --mc-bg: #121214 !important;
+    --mc-card-bg: #1a1a1e !important;
+    --mc-card-inner: #24242a !important;
+    --mc-sidebar-bg: #151518 !important;
+}
+
+.mc-bg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 500px) {
+    .mc-bg-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.mc-bg-item {
+    background: var(--mc-card-inner);
+    border: 1.5px solid var(--mc-border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.mc-bg-item:hover {
+    border-color: var(--mc-red);
+    transform: translateY(-2px);
+}
+
+.mc-bg-item.active {
+    border-color: var(--mc-red);
+    box-shadow: 0 0 10px var(--mc-red-glow);
+    font-weight: bold;
+}
+
+.mc-bg-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* ====================================================
+   WEB THEME MODES (LIGHT / DARK / PINK MODE)
+   ==================================================== */
+
+/* 1. Light Mode (Sáng Tinh Tế) */
+body[data-mc-mode="light"], html[data-mc-mode="light"] body {
+    --mc-bg: #f1f5f9 !important;
+    --mc-card-bg: #ffffff !important;
+    --mc-card-inner: #f8fafc !important;
+    --mc-sidebar-bg: #ffffff !important;
+    --mc-text: #0f172a !important;
+    --mc-text-muted: #64748b !important;
+    --mc-border: #cbd5e1 !important;
+    --mc-border-light: rgba(0, 0, 0, 0.08) !important;
+    background-color: #f1f5f9 !important;
+    background-image: 
+        radial-gradient(circle at 50% 0%, var(--mc-red-glow) 0%, transparent 60%),
+        linear-gradient(rgba(241, 245, 249, 0.96), rgba(241, 245, 249, 0.98)) !important;
+    color: #0f172a !important;
+}
+
+/* 2. Soft Pink Light Mode (Sáng Hồng Cute) */
+body[data-mc-mode="pink"], html[data-mc-mode="pink"] body {
+    --mc-bg: #fdf2f8 !important;
+    --mc-card-bg: #ffffff !important;
+    --mc-card-inner: #fce7f3 !important;
+    --mc-sidebar-bg: #fff0f6 !important;
+    --mc-text: #831843 !important;
+    --mc-text-muted: #9d174d !important;
+    --mc-border: #f472b6 !important;
+    --mc-border-light: rgba(244, 63, 94, 0.15) !important;
+    background-color: #fdf2f8 !important;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(244, 63, 94, 0.2) 0%, transparent 60%),
+        linear-gradient(rgba(253, 242, 248, 0.96), rgba(253, 242, 248, 0.98)) !important;
+    color: #831843 !important;
+}
+
+/* Light / Pink Mode Overrides */
+body[data-mc-mode="light"] .top-header,
+body[data-mc-mode="pink"] .top-header {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom-color: var(--mc-border) !important;
+}
+
+body[data-mc-mode="light"] .header-left,
+body[data-mc-mode="pink"] .header-left {
+    color: var(--mc-text) !important;
+    text-shadow: none !important;
+}
+
+body[data-mc-mode="light"] .sidebar-brand,
+body[data-mc-mode="pink"] .sidebar-brand {
+    color: var(--mc-text) !important;
+    text-shadow: none !important;
+}
+
+body[data-mc-mode="light"] .nav-link,
+body[data-mc-mode="pink"] .nav-link {
+    color: var(--mc-text) !important;
+}
+
+body[data-mc-mode="light"] .nav-link:hover,
+body[data-mc-mode="pink"] .nav-link:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: var(--mc-red) !important;
+}
+
+body[data-mc-mode="light"] .mc-menu-title,
+body[data-mc-mode="pink"] .mc-menu-title,
+body[data-mc-mode="light"] .mc-id-name,
+body[data-mc-mode="pink"] .mc-id-name {
+    color: var(--mc-text) !important;
+}
+
+body[data-mc-mode="light"] .sidebar-st-info,
+body[data-mc-mode="pink"] .sidebar-st-info,
+body[data-mc-mode="light"] .mc-id-card,
+body[data-mc-mode="pink"] .mc-id-card {
+    background: var(--mc-card-inner) !important;
+}
+
+body[data-mc-mode="light"] .mc-card,
+body[data-mc-mode="pink"] .mc-card,
+body[data-mc-mode="light"] .sidebar,
+body[data-mc-mode="pink"] .sidebar,
+body[data-mc-mode="light"] .mc-theme-modal,
+body[data-mc-mode="pink"] .mc-theme-modal {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06), 0 0 15px var(--mc-red-glow) !important;
+}
+
+body[data-mc-mode="light"] .sidebar-logo-area,
+body[data-mc-mode="pink"] .sidebar-logo-area {
+    background: rgba(0, 0, 0, 0.03) !important;
+}
+
+body[data-mc-mode="light"] .mc-theme-info strong,
+body[data-mc-mode="pink"] .mc-theme-info strong {
+    color: var(--mc-text) !important;
+}
+
+body[data-mc-mode="light"] .mc-bg-item,
+body[data-mc-mode="pink"] .mc-bg-item {
+    color: var(--mc-text) !important;
+    background: var(--mc-card-inner) !important;
+}
+
+.mc-mode-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 580px) {
+    .mc-mode-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.mc-mode-btn {
+    background: var(--mc-card-inner);
+    border: 2px solid var(--mc-border);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--mc-text);
+    transition: all 0.25s ease;
+}
+
+.mc-mode-btn i {
+    font-size: 16px;
+    color: var(--mc-red);
+}
+
+.mc-mode-btn:hover {
+    border-color: var(--mc-red);
+    transform: translateY(-2px);
+}
+
+.mc-mode-btn.active {
+    border-color: var(--mc-red);
+    background: var(--mc-red);
+    color: #ffffff !important;
+    box-shadow: 0 0 15px var(--mc-red-glow);
+}
+
+.mc-mode-btn.active i {
+    color: #ffffff !important;
+}
+
+@keyframes mcHeartPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+    100% { transform: scale(1); }
+}
+
+.mc-couple-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mc-couple-card:hover {
+    transform: translateY(-3px);
+}
+
+/* ====================================================
+   7-COLOR RGB RAINBOW LED ANIMATIONS (GÓC KHỎE NGƯỜI YÊU)
+   ==================================================== */
+
+@keyframes rainbowGlow {
+    0% {
+        border-color: #ff0055 !important;
+        box-shadow: 0 0 16px rgba(255, 0, 85, 0.7), inset 0 0 10px rgba(255, 0, 85, 0.3) !important;
+    }
+    14% {
+        border-color: #ff5500 !important;
+        box-shadow: 0 0 16px rgba(255, 85, 0, 0.7), inset 0 0 10px rgba(255, 85, 0, 0.3) !important;
+    }
+    28% {
+        border-color: #ffd700 !important;
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.7), inset 0 0 10px rgba(255, 215, 0, 0.3) !important;
+    }
+    42% {
+        border-color: #00ff66 !important;
+        box-shadow: 0 0 16px rgba(0, 255, 102, 0.7), inset 0 0 10px rgba(0, 255, 102, 0.3) !important;
+    }
+    57% {
+        border-color: #00d9ff !important;
+        box-shadow: 0 0 16px rgba(0, 217, 255, 0.7), inset 0 0 10px rgba(0, 217, 255, 0.3) !important;
+    }
+    71% {
+        border-color: #a855f7 !important;
+        box-shadow: 0 0 16px rgba(168, 85, 247, 0.7), inset 0 0 10px rgba(168, 85, 247, 0.3) !important;
+    }
+    85% {
+        border-color: #ff00cc !important;
+        box-shadow: 0 0 16px rgba(255, 0, 204, 0.7), inset 0 0 10px rgba(255, 0, 204, 0.3) !important;
+    }
+    100% {
+        border-color: #ff0055 !important;
+        box-shadow: 0 0 16px rgba(255, 0, 85, 0.7), inset 0 0 10px rgba(255, 0, 85, 0.3) !important;
+    }
+}
+
+@keyframes rainbowText {
+    0% { color: #ff0055 !important; filter: drop-shadow(0 0 6px rgba(255, 0, 85, 0.8)); }
+    14% { color: #ff5500 !important; filter: drop-shadow(0 0 6px rgba(255, 85, 0, 0.8)); }
+    28% { color: #ffd700 !important; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
+    42% { color: #00ff66 !important; filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.8)); }
+    57% { color: #00d9ff !important; filter: drop-shadow(0 0 6px rgba(0, 217, 255, 0.8)); }
+    71% { color: #a855f7 !important; filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.8)); }
+    85% { color: #ff00cc !important; filter: drop-shadow(0 0 6px rgba(255, 0, 204, 0.8)); }
+    100% { color: #ff0055 !important; filter: drop-shadow(0 0 6px rgba(255, 0, 85, 0.8)); }
+}
+
+@keyframes rainbowBg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.mc-couple-card {
+    position: relative;
+    background: var(--mc-card-bg) !important;
+    border-radius: 13px !important;
+    border: none !important;
+}
+
+/* 7-COLOR RGB NEON BORDER FOR KHUNG VUÔNG (LEDBORDER WRAPPER) */
+.mc-led-square-wrapper {
+    position: relative;
+    padding: 2.5px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #ff0055, #ff5500, #ffe600, #00ff66, #00d9ff, #a855f7, #ff00cc, #ff0055);
+    background-size: 300% 300%;
+    animation: rainbowBg 4s linear infinite, rgbSquareGlow 3s infinite linear;
+    transition: transform 0.3s ease;
+}
+
+.mc-led-square-wrapper:hover {
+    transform: translateY(-3px);
+}
+
+@keyframes rgbSquareGlow {
+    0% { box-shadow: 0 0 18px rgba(255, 0, 85, 0.8), 0 0 30px rgba(255, 0, 85, 0.4); }
+    25% { box-shadow: 0 0 18px rgba(255, 230, 0, 0.8), 0 0 30px rgba(255, 230, 0, 0.4); }
+    50% { box-shadow: 0 0 18px rgba(0, 255, 102, 0.8), 0 0 30px rgba(0, 255, 102, 0.4); }
+    75% { box-shadow: 0 0 18px rgba(0, 217, 255, 0.8), 0 0 30px rgba(0, 217, 255, 0.4); }
+    100% { box-shadow: 0 0 18px rgba(255, 0, 204, 0.8), 0 0 30px rgba(255, 0, 204, 0.4); }
+}
+
+.mc-led-text {
+    animation: rainbowText 3s infinite linear !important;
+}
+
+.mc-led-avatar {
+    animation: rainbowGlow 3s infinite linear !important;
+}
+
+.btn-couple-led {
+    background: linear-gradient(45deg, #ff0055, #ff5500, #ffd700, #00ff66, #00d9ff, #a855f7, #ff00cc) !important;
+    background-size: 300% 300% !important;
+    animation: rainbowBg 5s ease infinite, rainbowGlow 3s infinite linear !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9) !important;
+    letter-spacing: 0.3px;
+    transition: transform 0.2s ease !important;
+}
+
+.btn-couple-led:hover {
+    transform: scale(1.03) translateY(-2px) !important;
+}
+
+/* ====================================================
+   OUTER SCREEN & OUTLINE LED 7 MÀU RGB STRIPS
+   ==================================================== */
+
+.mc-outer-led-strip-top,
+.mc-outer-led-strip-bottom,
+.mc-outer-led-strip-left,
+.mc-outer-led-strip-right {
+    display: none !important;
+}
+
+
+/* ====================================================
+   HIỆU ỨNG LED AVATAR 7 MÀU DI CHUYỂN (RGB RAINBOW ROTATING)
+   ==================================================== */
+.mc-led-avatar-7mau {
+    position: relative;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 3px;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+    animation: mcLedAvatarGlow 3s infinite linear;
+}
+
+.mc-led-avatar-7mau::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        #ff0055, 
+        #ff5500, 
+        #ffe600, 
+        #00ff66, 
+        #00d9ff, 
+        #a855f7, 
+        #ff00cc, 
+        #ff0055
+    );
+    animation: mcSpinLed 2.5s linear infinite;
+    z-index: 1;
+}
+
+.mc-led-avatar-7mau img {
+    position: relative;
+    z-index: 2;
+    width: calc(100% - 7px);
+    height: calc(100% - 7px);
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid #0f172a;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Vuông Bo Góc LED 7 Màu (Dành cho Avatar Vuông) */
+.mc-led-avatar-7mau-square {
+    position: relative;
+    width: 62px;
+    height: 62px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 3px;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+    animation: mcLedAvatarGlow 3s infinite linear;
+}
+
+.mc-led-avatar-7mau-square::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        #ff0055, 
+        #ff5500, 
+        #ffe600, 
+        #00ff66, 
+        #00d9ff, 
+        #a855f7, 
+        #ff00cc, 
+        #ff0055
+    );
+    animation: mcSpinLed 2.5s linear infinite;
+    z-index: 1;
+}
+
+.mc-led-avatar-7mau-square img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    border-radius: 11px;
+    object-fit: cover;
+    display: block;
+    border: 2px solid #0f172a;
+}
+
+@keyframes mcSpinLed {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes mcLedAvatarGlow {
+    0% { box-shadow: 0 0 16px rgba(255, 0, 85, 0.85), 0 0 28px rgba(255, 0, 85, 0.45); }
+    20% { box-shadow: 0 0 16px rgba(255, 85, 0, 0.85), 0 0 28px rgba(255, 85, 0, 0.45); }
+    40% { box-shadow: 0 0 16px rgba(255, 230, 0, 0.85), 0 0 28px rgba(255, 230, 0, 0.45); }
+    60% { box-shadow: 0 0 16px rgba(0, 255, 102, 0.85), 0 0 28px rgba(0, 255, 102, 0.45); }
+    80% { box-shadow: 0 0 16px rgba(0, 217, 255, 0.85), 0 0 28px rgba(0, 217, 255, 0.45); }
+    100% { box-shadow: 0 0 16px rgba(255, 0, 204, 0.85), 0 0 28px rgba(255, 0, 204, 0.45); }
+}
+
+/* ====================================================
+   GIAO DIỆN SINH VIÊN NỮ (PASTEL LUYENTU.COM CUTE STYLE)
+   ==================================================== */
+
+[data-mc-mode="female"], [data-mc-theme="female"] {
+    --mc-bg: #f8fafc;
+    --mc-card-bg: #ffffff;
+    --mc-card-inner: #f1f5f9;
+    --mc-sidebar-bg: #ffffff;
+    --mc-red: #38bdf8;
+    --mc-red-dark: #0284c7;
+    --mc-red-glow: rgba(56, 189, 248, 0.25);
+    --mc-gold: #f59e0b;
+    --mc-emerald: #10b981;
+    --mc-diamond: #38bdf8;
+    --mc-border: #e2e8f0;
+    --mc-border-light: #f1f5f9;
+    --mc-text: #0f172a;
+    --mc-text-muted: #64748b;
+}
+
+[data-mc-mode="female"] body, [data-mc-theme="female"] body {
+    background-color: #f8fafc !important;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
+        linear-gradient(#f8fafc, #f8fafc) !important;
+    color: #0f172a !important;
+}
+
+/* Custom Scrollbar cho Sinh Viên Nữ */
+[data-mc-mode="female"] ::-webkit-scrollbar-track, [data-mc-theme="female"] ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-left: 1px solid #e2e8f0;
+}
+[data-mc-mode="female"] ::-webkit-scrollbar-thumb, [data-mc-theme="female"] ::-webkit-scrollbar-thumb {
+    background: #7dd3fc;
+    border-radius: 10px;
+}
+
+/* Sidebar Nữ Luyentu Style */
+[data-mc-mode="female"] .sidebar, [data-mc-theme="female"] .sidebar {
+    background: #ffffff !important;
+    border-right: 1px solid #e2e8f0 !important;
+    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-mc-mode="female"] .sidebar-logo-area, [data-mc-theme="female"] .sidebar-logo-area {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+[data-mc-mode="female"] .sidebar-brand, [data-mc-theme="female"] .sidebar-brand {
+    color: #0f172a !important;
+    text-shadow: none !important;
+    font-weight: 800 !important;
+}
+
+[data-mc-mode="female"] .sidebar-sub, [data-mc-theme="female"] .sidebar-sub {
+    color: #0284c7 !important;
+}
+
+[data-mc-mode="female"] .nav-link, [data-mc-theme="female"] .nav-link {
+    color: #475569 !important;
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-mc-mode="female"] .nav-link:hover, [data-mc-theme="female"] .nav-link:hover {
+    background: #f1f5f9 !important;
+    color: #0284c7 !important;
+}
+
+[data-mc-mode="female"] .nav-link.active, [data-mc-theme="female"] .nav-link.active {
+    background: #e0f2fe !important;
+    color: #0284c7 !important;
+    border-color: #bae6fd !important;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.18) !important;
+}
+
+/* Header Nữ Luyentu Style */
+[data-mc-mode="female"] .top-header, [data-mc-theme="female"] .top-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #0f172a !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+}
+
+[data-mc-mode="female"] .header-left, [data-mc-theme="female"] .header-left {
+    color: #0f172a !important;
+}
+
+[data-mc-mode="female"] .u-name, [data-mc-theme="female"] .u-name {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+[data-mc-mode="female"] .u-id, [data-mc-theme="female"] .u-id {
+    color: #64748b !important;
+}
+
+/* Thẻ Card Nữ Luyentu Style */
+[data-mc-mode="female"] .mc-card, [data-mc-theme="female"] .mc-card,
+[data-mc-mode="female"] .prof-card, [data-mc-theme="female"] .prof-card,
+[data-mc-mode="female"] .dash-card, [data-mc-theme="female"] .dash-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+    color: #0f172a !important;
+}
+
+[data-mc-mode="female"] .mc-card:hover, [data-mc-theme="female"] .mc-card:hover {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 8px 30px rgba(56, 189, 248, 0.15) !important;
+}
+
+/* Bottom Sidebar Info Card Nữ Luyentu */
+[data-mc-mode="female"] .sidebar-st-info, [data-mc-theme="female"] .sidebar-st-info {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 18px !important;
+    color: #0f172a !important;
+}
+
+[data-mc-mode="female"] .sidebar-st-title, [data-mc-theme="female"] .sidebar-st-title {
+    color: #0284c7 !important;
+}
+
+[data-mc-mode="female"] .sidebar-st-details, [data-mc-theme="female"] .sidebar-st-details {
+    color: #475569 !important;
+}
+
+/* Alert Boxes Nữ Luyentu */
+[data-mc-mode="female"] .alert-success, [data-mc-theme="female"] .alert-success {
+    background: #ecfdf5 !important;
+    border-color: #a7f3d0 !important;
+    color: #065f46 !important;
+}
+[data-mc-mode="female"] .alert-danger, [data-mc-theme="female"] .alert-danger {
+    background: #fef2f2 !important;
+    border-color: #fecaca !important;
+    color: #991b1b !important;
+}
+
+/* Ẩn hoàn toàn Footer đen cho Giao diện Sinh viên Nữ */
+[data-mc-mode="female"] .mc-footer, [data-mc-theme="female"] .mc-footer {
+    display: none !important;
+}
+
+/* ====================================================
+   GIAO DIỆN CHUẨN LUYENTU.COM CHO SINH VIÊN NỮ (IMAGE 2)
+   ==================================================== */
+
+.lt-dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-bottom: 30px;
+}
+
+.lt-top-row {
+    display: grid;
+    grid-template-columns: 2.2fr 1.6fr 1.6fr;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* Ponyo Hero Banner Card */
+.lt-hero-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    height: 100%;
+    min-height: 180px;
+}
+.lt-hero-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Stats 2x2 Grid Card */
+.lt-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.lt-stat-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+.lt-stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #10b981;
+    line-height: 1.2;
+}
+.lt-stat-lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* Streak Card Orange Glow */
+.lt-streak-card {
+    background: linear-gradient(135deg, #ff7e00, #ff5500);
+    border-radius: 20px;
+    padding: 20px;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(255, 85, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.lt-streak-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+}
+.lt-streak-big {
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1;
+    margin: 8px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+.lt-streak-big span { font-size: 14px; font-weight: 700; opacity: 0.9; }
+
+.lt-streak-days {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+}
+.lt-day-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    font-size: 10px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+.lt-day-dot.active {
+    background: #ffffff;
+    color: #ff5500;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+/* Quick Access Section */
+.lt-sec-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 16px;
+}
+.lt-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.lt-quick-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+.lt-quick-card:hover {
+    transform: translateY(-3px);
+    border-color: #38bdf8;
+    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.15);
+}
+.lt-quick-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.lt-quick-info h4 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+.lt-quick-info p {
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Roadmap Pills & Cards Grid */
+.lt-pills-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.lt-pill {
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.lt-pill.active, .lt-pill:hover {
+    background: #10b981;
+    color: #ffffff;
+    border-color: #10b981;
+}
+
+.lt-courses-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+.lt-course-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    text-decoration: none;
+}
+.lt-course-card:hover {
+    transform: translateY(-3px);
+    border-color: #38bdf8;
+    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.15);
+}
+.lt-course-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+.lt-course-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    width: fit-content;
+}
+/* Responsive Mobile Adjustments for Female & Male Student Dashboards */
+@media (max-width: 768px) {
+    .lt-top-row {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+    }
+    .lt-hero-card {
+        height: 220px !important;
+        max-height: 220px !important;
+    }
+    .lt-dashboard-grid > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+    .mc-menu-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Soft UI for female students is loaded from /assets/soft_female.css */
+
+
+
+

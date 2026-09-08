@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Chỉnh Sửa Câu Hỏi #' ~ question['id'] if question else 'Thêm Câu Hỏi Mới' }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+        <h2 class="fw-bold text-primary mb-1">
+            <i class="bi bi-file-earmark-plus me-2 text-warning"></i>
+            {{ 'CHỈNH SỬA CÂU HỎI #' ~ question['id'] if question else 'THÊM CÂU HỎI MỚI VÀO NGÂN HÀNG ĐỀ' }}
+        </h2>
+        <p class="text-muted mb-0">Hỗ trợ đầy đủ 4 dạng câu hỏi: Trắc nghiệm 1 đáp án, Nhiều đáp án, Đúng/Sai, và Điền code</p>
+    </div>
+    <a href="{{ url_for('teacher_question_bank') }}" class="btn btn-vh-outline">
+        <i class="bi bi-arrow-left me-1"></i>Quay Lại Ngân Hàng Câu Hỏi
+    </a>
+</div>
+
+<div class="vh-card p-4 p-md-5">
+    <form method="POST" action="{{ url_for('teacher_edit_question', q_id=question['id']) if question else url_for('teacher_add_question') }}">
+        
+        <!-- 1. CHỦ ĐỀ VÀ DẠNG CÂU HỎI -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label for="topic_id" class="form-label fw-bold">1. Phân Loại Chủ Đề Môn Học <span class="text-danger">*</span></label>
+                <select name="topic_id" id="topic_id" class="form-select form-select-lg fs-6" required>
+                    <option value="">-- Chọn Chủ đề Bài học --</option>
+                    {% for tp in topics %}
+                        <option value="{{ tp['topic_id'] }}" {{ 'selected' if question and question['topic_id'] == tp['topic_id'] else '' }}>
+                            {{ tp['subject_name'] }} » {{ tp['chapter_name'] }} » {{ tp['topic_name'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label for="question_type" class="form-label fw-bold">2. Dạng Câu Hỏi <span class="text-danger">*</span></label>
+                <select name="question_type" id="question_type" class="form-select form-select-lg fs-6" onchange="switchTypeUI(this.value)" required>
+                    <option value="single" {{ 'selected' if question and question['question_type'] == 'single' else '' }}>Trắc nghiệm 1 lựa chọn</option>
+                    <option value="multiple" {{ 'selected' if question and question['question_type'] == 'multiple' else '' }}>Trắc nghiệm nhiều lựa chọn</option>
+                    <option value="true_false" {{ 'selected' if question and question['question_type'] == 'true_false' else '' }}>Đúng / Sai</option>
+                    <option value="fill_code" {{ 'selected' if question and question['question_type'] == 'fill_code' else '' }}>Điền code / Điền từ</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label for="difficulty" class="form-label fw-bold">3. Mức Độ Khó</label>
+                <select name="difficulty" id="difficulty" class="form-select form-select-lg fs-6">
+                    <option value="easy" {{ 'selected' if question and question['difficulty'] == 'easy' else '' }}>Dễ (Easy)</option>
+                    <option value="medium" {{ 'selected' if not question or question['difficulty'] == 'medium' else '' }}>Trung bình (Medium)</option>
+                    <option value="hard" {{ 'selected' if question and question['difficulty'] == 'hard' else '' }}>Khó (Hard)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 2. NỘI DUNG CÂU HỎI & CODE SNIPPET -->
+        <div class="mb-4">
+            <label for="question_text" class="form-label fw-bold">4. Nội Dung Câu Hỏi <span class="text-danger">*</span></label>
+            <textarea name="question_text" id="question_text" class="form-control" rows="3" placeholder="Nhập đề bài câu hỏi..." required>{{ question['question_text'] if question else '' }}</textarea>
+        </div>
+
+        <div class="mb-4">
+            <label for="code_snippet" class="form-label fw-bold">5. Đoạn Mã Nguồn (Code Snippet - Tùy chọn)</label>
+            <textarea name="code_snippet" id="code_snippet" class="form-control font-monospace bg-dark text-white" rows="4" placeholder="Dán đoạn mã Python / C++ / HTML tại đây nếu có...">{{ question['code_snippet'] if question else '' }}</textarea>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- 3. ĐÁP ÁN THEO DẠNG CÂU HỎI -->
+        <h5 class="fw-bold text-primary mb-3"><i class="bi bi-ui-radios-grid me-2"></i>6. Cấu Hình Lựa Chọn & Đáp Án Đúng</h5>
+
+        <!-- SINGLE CHOICE UI -->
+        <div id="ui-single" class="type-section">
+            <p class="text-muted small">Nhập danh sách lựa chọn và tích chọn ô Radio bên cạnh đáp án ĐÚNG nhất:</p>
+            <div id="single-options-list">
+                <!-- JS populated or default 4 inputs -->
+            </div>
+        </div>
+
+        <!-- MULTIPLE CHOICE UI -->
+        <div id="ui-multiple" class="type-section" style="display: none;">
+            <p class="text-muted small">Nhập danh sách lựa chọn và tích chọn các ô Checkbox cho TẤT CẢ các đáp án đúng:</p>
+            <div id="multiple-options-list">
+                <!-- JS populated -->
+            </div>
+        </div>
+
+        <!-- TRUE / FALSE UI -->
+        <div id="ui-true-false" class="type-section" style="display: none;">
+            <div class="alert alert-info border-0">
+                Lựa chọn đáp án chính xác cho câu khẳng định trên:
+            </div>
+            <div class="d-flex gap-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_tf" id="tf_true" value="Đúng" checked>
+                    <label class="form-check-label fw-bold text-success" for="tf_true">👍 ĐÚNG</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_tf" id="tf_false" value="Sai">
+                    <label class="form-check-label fw-bold text-danger" for="tf_false">👎 SAI</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILL CODE UI -->
+        <div id="ui-fill-code" class="type-section" style="display: none;">
+            <div class="alert alert-warning border-0">
+                Nhập chính xác từ khóa / mã lệnh mà sinh viên cần điền vào chỗ trống <code>[___]</code>:
+            </div>
+            <div class="mb-3" style="max-width: 400px;">
+                <label for="correct_fill" class="form-label fw-bold">Từ khóa / Mã lệnh chính xác:</label>
+                <input type="text" name="correct_fill" id="correct_fill" class="form-control font-monospace border-primary fw-bold" placeholder="VD: range">
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- 4. GIẢI THÍCH CHI TIẾT -->
+        <div class="mb-4">
+            <label for="explanation" class="form-label fw-bold">7. Giải Thích Chi Tiết Đáp Án (Học viên xem sau khi làm bài) <span class="text-danger">*</span></label>
+            <textarea name="explanation" id="explanation" class="form-control" rows="3" placeholder="Giải thích logic từng bước vì sao chọn đáp án này..." required>{{ question['explanation'] if question else '' }}</textarea>
+        </div>
+
+        <div class="d-flex gap-3">
+            <button type="submit" class="btn btn-vh-primary btn-lg shadow px-5">
+                <i class="bi bi-save-fill me-2"></i> {{ 'CẬP NHẬT CÂU HỎI' if question else 'LƯU CÂU HỎI MỚI' }}
+            </button>
+            <a href="{{ url_for('teacher_question_bank') }}" class="btn btn-outline-secondary btn-lg">Hủy bỏ</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchTypeUI(type) {
+    document.querySelectorAll('.type-section').forEach(el => el.style.display = 'none');
+    if (type === 'single') {
+        document.getElementById('ui-single').style.display = 'block';
+    } else if (type === 'multiple') {
+        document.getElementById('ui-multiple').style.display = 'block';
+    } else if (type === 'true_false') {
+        document.getElementById('ui-true-false').style.display = 'block';
+    } else if (type === 'fill_code') {
+        document.getElementById('ui-fill-code').style.display = 'block';
+    }
+}
+
+// Generate default options inputs for single & multiple choice
+document.addEventListener('DOMContentLoaded', function() {
+    const singleContainer = document.getElementById('single-options-list');
+    const multipleContainer = document.getElementById('multiple-options-list');
+
+    let htmlSingle = '';
+    let htmlMultiple = '';
+
+    for (let i = 0; i < 4; i++) {
+        htmlSingle += `
+            <div class="input-group mb-2">
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" type="radio" name="correct_single" value="${i}" ${i === 0 ? 'checked' : ''}>
+                </div>
+                <input type="text" name="options[]" class="form-control" placeholder="Lựa chọn ${i+1}..." required>
+            </div>
+        `;
+
+        htmlMultiple += `
+            <div class="input-group mb-2">
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" type="checkbox" name="correct_multiple" value="${i}">
+                </div>
+                <input type="text" name="options[]" class="form-control" placeholder="Lựa chọn ${i+1}...">
+            </div>
+        `;
+    }
+
+    singleContainer.innerHTML = htmlSingle;
+    multipleContainer.innerHTML = htmlMultiple;
+
+    // Trigger initial type display
+    const currentType = document.getElementById('question_type').value;
+    switchTypeUI(currentType);
+});
+</script>
+{% endblock %}

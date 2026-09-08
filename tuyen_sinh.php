@@ -12,7 +12,7 @@
             <div>
                 <div class="adm-tag" style="background: rgba(0,210,196,0.12); border-color: rgba(0,210,196,0.25); color: var(--teal);"><i class="fas fa-calendar-alt"></i> Tuyển sinh 2026</div>
                 <h2 class="adm-title">Hành Trình Kiến Tạo Tri Thức</h2>
-                <p class="adm-desc">Gia nhập cộng đồng học thuật Trường Cao Đẳng Nghề Việt Nam - Hàn Quốc Cà Mau. Chúng tôi tìm kiếm những cá nhân có khao khát làm chủ kỹ thuật và tư duy đổi mới để cùng kiến tạo tương lai.</p>
+                <p class="adm-desc">Gia nhập cộng đồng học thuật Trường Cao Đẳng Cà Mau. Chúng tôi tìm kiếm những cá nhân có khao khát làm chủ kỹ thuật và tư duy đổi mới để cùng kiến tạo tương lai.</p>
             </div>
         </div>
 

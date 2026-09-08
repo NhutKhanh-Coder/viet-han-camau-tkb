@@ -520,13 +520,21 @@
                                         <input type="tel" name="sdt" placeholder="0xxx xxx xxx" required class="lh-finput">
                                     </div>
                                     <div class="lh-fgroup span-2">
-                                        <label class="lh-flabel">Ngành học quan tâm</label>
+                                        <label class="lh-flabel">Ngành học quan tâm *</label>
                                         <select name="khoa" class="lh-fselect" required>
                                             <option value="">-- Chọn ngành học --</option>
                                             <option value="Công nghệ thông tin">🖥️ Công Nghệ Thông Tin</option>
                                             <option value="Cơ khí ô tô">🚗 Cơ Khí Ô Tô</option>
                                             <option value="Điện - Điện tử">⚡ Điện - Điện Tử</option>
                                             <option value="Quản trị doanh nghiệp">📊 Quản Trị Doanh Nghiệp</option>
+                                        </select>
+                                    </div>
+                                    <div class="lh-fgroup span-2">
+                                        <label class="lh-flabel" style="color:#d91b43;"><i class="fas fa-venus-mars"></i> Giới tính sinh viên *</label>
+                                        <select name="gioi_tinh" class="lh-fselect" required style="border:2px solid #d91b43; background:#fff5f7; font-weight:700;">
+                                            <option value="Nam">👦 Sinh viên Nam (Giao diện chuẩn)</option>
+                                            <option value="Nữ">👧 Sinh viên Nữ (Tự động Giao diện Pastel Luyentu.com)</option>
+                                            <option value="Khác">✨ Khác</option>
                                         </select>
                                     </div>
                                     <div class="lh-fgroup span-2">
@@ -584,7 +592,10 @@ function handleLhSubmit(e) {
         .then(res => {
             okAlert.classList.add('show');
             okAlert.style.display = 'flex';
-            form.reset();
+            okAlert.innerHTML = '<i class="fas fa-check-circle"></i> Đăng ký thành công! Đang chuyển bạn vào Cổng Sinh Viên...';
+            setTimeout(function() {
+                window.location.replace('/tkb/student/dashboard.php');
+            }, 400);
         })
         .catch(() => {
             errAlert.classList.add('show');

@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary and debug files
+debug_output.txt
+temp_runs/
+scratch/test_*.php
+
+# IDE & Editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Large media uploads (giữ cấu trúc thư mục nhưng không đẩy video nặng)
+uploads/video/*.mp4
+uploads/video/*.avi
+uploads/video/*.mov

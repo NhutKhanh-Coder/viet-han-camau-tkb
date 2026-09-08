@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Báo Cáo Mức Độ Hoàn Thiện Web{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+        <h2 class="fw-bold text-primary mb-1">
+            <i class="bi bi-check2-square me-2 text-success"></i>BÁO CÁO MỨC ĐỘ HOÀN THIỆN WEB (& VERIFICATION)
+        </h2>
+        <p class="text-muted mb-0">Bảng tổng hợp nghiệm thu chi tiết tất cả các tính năng yêu cầu của đề tài nghiên cứu</p>
+    </div>
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-vh-primary shadow-sm">
+        <i class="bi bi-speedometer2 me-1"></i>Về Dashboard
+    </a>
+</div>
+
+<!-- SYSTEM OVERVIEW WIDGETS -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="vh-card p-3 text-center bg-primary text-white">
+            <div class="fs-4 text-warning"><i class="bi bi-mortarboard-fill"></i></div>
+            <div class="fs-2 fw-bold">{{ stats['students'] }}</div>
+            <div class="small">Tài Khoản Sinh Viên</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="vh-card p-3 text-center bg-info text-white">
+            <div class="fs-4 text-warning"><i class="bi bi-journal-code"></i></div>
+            <div class="fs-2 fw-bold">{{ stats['subjects'] }}</div>
+            <div class="small">Môn Học Đào Tạo</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="vh-card p-3 text-center bg-success text-white">
+            <div class="fs-4 text-warning"><i class="bi bi-question-circle-fill"></i></div>
+            <div class="fs-2 fw-bold">{{ stats['questions'] }}</div>
+            <div class="small">Câu Hỏi Trong Ngân Hàng</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="vh-card p-3 text-center bg-dark text-white">
+            <div class="fs-4 text-warning"><i class="bi bi-award-fill"></i></div>
+            <div class="fs-2 fw-bold">{{ stats['attempts'] }}</div>
+            <div class="small">Lượt Bài Trắc Nghiệm Đã Làm</div>
+        </div>
+    </div>
+</div>
+
+<!-- CHECKLIST TABLE -->
+<div class="vh-card">
+    <div class="vh-card-header bg-success text-white py-3">
+        <h5 class="fw-bold mb-0">
+            <i class="bi bi-clipboard-check-fill me-2"></i>DANH SÁCH HẠNG MỤC TÍNH NĂNG ĐÃ NGHIỆM THU
+        </h5>
+    </div>
+    <div class="vh-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">STT</th>
+                        <th>Hạng Mục Chức Năng Yêu Cầu</th>
+                        <th>Trạng Thái Vận Hành</th>
+                        <th>Chi Tiết Kiểm Tra / Ghi Chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in checklist %}
+                        <tr>
+                            <td class="ps-4 text-muted fw-bold">#{{ loop.index }}</td>
+                            <td class="fw-bold text-dark fs-6">{{ item['name'] }}</td>
+                            <td>
+                                {% if item['status'] %}
+                                    <span class="badge bg-success fs-6"><i class="bi bi-check-circle-fill me-1"></i>Đã Hoàn Thành 100%</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Đang Xử Lý</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted">{{ item['note'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info border-0 bg-info-subtle mt-4 p-4 rounded-4 shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <i class="bi bi-patch-check-fill text-primary display-4"></i>
+        <div>
+            <h5 class="fw-bold text-primary mb-1">XÁC NHẬN HỆ THỐNG ĐÃ HOÀN THIỆN ĐẦY ĐỦ</h5>
+            <p class="mb-0 text-dark">
+                Ứng dụng Web Ôn Tập Trắc Nghiệm Tự Động cho Trường Cao Đẳng Cà Mau đã đáp ứng trọn vẹn 8 yêu cầu trong đề tài, vận hành ổn định trên nền tảng Python 3.12 + Flask 3.1.3 + SQLite + HTML5/CSS3.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

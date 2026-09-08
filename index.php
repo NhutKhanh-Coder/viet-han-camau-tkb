@@ -727,6 +727,45 @@
     .explore-v2-grid { grid-template-columns: 1fr; }
     .news-v2-cards-grid { grid-template-columns: 1fr; }
 }
+
+/* Portals Section Styling */
+.portals-v2-section {
+    padding: 80px 0;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(217, 27, 67, 0.1);
+}
+.portals-v2-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.portal-v2-card {
+    background: #ffffff;
+    border: 1.5px solid rgba(217, 27, 67, 0.12);
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(217, 27, 67, 0.02);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.portal-v2-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(217, 27, 67, 0.35);
+    box-shadow: 0 20px 40px rgba(217, 27, 67, 0.08);
+}
+@media (max-width: 768px) {
+    .portals-v2-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 
 <!-- ===== HERO V2 ===== -->
@@ -750,7 +789,7 @@
             </h1>
 
             <p class="hero-subtitle-v2">
-                Khám phá lộ trình đào tạo nghề đẳng cấp quốc tế tại Cao Đẳng Nghề Việt Nam – Hàn Quốc Cà Mau. Nơi kỹ năng được mài giũa bởi chuyên gia và công nghệ tiên tiến nhất.
+                Khám phá lộ trình đào tạo đẳng cấp quốc tế tại Trường Cao Đẳng Cà Mau. Nơi kỹ năng được mài giũa bởi chuyên gia và công nghệ tiên tiến nhất.
             </p>
 
             <div class="hero-cta-row">
@@ -958,6 +997,60 @@
     </div>
 </section>
 
+<!-- ===== PORTALS SECTION ===== -->
+<section class="portals-v2-section">
+    <div class="container">
+        <div class="section-header centered sh-light" style="text-align: center; margin-bottom: 50px;">
+            <div class="section-tag" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(217,27,67,0.08); border: 1px solid rgba(217,27,67,0.2); border-radius: 50px; color: #d91b43; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-user-shield"></i> Phân Hệ Chức Năng</div>
+            <h2 class="section-title" style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: #1e293b; margin-top: 15px;">Cổng Thông Tin Học Tập & Giảng Dạy</h2>
+            <div class="divider-line center" style="width: 50px; height: 3px; background: #d91b43; margin: 15px auto;"></div>
+            <p class="section-desc" style="font-size: 15px; color: #64748b; max-width: 600px; margin: 0 auto;">Truy cập nhanh vào hệ thống quản lý học tập dành riêng cho Sinh viên và Giảng viên.</p>
+        </div>
+
+        <div class="portals-v2-grid">
+            <!-- Student Portal Card -->
+            <div class="portal-v2-card">
+                <div class="portal-v2-decor" style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(217,27,67,0.05) 0%, transparent 70%); pointer-events: none;"></div>
+                <div>
+                    <div class="portal-v2-icon" style="width: 60px; height: 60px; background: rgba(217,27,67,0.08); border: 1.5px solid rgba(217,27,67,0.2); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #d91b43; margin-bottom: 24px;"><i class="fas fa-user-graduate"></i></div>
+                    <h3 style="font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 12px;">Cổng Sinh Viên</h3>
+                    <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 24px;">Hệ thống hỗ trợ học tập trực tuyến dành cho sinh viên. Nơi bạn có thể theo dõi tiến trình và hoàn thành các nhiệm vụ học tập hàng ngày.</p>
+                    
+                    <ul style="list-style: none; padding: 0; margin: 0 0 30px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 📥 Nộp bài tập</li>
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 🤖 AI giải thích lỗi</li>
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 📊 Theo dõi tiến độ</li>
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 🧠 Làm Quiz trắc nghiệm</li>
+                    </ul>
+                </div>
+                <a href="/tkb/student/dashboard.php" class="btn-hero-primary" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 28px; width: 100%; border-radius: 14px; font-size: 15px; font-weight: 700; text-decoration: none; box-sizing: border-box;">
+                    <span>Truy cập Cổng Sinh Viên</span> <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Teacher Portal Card -->
+            <div class="portal-v2-card">
+                <div class="portal-v2-decor" style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(217,27,67,0.05) 0%, transparent 70%); pointer-events: none;"></div>
+                <div>
+                    <div class="portal-v2-icon" style="width: 60px; height: 60px; background: rgba(217,27,67,0.08); border: 1.5px solid rgba(217,27,67,0.2); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #d91b43; margin-bottom: 24px;"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h3 style="font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 12px;">Cổng Giảng Viên</h3>
+                    <p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 24px;">Không gian làm việc số tích hợp công cụ hỗ trợ giảng dạy trực tuyến dành cho giảng viên. Giúp nâng cao chất lượng quản lý đào tạo.</p>
+                    
+                    <ul style="list-style: none; padding: 0; margin: 0 0 30px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 🏫 Quản lý lớp học</li>
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 📝 Giao & chấm bài</li>
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 💯 Quản lý điểm số</li>
+                        <li style="font-size: 13px; color: #475569; display: flex; align-items: center; gap: 8px;"><i class="fas fa-check-circle" style="color: #22c55e;"></i> 📅 Điểm danh nhanh</li>
+                    </ul>
+                </div>
+                <a href="/tkb/teacher/dashboard.php" class="btn-hero-secondary" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 28px; width: 100%; border-radius: 14px; font-size: 15px; font-weight: 700; text-decoration: none; box-sizing: border-box;">
+                    <span>Truy cập Cổng Giảng Viên</span> <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- ===== EXPLORE V2 ===== -->
 <section class="explore-v2">
     <div class="container">
@@ -965,7 +1058,7 @@
             <div class="section-tag"><i class="fas fa-compass"></i> Khám Phá</div>
             <h2 class="section-title">Hành Trình <em style="color: #f43f6d;">Của Bạn</em> Bắt Đầu Tại Đây</h2>
             <div class="divider-line center"></div>
-            <p class="section-desc">Mọi thông tin bạn cần để bắt đầu tương lai cùng Trường Cao Đẳng Nghề Việt Nam – Hàn Quốc Cà Mau.</p>
+            <p class="section-desc">Mọi thông tin bạn cần để bắt đầu tương lai cùng Trường Cao Đẳng Cà Mau.</p>
         </div>
 
         <div class="explore-v2-grid">
@@ -1002,8 +1095,8 @@
                     <span class="explore-v2-img-badge eb-teal">🏛️ Về Trường</span>
                 </div>
                 <div class="explore-v2-body">
-                    <div class="explore-v2-title">Về Cao đẳng Nghề VN – HQ Cà Mau</div>
-                    <div class="explore-v2-desc">Khởi nguồn đam mê, kiến tạo tương lai tại môi trường giáo dục hàng đầu với tiêu chuẩn Hàn Quốc.</div>
+                    <div class="explore-v2-title">Về Trường Cao Đẳng Cà Mau</div>
+                    <div class="explore-v2-desc">Khởi nguồn đam mê, kiến tạo tương lai tại môi trường giáo dục hàng đầu với tiêu chuẩn chất lượng cao.</div>
                     <span class="explore-v2-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>

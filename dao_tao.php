@@ -313,7 +313,7 @@
         <div class="dual-banner" style="margin-top: 80px;">
             <div class="dual-banner-text">
                 <h3>Mô Hình Đào Tạo Kép</h3>
-                <p>Trường Cao Đẳng Nghề Việt Nam - Hàn Quốc Cà Mau đi đầu áp dụng mô hình đào tạo kép chất lượng cao theo chuẩn quốc tế. Sinh viên dành 30% thời gian tiếp thu lý thuyết nền tảng tại trường và 70% thời gian thực hành thực tế trực tiếp tại các tập đoàn đối tác.</p>
+                <p>Trường Cao Đẳng Cà Mau đi đầu áp dụng mô hình đào tạo kép chất lượng cao theo chuẩn quốc tế. Sinh viên dành 30% thời gian tiếp thu lý thuyết nền tảng tại trường và 70% thời gian thực hành thực tế trực tiếp tại các tập đoàn đối tác.</p>
                 <ul class="dual-list">
                     <li><i class="fas fa-check-circle"></i> Nhận trợ cấp và thu nhập thực tập ngay từ năm 2</li>
                     <li><i class="fas fa-check-circle"></i> Trải nghiệm môi trường làm việc chuyên nghiệp thực tế</li>
