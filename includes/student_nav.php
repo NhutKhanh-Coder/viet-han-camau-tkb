@@ -383,15 +383,21 @@ body:not([data-theme-mode="dark"]) .container-box {
 (function() {
     try {
         var sb = document.getElementById('sidebar');
-        if (!sb) return;
+        var nl = sb ? sb.querySelector('.nav-list') : null;
         var saved = sessionStorage.getItem('st_sidebar_scroll');
         if (saved !== null) {
-            sb.scrollTop = parseInt(saved, 10);
+            var val = parseInt(saved, 10);
+            if (nl) nl.scrollTop = val;
+            if (sb) sb.scrollTop = val;
         } else {
-            var act = sb.querySelector('.nav-link.active');
+            var act = sb ? sb.querySelector('.nav-link.active, a.active') : null;
             if (act) {
-                var target = act.offsetTop - (sb.clientHeight / 2) + (act.clientHeight / 2);
-                sb.scrollTop = Math.max(0, target);
+                var cont = (nl && nl.scrollHeight > nl.clientHeight) ? nl : sb;
+                if (cont) {
+                    var target = act.offsetTop - (cont.clientHeight / 2) + (act.clientHeight / 2);
+                    if (nl) nl.scrollTop = Math.max(0, target);
+                    if (sb) sb.scrollTop = Math.max(0, target);
+                }
             }
         }
     } catch(e) {}
@@ -806,45 +812,60 @@ document.addEventListener('mozfullscreenchange', updateFullscreenUI);
 document.addEventListener('MSFullscreenChange', updateFullscreenUI);
 
 document.addEventListener('DOMContentLoaded', function() {
-    var sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-        var savedScroll = sessionStorage.getItem('st_sidebar_scroll');
-        var activeItem = sidebar.querySelector('.nav-link.active');
+    var sb = document.getElementById('sidebar');
+    if (!sb) return;
+    var nl = sb.querySelector('.nav-list');
+    var cont = (nl && (nl.scrollHeight > nl.clientHeight || window.getComputedStyle(nl).overflowY === 'auto' || window.getComputedStyle(nl).overflowY === 'scroll')) ? nl : sb;
+    var savedScroll = sessionStorage.getItem('st_sidebar_scroll');
+    var activeItem = sb.querySelector('.nav-link.active, a.active');
 
-        if (savedScroll !== null) {
-            sidebar.scrollTop = parseInt(savedScroll, 10);
-            if (activeItem) {
-                var itemTop = activeItem.offsetTop;
-                var itemBottom = itemTop + activeItem.clientHeight;
-                var viewTop = sidebar.scrollTop;
-                var viewBottom = viewTop + sidebar.clientHeight;
-                if (itemTop < viewTop || itemBottom > viewBottom) {
-                    sidebar.scrollTop = Math.max(0, itemTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2));
-                    sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
-                }
-            }
-        } else if (activeItem) {
-            sidebar.scrollTop = Math.max(0, activeItem.offsetTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2));
-            sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
-        }
-
-        var scrollTicking = false;
-        sidebar.addEventListener('scroll', function() {
-            if (!scrollTicking) {
-                window.requestAnimationFrame(function() {
-                    sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
-                    scrollTicking = false;
-                });
-                scrollTicking = true;
-            }
-        }, { passive: true });
-
-        sidebar.querySelectorAll('a').forEach(function(link) {
-            link.addEventListener('click', function() {
-                sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
-            });
-        });
+    function applyScroll(val) {
+        if (nl) nl.scrollTop = val;
+        if (sb) sb.scrollTop = val;
     }
+
+    if (savedScroll !== null) {
+        var val = parseInt(savedScroll, 10);
+        applyScroll(val);
+        if (activeItem && cont) {
+            var itemTop = activeItem.offsetTop;
+            var itemBottom = itemTop + activeItem.clientHeight;
+            var viewTop = cont.scrollTop;
+            var viewBottom = viewTop + cont.clientHeight;
+            if (itemTop < viewTop || itemBottom > viewBottom) {
+                var target = Math.max(0, itemTop - (cont.clientHeight / 2) + (activeItem.clientHeight / 2));
+                applyScroll(target);
+                sessionStorage.setItem('st_sidebar_scroll', target);
+            }
+        }
+    } else if (activeItem && cont) {
+        var target = Math.max(0, activeItem.offsetTop - (cont.clientHeight / 2) + (activeItem.clientHeight / 2));
+        applyScroll(target);
+        sessionStorage.setItem('st_sidebar_scroll', target);
+    }
+
+    function recordStudentScroll() {
+        var val = (nl && nl.scrollTop > 0) ? nl.scrollTop : sb.scrollTop;
+        sessionStorage.setItem('st_sidebar_scroll', val);
+    }
+
+    var scrollTicking = false;
+    var onScrollHandler = function() {
+        if (!scrollTicking) {
+            window.requestAnimationFrame(function() {
+                recordStudentScroll();
+                scrollTicking = false;
+            });
+            scrollTicking = true;
+        }
+    };
+
+    sb.addEventListener('scroll', onScrollHandler, { passive: true });
+    if (nl) nl.addEventListener('scroll', onScrollHandler, { passive: true });
+
+    sb.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', recordStudentScroll);
+    });
 });
 </script>
 <!-- 🌸 Hiệu ứng Hoa Anh Đào Rơi Tự Nhiên (Sakura Falling Canvas Engine) 🌸 -->
