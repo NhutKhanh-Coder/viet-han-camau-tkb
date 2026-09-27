@@ -867,6 +867,4 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', recordStudentScroll);
     });
 });
-</script>
-<!-- 🌸 Hiệu ứng Hoa Anh Đào Rơi Tự Nhiên (Sakura Falling Canvas Engine) 🌸 -->
-<script src="/tkb/assets/sakura_fall.js?v=<?= time() ?>" defer></script>
+</script>
