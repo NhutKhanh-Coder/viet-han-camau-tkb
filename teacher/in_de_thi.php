@@ -393,8 +393,8 @@ $db->close();
                 <div class="exam-header">
                     <div class="header-left">
                         <h2>TRƯỜNG CAO ĐẲNG CÀ MAU</h2>
+                        <p style="font-size: 10.5pt; font-weight: bold; margin-top: 3px;">HỘI ĐỒNG THI &amp; KIỂM TRA</p>
                         <div class="divider"></div>
-                        <p style="font-size: 10.5pt; font-weight: bold;">HỘI ĐỒNG THI &amp; KIỂM TRA</p>
                     </div>
                     <div class="header-right">
                         <h2>BẢNG MA TRẬN ĐÁP ÁN TỔNG HỢP</h2>
@@ -458,8 +458,8 @@ $db->close();
                     <div class="exam-header">
                         <div class="header-left">
                             <h2>TRƯỜNG CAO ĐẲNG CÀ MAU</h2>
+                            <p style="font-size: 10.5pt; font-weight: bold; margin-top: 3px;">KHOA CÔNG NGHỆ THÔNG TIN</p>
                             <div class="divider"></div>
-                            <p style="font-size: 10.5pt; font-weight: bold;">KHOA CÔNG NGHỆ THÔNG TIN</p>
                         </div>
                         <div class="header-right">
                             <h2>ĐỀ THI KIỂM TRA TRẮC NGHIỆM</h2>
