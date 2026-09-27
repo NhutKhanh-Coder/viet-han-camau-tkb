@@ -1,0 +1,129 @@
+=== QUIZ 57 QUESTIONS ===
+[1] ID 1012: Visual Studio .Net là:
+  A: Hệ điều hành mới của Microsoft
+  B: Trình soạn thảo văn bản
+  C: Môi trường phát triển tích hợp (IDE)
+  D: Trình duyệt web
+  DAP_AN_DUNG: C
+
+[2] ID 1013: Phiên bản nào của Visual Studio .Net hỗ trợ phát triển ứng dụng đa nền tảng?
+  A: Visual Studio 2010
+  B: Visual Studio 2013
+  C: Visual Studio 2017
+  D: Visual Studio 2015
+  DAP_AN_DUNG: C
+
+[3] ID 1014: Trong quá trình cài đặt Visual Studio .Net, bước nào sau đây là cần thiết?
+  A: Chọn các ngôn ngữ lập trình và công cụ phát triển
+  B: Cài đặt thư viện Python
+  C: Cấu hình trình duyệt web
+  D: Cập nhật trình điều khiển đồ họa
+  DAP_AN_DUNG: A
+
+[4] ID 1015: Thành phần nào bắt buộc phải cài đặt để Visual Studio .Net hoạt động đúng cách?
+  A: .Net Framework
+  B: SQL Server
+  C: Microsoft Office
+  D: Adobe Flash
+  DAP_AN_DUNG: A
+
+[5] ID 1016: Phiên bản miễn phí của Visual Studio .Net được gọi là:
+  A: Visual Studio Community
+  B: Visual Studio Professional
+  C: Visual Studio Ultimate
+  D: Visual Studio Code
+  DAP_AN_DUNG: A
+
+[6] ID 1017: Trong quá trình cài đặt Visual Studio .Net, tùy chọn Modify cho phép:
+  A: Gỡ bỏ Visual Studio
+  B: Thêm hoặc bớt các thành phần sau khi cài đặt
+  C: Tăng dung lượng ổ đĩa
+  D: Thay đổi ngôn ngữ lập trình
+  DAP_AN_DUNG: B
+
+[7] ID 1018: Môi trường phát triển tích hợp (IDE) trong Visual Studio .Net bao gồm các công cụ chính nào?
+  A: Trình soạn thảo mã, trình gỡ lỗi, và trình biên dịch
+  B: Trình phát video và nhạc
+  C: Trình quản lý file hệ thống
+  D: Trình duyệt web
+  DAP_AN_DUNG: A
+
+[8] ID 1019: Trong Visual Studio, cửa sổ nào hiển thị các lỗi sau khi biên dịch?
+  A: Solution Explorer
+  B: Error List
+  C: Output
+  D: Properties
+  DAP_AN_DUNG: B
+
+[9] ID 1020: Solution Explorer trong Visual Studio .Net có vai trò gì?
+  A: Quản lý các tệp và dự án trong giải pháp
+  B: Hiển thị mã nguồn
+  C: Tạo và sửa lỗi lập trình
+  D: Quản lý cơ sở dữ liệu
+  DAP_AN_DUNG: A
+
+[10] ID 1021: Khi lập trình trong Visual Studio, bạn có thể dùng phím tắt nào để chạy chương trình?
+  A: Ctrl + F4
+  B: F5
+  C: F12
+  D: Alt + Tab
+  DAP_AN_DUNG: B
+
+[11] ID 1022: Cửa sổ Properties trong Visual Studio dùng để:
+  A: Hiển thị và chỉnh sửa các thuộc tính của đối tượng được chọn
+  B: Quản lý các thư viện mã nguồn
+  C: Hiển thị kết quả biên dịch
+  D: Kiểm tra lỗi lập trình
+  DAP_AN_DUNG: A
+
+[12] ID 1023: .NET Framework là một:
+  A: Bộ thư viện mã nguồn mở
+  B: Nền tảng phát triển ứng dụng đa ngôn ngữ
+  C: Trình duyệt web
+  D: Phần mềm diệt virus
+  DAP_AN_DUNG: B
+
+[13] ID 1024: .NET Framework hoạt động trên hệ điều hành nào?
+  A: Chỉ Windows
+  B: Windows và macOS
+  C: Đa nền tảng (Windows, macOS, và Linux)
+  D: Chỉ Linux
+  DAP_AN_DUNG: A
+
+[14] ID 1025: .NET Framework hỗ trợ những ngôn ngữ lập trình nào sau đây?
+  A: C# và VB.Net
+  B: Python và Java
+  C: HTML và CSS
+  D: SQL và MongoDB
+  DAP_AN_DUNG: A
+
+[15] ID 1026: Để tạo một Project mới trong VB.Net, ta cần thực hiện thao tác nào đầu tiên?
+  A: Chọn File > New > Project
+  B: Chọn View > Toolbox
+  C: Chọn Edit > New File
+  D: Chọn Tools > Options
+  DAP_AN_DUNG: A
+
+[16] ID 1027: Khi tạo Project mới trong VB.Net, bạn cần chọn loại dự án nào để tạo ứng dụng Windows Form?
+  A: Console App
+  B: Windows Forms App
+  C: Class Library
+  D: WPF Application
+  DAP_AN_DUNG: B
+
+[17] ID 1028: Trong Windows Form Designer, công cụ nào giúp bạn kéo và thả các thành phần giao diện?
+  A: Solution Explorer
+  B: Toolbox
+  C: Properties Window
+  D: Output Window
+  DAP_AN_DUNG: B
+
+[18] ID 1029: Lệnh `For i = 10 To 1 Step -1` sẽ thực hiện hành động nào?
+  A: Lặp từ 1 đến 10
+  B: Lặp từ 10 đến 1
+  C: Lặp từ 1 đến 10 với bước nhảy 1
+  D: Lặp từ 1 đến 10 với bước nhảy -1
+  DAP_AN_DUNG: B
+
+
+=== QUIZ 55 QUESTIONS ===

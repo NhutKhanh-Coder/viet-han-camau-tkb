@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body { margin:0; background: #0f0a1c; overflow:hidden; }
+canvas { position:fixed; top:0; left:0; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+var c = document.getElementById('c');
+var ctx = c.getContext('2d');
+c.width = window.innerWidth;
+c.height = window.innerHeight;
+
+// Test drawing 3 types:
+// 1. Full 5-petal flower
+// 2. Single curved petal
+// 3. Double petal cluster
+</script>
+</body>
+</html>

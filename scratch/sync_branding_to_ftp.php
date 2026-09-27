@@ -27,8 +27,16 @@ $files = [
     'student/dashboard.php',
     'student/code_ide.php',
     'teacher/cham_code.php',
-    'assets/home.css'
+    'assets/home.css',
+    'assets/img/campus_showcase.png',
+    'assets/img/news_le_thanh_lap.jpg',
+    'api/run_code.php',
+    'teacher/profile.php',
+    'teacher/quiz.php',
+    'student/quiz.php',
+    'admin/ai_studio.php'
 ];
+
 
 $remote_bases = [
     '/htdocs/tkb',

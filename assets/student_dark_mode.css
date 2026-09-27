@@ -1,0 +1,698 @@
+/* ═══════════════════════════════════════════════════════════════════
+   STUDENT PORTAL — COMPREHENSIVE DARK / LIGHT MODE ENGINE
+   Hỗ trợ chế độ Sáng / Tối toàn diện cho cả giao diện Nữ và Nam
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── NÚT CHUYỂN CHẾ ĐỘ SÁNG / TỐI (THEME TOGGLE BUTTON) ─── */
+.btn-theme-toggle {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    padding: 7px 15px !important;
+    border-radius: 9999px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    font-family: 'Outfit', -apple-system, sans-serif !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: 1.5px solid #e9d5ff !important;
+    background: #faf5ff !important;
+    color: #6d28d9 !important;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08) !important;
+    outline: none !important;
+    user-select: none !important;
+    line-height: 1 !important;
+}
+
+.btn-theme-toggle:hover {
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.16) !important;
+    background: #f3e8ff !important;
+    border-color: #d8b4fe !important;
+}
+
+.btn-theme-toggle:active {
+    transform: translateY(0) scale(0.98) !important;
+}
+
+.btn-theme-toggle i {
+    font-size: 13.5px !important;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.btn-theme-toggle:hover i {
+    transform: rotate(18deg) scale(1.15) !important;
+}
+
+/* Khi ở chế độ Tối (Dark Active) */
+.btn-theme-toggle.is-dark {
+    background: rgba(30, 41, 59, 0.95) !important;
+    border-color: rgba(251, 191, 36, 0.45) !important;
+    color: #f8fafc !important;
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.22) !important;
+}
+
+.btn-theme-toggle.is-dark:hover {
+    background: #1e293b !important;
+    border-color: #fbbf24 !important;
+    box-shadow: 0 0 18px rgba(251, 191, 36, 0.4) !important;
+}
+
+/* Smooth transition khi đổi giao diện */
+body, .main-content, .top-header, .sidebar, 
+.sf-card-white, .sf-hero-card, .sf-video-card, 
+.mc-card-male, .mc-card {
+    transition: background-color 0.28s ease, border-color 0.28s ease, color 0.28s ease, box-shadow 0.28s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CHẾ ĐỘ TỐI (DARK MODE ENGINE)
+   ═══════════════════════════════════════════════════════════════════ */
+[data-theme-mode="dark"] {
+    color-scheme: dark;
+    --sf-bg: #0b0f19 !important;
+    --sf-bg-card: rgba(19, 25, 38, 0.92) !important;
+    --sf-bg-glass: rgba(15, 20, 32, 0.88) !important;
+    --sf-surface: #131926 !important;
+    --sf-border: rgba(255, 255, 255, 0.08) !important;
+    --sf-border-soft: rgba(236, 72, 153, 0.25) !important;
+    --sf-text: #f8fafc !important;
+    --sf-text-secondary: #94a3b8 !important;
+    --sf-text-muted: #64748b !important;
+    --sf-pink-lighter: rgba(236, 72, 153, 0.15) !important;
+    --sf-pink-light: rgba(236, 72, 153, 0.3) !important;
+    --sf-shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+    --sf-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    --sf-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+    --sf-shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* Nền tảng Body & Main Content */
+html[data-theme-mode="dark"],
+body[data-theme-mode="dark"],
+[data-theme-mode="dark"] body {
+    background: #0b0f19 !important;
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] .main-content {
+    background: #0b0f19 !important;
+}
+
+[data-theme-mode="dark"] .content-pad {
+    background: transparent !important;
+}
+
+/* ─── TOP HEADER ─── */
+[data-theme-mode="dark"] .top-header {
+    background: rgba(15, 20, 32, 0.92) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme-mode="dark"] .header-left,
+[data-theme-mode="dark"] .header-left span {
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] .header-bell {
+    color: #94a3b8 !important;
+}
+[data-theme-mode="dark"] .header-bell:hover {
+    color: #f472b6 !important;
+}
+
+[data-theme-mode="dark"] .user-profile {
+    background: #182032 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme-mode="dark"] .user-info .u-name {
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] .user-info .u-id {
+    color: #94a3b8 !important;
+}
+
+[data-theme-mode="dark"] .btn-logout-header {
+    background: #1e293b !important;
+    border-color: rgba(244, 114, 182, 0.35) !important;
+    color: #f472b6 !important;
+}
+[data-theme-mode="dark"] .btn-logout-header:hover {
+    background: rgba(244, 114, 182, 0.15) !important;
+    border-color: #f472b6 !important;
+}
+
+/* ─── SIDEBAR ─── */
+[data-theme-mode="dark"] .sidebar {
+    background: rgba(13, 17, 28, 0.98) !important;
+    backdrop-filter: blur(28px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme-mode="dark"] .sidebar-logo-area {
+    background: linear-gradient(135deg, #701a75 0%, #4a044e 50%, #1e1b4b 100%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme-mode="dark"] .sidebar-st-info {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme-mode="dark"] .sidebar-st-info span {
+    color: #cbd5e1 !important;
+}
+
+[data-theme-mode="dark"] .nav-link {
+    color: #94a3b8 !important;
+}
+
+[data-theme-mode="dark"] .nav-link:hover {
+    color: #f472b6 !important;
+    background: rgba(236, 72, 153, 0.12) !important;
+    border-color: rgba(236, 72, 153, 0.25) !important;
+}
+
+[data-theme-mode="dark"] .nav-link.active {
+    color: #f472b6 !important;
+    background: linear-gradient(90deg, rgba(236, 72, 153, 0.18), rgba(168, 85, 247, 0.1)) !important;
+    border-color: rgba(236, 72, 153, 0.35) !important;
+    box-shadow: 0 0 14px rgba(236, 72, 153, 0.2) !important;
+}
+
+/* ─── HERO CARD (WELCOME & BANNER) ─── */
+.sf-hero-card {
+    display: grid !important;
+    grid-template-columns: 1.4fr 1fr !important;
+    gap: 16px !important;
+    align-items: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+    height: 295px !important;
+    border-radius: 24px !important;
+    padding: 20px 22px !important;
+    box-sizing: border-box !important;
+}
+
+[data-theme-mode="dark"] .sf-hero-card {
+    background: linear-gradient(135deg, #181432 0%, #20133b 100%) !important;
+    border: 1.5px solid rgba(168, 85, 247, 0.35) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme-mode="dark"] .sf-hero-card #sfHeroName {
+    color: #f5d0fe !important;
+}
+
+[data-theme-mode="dark"] .sf-hero-card #sfHeroQuote {
+    color: #d8b4fe !important;
+}
+
+[data-theme-mode="dark"] .sf-hero-card div[style*="background: #ddd6fe"] {
+    background: rgba(168, 85, 247, 0.25) !important;
+    color: #e9d5ff !important;
+    border: 1px solid rgba(168, 85, 247, 0.35) !important;
+}
+
+.sf-stat-box-small {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    border-radius: 12px !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+}
+
+[data-theme-mode="dark"] .sf-stat-box-small {
+    background: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme-mode="dark"] .sf-stat-box-small div[style*="font-weight: 800"] {
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] .sf-stat-box-small div[style*="color: #64748b"] {
+    color: #94a3b8 !important;
+}
+
+[data-theme-mode="dark"] .sf-stat-box-small .fa-tiktok {
+    color: #ffffff !important;
+}
+
+[data-theme-mode="dark"] .sf-stat-box-small div[style*="color: #0f172a"] {
+    color: #f8fafc !important;
+}
+
+.sf-btn-view-profile {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    border-radius: 20px !important;
+    padding: 7px 18px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    margin-top: 6px;
+    box-sizing: border-box !important;
+}
+
+[data-theme-mode="dark"] .sf-btn-view-profile {
+    background: linear-gradient(135deg, #2e1065, #3b0764) !important;
+    color: #f5d0fe !important;
+    border: 1px solid #9333ea !important;
+    box-shadow: 0 4px 14px rgba(147, 51, 234, 0.3) !important;
+}
+[data-theme-mode="dark"] .sf-btn-view-profile:hover {
+    background: linear-gradient(135deg, #3b0764, #581c87) !important;
+    border-color: #a855f7 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+}
+
+[data-theme-mode="dark"] .sf-banner-box {
+    background: linear-gradient(135deg, #131929 0%, #1e1b4b 100%) !important;
+    border: 2px solid rgba(168, 85, 247, 0.35) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ─── VIDEO COLLECTION CARD ─── */
+[data-theme-mode="dark"] .sf-video-card {
+    background: #131926 !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5) !important;
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] .sf-video-card > div:first-child {
+    color: #f8fafc !important;
+    border-bottom: 1.5px dashed rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme-mode="dark"] .sf-video-card span[style*="color: #8b5cf6"] {
+    color: #c084fc !important;
+}
+
+[data-theme-mode="dark"] .sf-video-card button {
+    background: #1e293b !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #c084fc !important;
+}
+
+[data-theme-mode="dark"] #sfVideoCounter {
+    background: #1e1b4b !important;
+    color: #c084fc !important;
+}
+
+[data-theme-mode="dark"] .sf-video-prev-btn,
+[data-theme-mode="dark"] .sf-video-next-btn {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+[data-theme-mode="dark"] .sf-video-remove-btn {
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+    color: #f87171 !important;
+}
+
+/* ─── WHITE CARDS (GRID ROW 2, 3, ETC.) ─── */
+[data-theme-mode="dark"] .sf-card-white,
+[data-theme-mode="dark"] .mc-card-male,
+[data-theme-mode="dark"] .mc-card {
+    background: #131926 !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] .sf-card-white:hover,
+[data-theme-mode="dark"] .mc-card-male:hover {
+    border-color: rgba(168, 85, 247, 0.3) !important;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Góc Khoe Người Yêu */
+[data-theme-mode="dark"] #coupleMyName,
+[data-theme-mode="dark"] #couplePartnerName {
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] #coupleStatus {
+    background: rgba(236, 72, 153, 0.12) !important;
+    border: 1px dashed rgba(236, 72, 153, 0.3) !important;
+    color: #f472b6 !important;
+}
+
+/* Mã Định Danh Sinh Viên */
+[data-theme-mode="dark"] .sf-card-white div[style*="color: #0f172a"] {
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] .sf-card-white button[onclick*="qrserver"] {
+    background: rgba(14, 165, 233, 0.15) !important;
+    border-color: rgba(14, 165, 233, 0.35) !important;
+    color: #38bdf8 !important;
+}
+
+/* 4 Thẻ Thống Kê / Đồng Hồ */
+[data-theme-mode="dark"] div[style*="background: #eff6ff"] {
+    background: #0f1c3f !important;
+    border-color: #1e3a8a !important;
+}
+[data-theme-mode="dark"] div[style*="background: #f0fdf4"] {
+    background: #062e1e !important;
+    border-color: #065f46 !important;
+}
+[data-theme-mode="dark"] div[style*="background: #fffbeb"] {
+    background: #3b2006 !important;
+    border-color: #854d0e !important;
+}
+[data-theme-mode="dark"] div[style*="background: #f3e8ff"] {
+    background: #25123d !important;
+    border-color: #581c87 !important;
+}
+
+/* Lịch Học / Lịch Thi & Thông Báo */
+[data-theme-mode="dark"] #stSchedHocContentFemale > div,
+[data-theme-mode="dark"] #stSchedThiContentFemale > div {
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] #stSchedHocContentFemale > div span {
+    background: #1e1b4b !important;
+    color: #c084fc !important;
+}
+
+[data-theme-mode="dark"] div[onclick*="openAnnModal"] {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08) !important;
+    color: #cbd5e1 !important;
+}
+
+[data-theme-mode="dark"] div[onclick*="openAnnModal"] strong {
+    color: #f8fafc !important;
+}
+
+/* Tiến Độ Học Tập & Truy Cập Nhanh */
+[data-theme-mode="dark"] .sf-card-white div[style*="font-weight: 700; color: #334155"] span {
+    color: #f8fafc !important;
+}
+
+[data-theme-mode="dark"] div[style*="background: #f1f5f9"] {
+    background: #1e293b !important;
+}
+
+[data-theme-mode="dark"] a[href*="/tkb/student/"] div[style*="background: #ffffff"] {
+    background: #182032 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme-mode="dark"] a[href*="/tkb/student/"] div[style*="font-weight: 700; color: #0f172a"] {
+    color: #f8fafc !important;
+}
+
+/* Footer */
+[data-theme-mode="dark"] div[style*="border-top: 1px solid #e9d5ff"] {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #94a3b8 !important;
+}
+[data-theme-mode="dark"] div[style*="border-top: 1px solid #e9d5ff"] a {
+    color: #94a3b8 !important;
+}
+[data-theme-mode="dark"] div[style*="border-top: 1px solid #e9d5ff"] a:hover {
+    color: #f472b6 !important;
+}
+
+/* ─── MODALS IN DARK MODE ─── */
+[data-theme-mode="dark"] .mc-theme-modal,
+[data-theme-mode="dark"] .modal-content,
+[data-theme-mode="dark"] div[style*="background: #ffffff; border-radius: 20px"] {
+    background: #131926 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #f8fafc !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NÚT TOÀN MÀN HÌNH (FULLSCREEN TOGGLE BUTTON)
+   ═══════════════════════════════════════════════════════════════════ */
+.btn-fullscreen-toggle {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    padding: 7px 14px !important;
+    border-radius: 9999px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    font-family: 'Outfit', -apple-system, sans-serif !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: 1.5px solid #e0f2fe !important;
+    background: #f0f9ff !important;
+    color: #0284c7 !important;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08) !important;
+    outline: none !important;
+    user-select: none !important;
+    line-height: 1 !important;
+}
+
+.btn-fullscreen-toggle:hover {
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.18) !important;
+    background: #e0f2fe !important;
+    border-color: #bae6fd !important;
+}
+
+.btn-fullscreen-toggle:active {
+    transform: translateY(0) scale(0.98) !important;
+}
+
+.btn-fullscreen-toggle i {
+    font-size: 13px !important;
+    color: #0284c7 !important;
+    transition: transform 0.25s ease !important;
+}
+
+.btn-fullscreen-toggle:hover i {
+    transform: scale(1.18) !important;
+}
+
+[data-theme-mode="dark"] .btn-fullscreen-toggle {
+    background: rgba(14, 165, 233, 0.12) !important;
+    border-color: rgba(14, 165, 233, 0.35) !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 0 14px rgba(14, 165, 233, 0.2) !important;
+}
+
+[data-theme-mode="dark"] .btn-fullscreen-toggle:hover {
+    background: rgba(14, 165, 233, 0.22) !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+}
+
+[data-theme-mode="dark"] .btn-fullscreen-toggle i {
+    color: #38bdf8 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ĐÓNG MỞ THANH BÊN (COLLAPSE SIDEBAR / MỞ RỘNG KHÔNG GIAN MÀN HÌNH)
+   ═══════════════════════════════════════════════════════════════════ */
+.sidebar-toggle {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    background: rgba(124, 58, 237, 0.08) !important;
+    border: 1px solid rgba(124, 58, 237, 0.15) !important;
+    color: #6d28d9 !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin-right: 12px !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+}
+
+.sidebar-toggle i {
+    font-size: 15px !important;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(124, 58, 237, 0.16) !important;
+    transform: scale(1.05) !important;
+}
+
+.sidebar-toggle span {
+    display: block !important;
+    width: 18px !important;
+    height: 2px !important;
+    background: #6d28d9 !important;
+    border-radius: 2px !important;
+    transition: all 0.25s ease !important;
+}
+
+[data-theme-mode="dark"] .sidebar-toggle {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+[data-theme-mode="dark"] .sidebar-toggle i {
+    color: #ffffff !important;
+}
+
+[data-theme-mode="dark"] .sidebar-toggle span {
+    background: #ffffff !important;
+}
+
+/* Khi người dùng thu gọn sidebar (Mở rộng màn hình Desktop) */
+@media (min-width: 993px) {
+    body.sidebar-collapsed .sidebar {
+        transform: translateX(-100%) !important;
+    }
+    body.sidebar-collapsed .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        transition: margin-left 0.3s ease, width 0.3s ease !important;
+    }
+    body.sidebar-collapsed .top-header {
+        left: 0 !important;
+        width: 100% !important;
+        transition: left 0.3s ease, width 0.3s ease !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PREMIUM SCREEN CURTAIN & CELESTIAL TRANSITION ENGINE
+   Hỗ trợ chuyển đổi Sáng (Trắng Tinh Khôi) & Tối (Đêm Vũ Trụ)
+   ═══════════════════════════════════════════════════════════════════ */
+.screen-curtain-wrap {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999999;
+    pointer-events: none;
+    visibility: hidden;
+    overflow: hidden;
+}
+
+.screen-curtain-wrap.closing,
+.screen-curtain-wrap.opening {
+    visibility: visible;
+    pointer-events: all;
+}
+
+.curtain-half {
+    position: absolute;
+    left: 0;
+    width: 100vw;
+    height: 50.5vh;
+    overflow: hidden;
+    will-change: transform;
+    background-color: #0b0914;
+}
+
+.screen-curtain-wrap.theme-light .curtain-half {
+    background-color: #fffaf0;
+}
+
+.curtain-top {
+    top: 0;
+    transform: translateY(-100%);
+}
+
+.curtain-bottom {
+    bottom: 0;
+    transform: translateY(100%);
+}
+
+/* Hiệu ứng Đóng màn hình full screen */
+.screen-curtain-wrap.closing .curtain-top {
+    transform: translateY(0);
+    transition: transform 0.42s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.screen-curtain-wrap.closing .curtain-bottom {
+    transform: translateY(0);
+    transition: transform 0.42s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Hiệu ứng Mở màn hình full screen */
+.screen-curtain-wrap.opening .curtain-top {
+    transform: translateY(-100%);
+    transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.screen-curtain-wrap.opening .curtain-bottom {
+    transform: translateY(100%);
+    transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Các layer tranh nghệ thuật Full Màn Hình (100vw x 100vh) */
+.curtain-scene-layer {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    display: none;
+}
+
+.curtain-scene-layer.active {
+    display: block;
+}
+
+/* Nửa màn hình trên */
+.curtain-top .curtain-scene-layer {
+    top: 0;
+}
+.curtain-top .curtain-full-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    image-rendering: -webkit-optimize-contrast;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* Nửa màn hình dưới */
+.curtain-bottom .curtain-scene-layer {
+    bottom: 0;
+}
+.curtain-bottom .curtain-full-img {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    image-rendering: -webkit-optimize-contrast;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+
+
+
+
+
+
