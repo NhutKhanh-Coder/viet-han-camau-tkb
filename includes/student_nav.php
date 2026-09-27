@@ -378,6 +378,25 @@ body:not([data-theme-mode="dark"]) .container-box {
     </div>
     <?php endif; ?>
 </nav>
+<script>
+// Khôi phục vị trí cuộn thanh sidebar sinh viên NGAY LẬP TỨC trước khi vẽ giao diện (chống giật 100%)
+(function() {
+    try {
+        var sb = document.getElementById('sidebar');
+        if (!sb) return;
+        var saved = sessionStorage.getItem('st_sidebar_scroll');
+        if (saved !== null) {
+            sb.scrollTop = parseInt(saved, 10);
+        } else {
+            var act = sb.querySelector('.nav-link.active');
+            if (act) {
+                var target = act.offsetTop - (sb.clientHeight / 2) + (act.clientHeight / 2);
+                sb.scrollTop = Math.max(0, target);
+            }
+        }
+    } catch(e) {}
+})();
+</script>
 
 
 <div class="main-content">
@@ -785,6 +804,48 @@ document.addEventListener('fullscreenchange', updateFullscreenUI);
 document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 document.addEventListener('mozfullscreenchange', updateFullscreenUI);
 document.addEventListener('MSFullscreenChange', updateFullscreenUI);
+
+document.addEventListener('DOMContentLoaded', function() {
+    var sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        var savedScroll = sessionStorage.getItem('st_sidebar_scroll');
+        var activeItem = sidebar.querySelector('.nav-link.active');
+
+        if (savedScroll !== null) {
+            sidebar.scrollTop = parseInt(savedScroll, 10);
+            if (activeItem) {
+                var itemTop = activeItem.offsetTop;
+                var itemBottom = itemTop + activeItem.clientHeight;
+                var viewTop = sidebar.scrollTop;
+                var viewBottom = viewTop + sidebar.clientHeight;
+                if (itemTop < viewTop || itemBottom > viewBottom) {
+                    sidebar.scrollTop = Math.max(0, itemTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2));
+                    sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
+                }
+            }
+        } else if (activeItem) {
+            sidebar.scrollTop = Math.max(0, activeItem.offsetTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2));
+            sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
+        }
+
+        var scrollTicking = false;
+        sidebar.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+                window.requestAnimationFrame(function() {
+                    sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
+
+        sidebar.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                sessionStorage.setItem('st_sidebar_scroll', sidebar.scrollTop);
+            });
+        });
+    }
+});
 </script>
 <!-- 🌸 Hiệu ứng Hoa Anh Đào Rơi Tự Nhiên (Sakura Falling Canvas Engine) 🌸 -->
 <script src="/tkb/assets/sakura_fall.js?v=<?= time() ?>" defer></script>
