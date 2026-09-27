@@ -2536,6 +2536,25 @@ body.admin-portal .alert-error {
     </div>
 
 </aside>
+<script>
+// Khôi phục vị trí cuộn thanh sidebar NGAY LẬP TỨC trước khi trình duyệt vẽ giao diện (chống giật 100%)
+(function() {
+    try {
+        var sb = document.getElementById('admSidebar');
+        if (!sb) return;
+        var saved = sessionStorage.getItem('adm_sidebar_scroll');
+        if (saved !== null) {
+            sb.scrollTop = parseInt(saved, 10);
+        } else {
+            var act = sb.querySelector('.adm-nav-item.active');
+            if (act) {
+                var target = act.offsetTop - (sb.clientHeight / 2) + (act.clientHeight / 2);
+                sb.scrollTop = Math.max(0, target);
+            }
+        }
+    } catch(e) {}
+})();
+</script>
 
 <?php if (!$is_tuyen): ?>
 <!-- MODAL QUẢN LÝ & DANH SÁCH NHẠC LOFI CHILL -->
@@ -3207,31 +3226,45 @@ document.addEventListener('DOMContentLoaded', function() {
     document.cookie = 'adm_theme=' + (isLight ? 'light' : 'dark') + ';path=/;max-age=31536000';
     updateAdminThemeUI(isLight);
 
-    // === CỐ ĐỊNH VÀ GIỮ VỊ TRÍ CUỘN THANH SIDEBAR (TỰ ĐỘNG CUỘN ĐẾN MỤC ĐANG ACTIVE) ===
+    // === CỐ ĐỊNH VÀ GIỮ VỊ TRÍ CUỘN THANH SIDEBAR (MƯỢT MÀ, KHÔNG GIẬT) ===
     const sidebar = document.getElementById('admSidebar');
     if (sidebar) {
+        const savedScroll = sessionStorage.getItem('adm_sidebar_scroll');
         const activeItem = sidebar.querySelector('.adm-nav-item.active');
-        const scrollToActive = function() {
+
+        if (savedScroll !== null) {
+            // Giữ nguyên chính xác vị trí cuộn người dùng đang đứng
+            sidebar.scrollTop = parseInt(savedScroll, 10);
+
+            // Chỉ căn chỉnh nhẹ nếu mục active bị trôi hẳn ra ngoài màn hình
             if (activeItem) {
-                const targetY = activeItem.offsetTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2);
-                sidebar.scrollTop = Math.max(0, targetY);
-            } else {
-                const savedScroll = sessionStorage.getItem('adm_sidebar_scroll');
-                if (savedScroll !== null) {
-                    sidebar.scrollTop = parseInt(savedScroll, 10);
+                const itemTop = activeItem.offsetTop;
+                const itemBottom = itemTop + activeItem.clientHeight;
+                const viewTop = sidebar.scrollTop;
+                const viewBottom = viewTop + sidebar.clientHeight;
+                if (itemTop < viewTop || itemBottom > viewBottom) {
+                    sidebar.scrollTop = Math.max(0, itemTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2));
+                    sessionStorage.setItem('adm_sidebar_scroll', sidebar.scrollTop);
                 }
             }
-        };
-
-        // Cuộn ngay lập tức không trễ, không giật trang
-        scrollToActive();
-        setTimeout(scrollToActive, 50);
-        setTimeout(scrollToActive, 250);
-
-        sidebar.addEventListener('scroll', function() {
+        } else if (activeItem) {
+            sidebar.scrollTop = Math.max(0, activeItem.offsetTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2));
             sessionStorage.setItem('adm_sidebar_scroll', sidebar.scrollTop);
+        }
+
+        // Lưu vị trí cuộn khi người dùng cuộn sidebar
+        let scrollTicking = false;
+        sidebar.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+                window.requestAnimationFrame(function() {
+                    sessionStorage.setItem('adm_sidebar_scroll', sidebar.scrollTop);
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
         }, { passive: true });
 
+        // Khi người dùng bấm bất kỳ link nào: lưu vị trí tức thời
         sidebar.querySelectorAll('a').forEach(function(link) {
             link.addEventListener('click', function() {
                 sessionStorage.setItem('adm_sidebar_scroll', sidebar.scrollTop);
