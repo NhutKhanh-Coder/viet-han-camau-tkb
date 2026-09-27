@@ -233,7 +233,7 @@ $db->close();
 .search-sv { width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:7px; background:var(--bg2); color:var(--text); font-size:13px; outline:none; margin-bottom:8px; }
 </style>
 </head>
-<body class="<?= isAdmin() ? 'admin-portal' : '' ?>">
+<body class="<?= isAdmin() ? 'admin-portal' : '' ?> <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
 <?php if (isAdmin()): ?>
     <?php include '../includes/admin_nav.php'; ?>
 <?php else: ?>

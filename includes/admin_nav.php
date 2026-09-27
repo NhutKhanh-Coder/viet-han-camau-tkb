@@ -99,66 +99,110 @@ body.tuyen-theme:not(.adm-light-mode) #lofiYtPlayerHolder {
     display: none !important;
 }
 
-body.tuyen-theme .adm-sidebar {
+body.tuyen-theme .adm-sidebar,
+body.adm-light-mode .adm-sidebar {
     background: #ffffff !important;
-    border-right: 1px solid #f1f5f9 !important;
+    border-right: 1px solid #e2e8f0 !important;
     box-shadow: 2px 0 20px rgba(0, 0, 0, 0.03) !important;
 }
 
-body.tuyen-theme .adm-brand-logo {
+body.tuyen-theme .adm-brand-logo,
+body.adm-light-mode .adm-brand-logo {
     box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12) !important;
-    border: 1px solid #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
 }
 
-body.tuyen-theme .adm-brand-text h2 {
+body.tuyen-theme .adm-brand-text h2,
+body.adm-light-mode .adm-brand-text h2 {
     color: #0f172a !important;
     text-shadow: none !important;
 }
 
-body.tuyen-theme .adm-brand-text span {
+body.tuyen-theme .adm-brand-text span,
+body.adm-light-mode .adm-brand-text span {
     color: #64748b !important;
 }
 
-body.tuyen-theme .adm-user-card {
-    background: #ffffff !important;
-    border: 1px solid #f1f5f9 !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+body.tuyen-theme .adm-user-card,
+body.adm-light-mode .adm-user-card {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
 }
-body.tuyen-theme .adm-user-card:hover {
+body.tuyen-theme .adm-user-card:hover,
+body.adm-light-mode .adm-user-card:hover {
     border-color: #ddd6fe !important;
+    background: #ffffff !important;
     box-shadow: 0 4px 14px rgba(124, 58, 237, 0.1) !important;
 }
 
-body.tuyen-theme .adm-user-av {
+body.tuyen-theme .adm-user-av,
+body.adm-light-mode .adm-user-av {
     border: 2px solid #ddd6fe !important;
     background: #f5f3ff !important;
 }
 
-body.tuyen-theme .adm-user-name {
+body.tuyen-theme .adm-user-name,
+body.adm-light-mode .adm-user-name {
     color: #0f172a !important;
 }
 
-body.tuyen-theme .adm-user-role {
+body.tuyen-theme .adm-user-role,
+body.adm-light-mode .adm-user-role {
     color: #64748b !important;
 }
 
-body.tuyen-theme .adm-nav-item a {
-    color: #475569 !important;
+body.tuyen-theme .adm-user-card i.fa-chevron-right,
+body.adm-light-mode .adm-user-card i.fa-chevron-right {
+    color: #94a3b8 !important;
 }
-body.tuyen-theme .adm-nav-item a:hover {
+
+body.tuyen-theme .adm-nav-item a,
+body.adm-light-mode .adm-nav-item a {
+    color: #475569 !important;
+    font-weight: 500 !important;
+}
+body.tuyen-theme .adm-nav-item a:hover,
+body.adm-light-mode .adm-nav-item a:hover {
     background: #f5f3ff !important;
     color: #7c3aed !important;
 }
 body.tuyen-theme .adm-nav-item.active a,
-body.tuyen-theme .adm-nav-item a.active {
+body.tuyen-theme .adm-nav-item a.active,
+body.adm-light-mode .adm-nav-item.active a,
+body.adm-light-mode .adm-nav-item a.active {
     background: #ede9fe !important;
     color: #7c3aed !important;
     box-shadow: none !important;
     font-weight: 700 !important;
+    border-left: 3.5px solid #7c3aed !important;
 }
 body.tuyen-theme .adm-nav-item.active a i,
-body.tuyen-theme .adm-nav-item a.active i {
+body.tuyen-theme .adm-nav-item a.active i,
+body.adm-light-mode .adm-nav-item.active a i,
+body.adm-light-mode .adm-nav-item a.active i {
     color: #7c3aed !important;
+}
+
+body.tuyen-theme .adm-sidebar li[style*="text-transform: uppercase"],
+body.adm-light-mode .adm-sidebar li[style*="text-transform: uppercase"],
+body.tuyen-theme .adm-sidebar li[style*="letter-spacing"],
+body.adm-light-mode .adm-sidebar li[style*="letter-spacing"] {
+    color: #64748b !important;
+}
+body.tuyen-theme .adm-sidebar li[style*="text-transform: uppercase"] i,
+body.adm-light-mode .adm-sidebar li[style*="text-transform: uppercase"] i {
+    color: #7c3aed !important;
+}
+
+body.tuyen-theme .adm-sidebar::-webkit-scrollbar-thumb,
+body.adm-light-mode .adm-sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1 !important;
+}
+body.tuyen-theme .adm-sidebar::-webkit-scrollbar-thumb:hover,
+body.adm-light-mode .adm-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8 !important;
 }
 
 body.tuyen-theme .adm-topbar , body.adm-light-mode .adm-topbar {
