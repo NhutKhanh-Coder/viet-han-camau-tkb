@@ -392,8 +392,7 @@ $db->close();
             <div class="exam-sheet">
                 <div class="exam-header">
                     <div class="header-left">
-                        <h3>UBND TỈNH CÀ MAU</h3>
-                        <h2>TRƯỜNG CAO ĐẲNG KT &amp; CN CÀ MAU</h2>
+                        <h2>TRƯỜNG CAO ĐẲNG CÀ MAU</h2>
                         <div class="divider"></div>
                         <p style="font-size: 10.5pt; font-weight: bold;">HỘI ĐỒNG THI &amp; KIỂM TRA</p>
                     </div>
@@ -458,8 +457,7 @@ $db->close();
                     <!-- Header -->
                     <div class="exam-header">
                         <div class="header-left">
-                            <h3>UBND TỈNH CÀ MAU</h3>
-                            <h2>TRƯỜNG CAO ĐẲNG KT &amp; CN CÀ MAU</h2>
+                            <h2>TRƯỜNG CAO ĐẲNG CÀ MAU</h2>
                             <div class="divider"></div>
                             <p style="font-size: 10.5pt; font-weight: bold;">KHOA CÔNG NGHỆ THÔNG TIN</p>
                         </div>
@@ -545,8 +543,7 @@ $db->close();
                         <div style="page-break-before: always; margin-top: 30px;">
                             <div class="exam-header">
                                 <div class="header-left">
-                                    <h3>UBND TỈNH CÀ MAU</h3>
-                                    <h2>TRƯỜNG CAO ĐẲNG KT &amp; CN CÀ MAU</h2>
+                                    <h2>TRƯỜNG CAO ĐẲNG CÀ MAU</h2>
                                 </div>
                                 <div class="header-right">
                                     <h2>ĐÁP ÁN ĐỀ THI TRẮC NGHIỆM</h2>
