@@ -22,11 +22,12 @@ if (ob_get_length()) ob_clean();
 http_response_code(200);
 header('Content-Type: application/json; charset=utf-8');
 
-if (!isLoggedIn()) {
+$is_guest = !empty($_SESSION['is_guest']);
+if (!isLoggedIn() && !$is_guest) {
     echo json_encode(['error' => 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!']);
     exit;
 }
-if (!isStudent() && !isTeacher() && !isAdmin()) {
+if (!$is_guest && !isStudent() && !isTeacher() && !isAdmin()) {
     echo json_encode(['error' => 'Bạn không có quyền thực hiện hành động này.']);
     exit;
 }
@@ -37,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (isTeacher() || isAdmin()) {
-    // Teachers and admins are allowed to run and preview student code at any time
+if (isTeacher() || isAdmin() || $is_guest) {
+    // Teachers, admins and trial guests are allowed to run code in sandbox mode at any time
 } else {
     $db = getDB();
     $sv_id = $_SESSION['student_id'] ?? 0;

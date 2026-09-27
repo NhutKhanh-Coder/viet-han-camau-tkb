@@ -83,18 +83,49 @@
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
 .hero-title-v2 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(42px, 5vw, 72px);
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(42px, 5.5vw, 76px);
     font-weight: 900;
-    line-height: 1.12;
-    color: var(--ink);
+    line-height: 1.15;
     margin-bottom: 24px;
-    letter-spacing: -1px;
+    letter-spacing: -0.5px;
 }
 
-.hero-title-v2 .gradient-text {
-    color: var(--red-main);
+.school-name-heading {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: clamp(18px, 2.5vw, 30px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #1e293b;
+    margin-bottom: 4px;
+    line-height: 1.2;
     display: block;
+    white-space: nowrap;
+}
+
+.smartedu-rainbow-led {
+    background: linear-gradient(90deg, 
+        #ff0055, #ff5000, #ffcc00, #00ff66, #00ccff, #7000ff, #ff00cc, #ff0055);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbowGlow 4s linear infinite;
+    display: inline-block;
+    filter: drop-shadow(0 4px 18px rgba(255, 0, 85, 0.25));
+    letter-spacing: 0.5px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.smartedu-rainbow-led:hover {
+    filter: drop-shadow(0 6px 28px rgba(0, 204, 255, 0.45));
+    transform: scale(1.02);
+}
+
+@keyframes rainbowGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .hero-subtitle-v2 {
@@ -244,12 +275,12 @@
 }
 
 .float-card-inner { display: flex; align-items: center; gap: 12px; }
-.float-card-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.fc-teal { background: rgba(217,27,67,0.08); color: #d91b43; border: 1px solid rgba(217,27,67,0.2); }
-.fc-violet { background: rgba(217,27,67,0.08); color: #d91b43; border: 1px solid rgba(217,27,67,0.2); }
-.fc-indigo { background: rgba(217,27,67,0.08); color: #d91b43; border: 1px solid rgba(217,27,67,0.2); }
-.float-card-text strong { display: block; font-size: 16px; font-weight: 800; color: var(--ink); }
-.float-card-text span { font-size: 11px; color: #64748b; font-weight: 600; }
+.float-card-icon { width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+.fc-teal { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669; border: 1.5px solid #a7f3d0; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.15); }
+.fc-violet { background: linear-gradient(135deg, #eef2ff, #e0e7ff); color: #4f46e5; border: 1.5px solid #c7d2fe; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15); }
+.fc-indigo { background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #d97706; border: 1.5px solid #fde68a; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.15); }
+.float-card-text strong { display: block; font-size: 15px; font-weight: 800; color: #0f172a; line-height: 1.25; }
+.float-card-text span { font-size: 11.5px; color: #64748b; font-weight: 600; }
 
 /* ---- BENTO GRID SECTION ---------------------------------- */
 .bento-v2-section {
@@ -275,18 +306,16 @@
     margin-top: 60px;
 }
 
-/* TKB Widget – Wide + Tall */
-.bv2-tkb  { grid-column: span 5; grid-row: span 2; }
-/* AI Widget */
-.bv2-ai   { grid-column: span 4; grid-row: span 2; }
+/* AI Widget – Hero Feature */
+.bv2-ai   { grid-column: span 6; grid-row: span 2; }
 /* Stats */
-.bv2-stat { grid-column: span 3; }
+.bv2-stat { grid-column: span 6; }
 /* Admissions Steps */
-.bv2-adm  { grid-column: span 3; }
+.bv2-adm  { grid-column: span 6; }
 /* Quick links strip */
-.bv2-ql   { grid-column: span 4; }
+.bv2-ql   { grid-column: span 5; }
 /* News feature */
-.bv2-news { grid-column: span 5; }
+.bv2-news { grid-column: span 7; }
 
 .bv2-card {
     background: #ffffff;
@@ -557,7 +586,7 @@
     border: 1px solid #e2e8f0;
     margin-top: 14px;
 }
-.news-v2-img { width: 100%; height: 180px; object-fit: cover; }
+.news-v2-img { width: 100%; height: 230px; object-fit: cover; object-position: top center; }
 .news-v2-body { padding: 16px 18px; }
 .news-v2-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
 .news-v2-tag { font-size: 10.5px; font-weight: 800; background: rgba(217,27,67,0.1); color: #d91b43; padding: 3px 10px; border-radius: 50px; }
@@ -694,6 +723,7 @@
 .news-v2-card-img {
     width: 100%; height: 200px;
     object-fit: cover;
+    object-position: top center;
     display: block;
 }
 
@@ -719,7 +749,7 @@
     .hero-v2-inner { grid-template-columns: 1fr; gap: 40px; }
     .hero-visual-col { display: none; }
     .bento-v2-grid { grid-template-columns: 1fr 1fr; }
-    .bv2-tkb, .bv2-ai, .bv2-stat, .bv2-adm, .bv2-ql, .bv2-news { grid-column: span 1; grid-row: span 1; }
+    .bv2-ai, .bv2-stat, .bv2-adm, .bv2-ql, .bv2-news { grid-column: span 1; grid-row: span 1; }
 }
 
 @media (max-width: 768px) {
@@ -782,10 +812,10 @@
                 Top 5 Trường Nghề Miền Tây · 2025
             </div>
 
+
             <h1 class="hero-title-v2">
-                Kiến Tạo
-                <span class="gradient-text">Tương Lai</span>
-                Của Bạn
+                <span class="school-name-heading">Trường Cao Đẳng <span style="color:#d91b43">Cà Mau</span></span>
+                <span class="smartedu-rainbow-led">SMARTEDU AI</span>
             </h1>
 
             <p class="hero-subtitle-v2">
@@ -822,12 +852,12 @@
         <!-- Right: Visual -->
         <div class="hero-visual-col">
             <div class="hero-main-card">
-                <img src="/tkb/assets/img/campus_showcase.png" alt="VKC Campus">
+                <img src="/tkb/assets/img/campus_showcase.png?v=<?= filemtime(__DIR__ . '/assets/img/campus_showcase.png') ?>" alt="VKC Campus">
 
                 <!-- Floating Cards -->
                 <div class="float-card float-card-a">
                     <div class="float-card-inner">
-                        <div class="float-card-icon fc-teal"><i class="fas fa-user-graduate"></i></div>
+                        <div class="float-card-icon fc-teal"><i class="fa-solid fa-graduation-cap"></i></div>
                         <div class="float-card-text">
                             <strong>98%</strong>
                             <span>Có việc làm ngay</span>
@@ -837,7 +867,7 @@
 
                 <div class="float-card float-card-b">
                     <div class="float-card-inner">
-                        <div class="float-card-icon fc-violet"><i class="fas fa-briefcase"></i></div>
+                        <div class="float-card-icon fc-violet"><i class="fa-solid fa-handshake"></i></div>
                         <div class="float-card-text">
                             <strong>50+ Đối tác</strong>
                             <span>Doanh nghiệp liên kết</span>
@@ -847,7 +877,7 @@
 
                 <div class="float-card float-card-c">
                     <div class="float-card-inner">
-                        <div class="float-card-icon fc-indigo"><i class="fas fa-star"></i></div>
+                        <div class="float-card-icon fc-indigo"><i class="fa-solid fa-award"></i></div>
                         <div class="float-card-text">
                             <strong>Top 5</strong>
                             <span>Trường nghề miền Tây</span>
@@ -866,31 +896,10 @@
             <div class="section-tag"><i class="fas fa-cubes"></i> Hệ sinh thái học tập</div>
             <h2 class="section-title">Công Cụ <em>Thông Minh</em> Của Bạn</h2>
             <div class="divider-line center"></div>
-            <p class="section-desc">Tra cứu thời khóa biểu, trợ lý AI tuyển sinh và toàn bộ tiện ích học tập – tất cả trong một nơi.</p>
+            <p class="section-desc">Trợ lý AI tuyển sinh thông minh cùng toàn bộ tiện ích và thông tin học tập – tất cả trong một nơi.</p>
         </div>
 
         <div class="bento-v2-grid">
-            <!-- TKB Widget -->
-            <div class="bv2-card bv2-tkb">
-                <div class="bv2-card-label label-indigo"><i class="fas fa-calendar-alt"></i> Thời Khóa Biểu</div>
-                <div class="bv2-card-title">Tra Cứu Lịch Học Nhanh</div>
-                <select id="tkbKhoaSelect" class="tkb-v2-select" onchange="fetchTkbData()">
-                    <option value="Công Nghệ Thông Tin">Khoa Công Nghệ Thông Tin</option>
-                    <option value="Cơ Khí Ô Tô">Khoa Cơ Khí Ô Tô</option>
-                    <option value="Điện - Điện Tử">Khoa Điện - Điện Tử</option>
-                    <option value="Quản Trị Doanh Nghiệp">Khoa Quản Trị Doanh Nghiệp</option>
-                </select>
-                <div class="tkb-v2-days">
-                    <button class="tkb-v2-day-btn active" data-day="2" onclick="switchTkbDay(2)">Thứ 2</button>
-                    <button class="tkb-v2-day-btn" data-day="3" onclick="switchTkbDay(3)">Thứ 3</button>
-                    <button class="tkb-v2-day-btn" data-day="4" onclick="switchTkbDay(4)">Thứ 4</button>
-                    <button class="tkb-v2-day-btn" data-day="5" onclick="switchTkbDay(5)">Thứ 5</button>
-                    <button class="tkb-v2-day-btn" data-day="6" onclick="switchTkbDay(6)">Thứ 6</button>
-                </div>
-                <div class="tkb-v2-list" id="tkbListContainer">
-                    <div class="tkb-v2-empty"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>
-                </div>
-            </div>
 
             <!-- AI Widget -->
             <div class="bv2-card bv2-ai" style="padding:0; background: transparent; border: none; box-shadow: none;">
@@ -982,14 +991,14 @@
                 <div class="bv2-card-label label-indigo"><i class="fas fa-newspaper"></i> Nổi Bật</div>
                 <div class="bv2-card-title">Tin Tức Mới Nhất</div>
                 <div class="news-v2-featured">
-                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80" alt="Ngày hội doanh nghiệp" class="news-v2-img">
+                    <img src="/tkb/assets/img/news_le_thanh_lap.jpg?v=<?= filemtime(__DIR__ . '/assets/img/news_le_thanh_lap.jpg') ?>" alt="Lễ công bố quyết định thành lập Trường Cao đẳng Cà Mau" class="news-v2-img">
                     <div class="news-v2-body">
                         <div class="news-v2-meta">
-                            <span class="news-v2-tag">Sự Kiện</span>
-                            <span class="news-v2-date"><i class="fas fa-calendar"></i> 15/08/2026</span>
+                            <span class="news-v2-tag"><i class="fa-solid fa-bullhorn"></i> Sự Kiện</span>
+                            <span class="news-v2-date"><i class="fa-solid fa-calendar-days"></i> 06/08/2026</span>
                         </div>
-                        <div class="news-v2-headline">Ngày hội kết nối doanh nghiệp Việt – Hàn 2026</div>
-                        <div class="news-v2-excerpt">Cơ hội để sinh viên tiếp cận các tập đoàn đa quốc gia và phỏng vấn trực tiếp tại trường.</div>
+                        <div class="news-v2-headline">Lễ công bố quyết định thành lập trường Cao đẳng Cà Mau 2026</div>
+                        <div class="news-v2-excerpt">Sự kiện lịch sử đánh dấu bước chuyển mình quan trọng, mở ra giai đoạn phát triển mới cho giáo dục nghề nghiệp và đào tạo nhân lực chất lượng cao tại Cà Mau.</div>
                     </div>
                 </div>
             </div>
@@ -1115,11 +1124,11 @@
 
         <div class="news-v2-cards-grid">
             <div class="news-v2-card">
-                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80" alt="Ngày hội doanh nghiệp" class="news-v2-card-img" loading="lazy">
+                <img src="/tkb/assets/img/news_le_thanh_lap.jpg?v=<?= filemtime(__DIR__ . '/assets/img/news_le_thanh_lap.jpg') ?>" alt="Lễ công bố quyết định thành lập Trường Cao đẳng Cà Mau" class="news-v2-card-img" loading="lazy">
                 <div class="news-v2-card-body">
-                    <div class="news-v2-card-cat">🎯 Sự Kiện</div>
-                    <div class="news-v2-card-title">Ngày hội kết nối doanh nghiệp Việt – Hàn 2026</div>
-                    <div class="news-v2-card-date"><i class="fas fa-calendar"></i> 15 Tháng 8, 2026</div>
+                    <div class="news-v2-card-cat">🏛️ Sự Kiện Trọng Đại</div>
+                    <div class="news-v2-card-title">Lễ công bố quyết định thành lập Trường Cao đẳng Cà Mau 2026</div>
+                    <div class="news-v2-card-date"><i class="fas fa-calendar"></i> 06 Tháng 8, 2026</div>
                 </div>
             </div>
             <div class="news-v2-card">
@@ -1163,58 +1172,6 @@
     }
 })();
 
-// TKB Logic
-let tkbCachedData = [];
-let currentSelectedDay = 2;
-
-async function fetchTkbData() {
-    const select = document.getElementById('tkbKhoaSelect');
-    const khoa = select.value;
-    const container = document.getElementById('tkbListContainer');
-    container.innerHTML = '<div class="tkb-v2-empty"><i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...</div>';
-    try {
-        const response = await fetch(`/tkb/api/get_public_tkb.php?khoa=${encodeURIComponent(khoa)}`);
-        const result = await response.json();
-        if (result.success) {
-            tkbCachedData = result.data;
-            renderSelectedDay();
-        } else {
-            container.innerHTML = `<div class="tkb-v2-empty">Không tìm thấy thời khóa biểu: ${result.message}</div>`;
-        }
-    } catch (error) {
-        container.innerHTML = '<div class="tkb-v2-empty">Lỗi kết nối mạng!</div>';
-    }
-}
-
-function switchTkbDay(dayNum) {
-    currentSelectedDay = dayNum;
-    document.querySelectorAll('.tkb-v2-day-btn').forEach(btn => {
-        btn.classList.toggle('active', parseInt(btn.getAttribute('data-day')) === dayNum);
-    });
-    renderSelectedDay();
-}
-
-function renderSelectedDay() {
-    const container = document.getElementById('tkbListContainer');
-    const filtered = tkbCachedData.filter(item => item.thu === currentSelectedDay);
-    if (filtered.length === 0) {
-        container.innerHTML = '<div class="tkb-v2-empty"><i class="fas fa-umbrella"></i> Không có lịch học ngày này</div>';
-        return;
-    }
-    let html = '';
-    filtered.forEach(item => {
-        html += `
-        <div class="tkb-v2-item">
-            <div class="tkb-v2-time">Tiết ${item.tiet_bat_dau}-${item.tiet_ket_thuc}</div>
-            <div class="tkb-v2-info">
-                <div class="tkb-v2-subject">${item.ten_mon}</div>
-                <div class="tkb-v2-meta"><i class="fas fa-door-open"></i> ${item.phong_hoc} · <i class="fas fa-chalkboard-teacher"></i> ${item.ten_gv}</div>
-            </div>
-        </div>`;
-    });
-    container.innerHTML = html;
-}
-
 function askAiAssistant(questionText) {
     if (typeof cToggle === 'function') {
         const cbox = document.getElementById('cbox');
@@ -1229,8 +1186,6 @@ function askAiAssistant(questionText) {
         alert("Khung Trợ Lý Chatbot AI chưa được tải xong, vui lòng thử lại sau!");
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => { fetchTkbData(); });
 </script>
 
 <?php require_once 'includes/public_footer.php'; ?>

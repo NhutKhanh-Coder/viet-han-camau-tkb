@@ -652,105 +652,395 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
 
         <?php if ($is_female) { ?>
         <style>
-        /* Modern Soft UI - Female Specific Styles matching Image 2 */
-        body, body[data-mc-mode="female"] {
-            background: #f4f0f7 !important;
-            font-family: 'Outfit', 'Inter', sans-serif !important;
-            color: #1e293b !important;
-        }
-        .main-content { background: #f4f0f7 !important; }
-        
-        .top-header {
-            background: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(16px) !important;
-            border-bottom: 1px solid #f3e8ff !important;
-            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.04) !important;
-        }
-
+        /* ═══════════════════════════════════════════════════════════════════
+           MODERN SOFT UI - BASE STRUCTURAL RULES (Both Light & Dark)
+           ═══════════════════════════════════════════════════════════════════ */
         .sf-hero-card {
-            background: linear-gradient(135deg, #ede9fe 0%, #f3e8ff 100%) !important;
-            border: 1.5px solid #e9d5ff !important;
-            border-radius: 24px !important;
-            padding: 20px 22px !important;
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.08) !important;
             display: grid !important;
             grid-template-columns: 1.4fr 1fr !important;
             gap: 16px !important;
             align-items: center !important;
-            position: relative;
-            overflow: hidden;
-            height: 295px;
+            position: relative !important;
+            overflow: hidden !important;
+            height: 295px !important;
+            border-radius: 24px !important;
+            padding: 20px 22px !important;
+            box-sizing: border-box !important;
         }
 
         .sf-stat-box-small {
-            background: #ffffff !important;
-            border: 1px solid #f3e8ff !important;
-            border-radius: 12px !important;
-            padding: 8px 12px !important;
             display: flex !important;
             align-items: center !important;
             gap: 8px !important;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.05) !important;
+            border-radius: 12px !important;
+            padding: 8px 12px !important;
+            box-sizing: border-box !important;
+            transition: all 0.2s ease !important;
         }
 
         .sf-stat-val-small {
             font-size: 15px !important;
             font-weight: 900 !important;
-            color: #0f172a !important;
         }
 
         .sf-stat-lbl-small {
             font-size: 9.5px !important;
-            color: #64748b !important;
             font-weight: 600 !important;
         }
 
         .sf-btn-view-profile {
-            background: #ffffff !important;
-            color: #6d28d9 !important;
-            border: 1px solid #ddd6fe !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
             border-radius: 20px !important;
             padding: 7px 18px !important;
             font-size: 11px !important;
             font-weight: 700 !important;
             text-decoration: none !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 6px !important;
-            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.1) !important;
             transition: all 0.2s ease !important;
             margin-top: 6px;
+            box-sizing: border-box !important;
         }
 
-        .sf-btn-view-profile:hover {
+        .sf-video-card {
+            height: 295px !important;
+            border-radius: 24px !important;
+            padding: 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            box-sizing: border-box !important;
+        }
+
+        .sf-card-white {
+            border-radius: 20px !important;
+            padding: 18px !important;
+            transition: all 0.3s ease !important;
+            box-sizing: border-box !important;
+        }
+
+        /* ─── CHẾ ĐỘ SÁNG (LIGHT THEME) ─── */
+        body:not([data-theme-mode="dark"]), body[data-mc-mode="female"]:not([data-theme-mode="dark"]) {
+            background: #f4f0f7 !important;
+            font-family: 'Outfit', 'Inter', sans-serif !important;
+            color: #1e293b !important;
+        }
+        body:not([data-theme-mode="dark"]) .main-content { background: #f4f0f7 !important; }
+        
+        body:not([data-theme-mode="dark"]) .top-header {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(16px) !important;
+            border-bottom: 1px solid #f3e8ff !important;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.04) !important;
+        }
+        body:not([data-theme-mode="dark"]) .sidebar-toggle {
+            background: rgba(236, 72, 153, 0.08) !important;
+            border: 1px solid rgba(236, 72, 153, 0.2) !important;
+            border-radius: 10px !important;
+            display: inline-flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 36px !important;
+            height: 36px !important;
+            color: #ec4899 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        body:not([data-theme-mode="dark"]) .sidebar-toggle i {
+            color: #ec4899 !important;
+            font-size: 15px !important;
+        }
+        body:not([data-theme-mode="dark"]) .sidebar-toggle:hover {
+            background: rgba(236, 72, 153, 0.16) !important;
+            color: #db2777 !important;
+        }
+        body:not([data-theme-mode="dark"]) .sidebar-toggle span {
+            background: #ec4899 !important;
+            display: block !important;
+            width: 18px !important;
+            height: 2px !important;
+            border-radius: 2px !important;
+        }
+
+        body:not([data-theme-mode="dark"]) .sf-hero-card {
+            background: linear-gradient(135deg, #ede9fe 0%, #f3e8ff 100%) !important;
+            border: 1.5px solid #e9d5ff !important;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.08) !important;
+        }
+
+        body:not([data-theme-mode="dark"]) .sf-stat-box-small {
+            background: #ffffff !important;
+            border: 1px solid #f3e8ff !important;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.05) !important;
+        }
+
+        body:not([data-theme-mode="dark"]) .sf-stat-val-small {
+            color: #0f172a !important;
+        }
+
+        body:not([data-theme-mode="dark"]) .sf-stat-lbl-small {
+            color: #64748b !important;
+        }
+
+        body:not([data-theme-mode="dark"]) .sf-btn-view-profile {
+            background: #ffffff !important;
+            color: #6d28d9 !important;
+            border: 1px solid #ddd6fe !important;
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.1) !important;
+        }
+
+        body:not([data-theme-mode="dark"]) .sf-btn-view-profile:hover {
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 18px rgba(109, 40, 217, 0.2) !important;
         }
 
-        .sf-video-card {
+        body:not([data-theme-mode="dark"]) .sf-video-card {
             background: #ffffff !important;
             border: 1.5px solid #f3e8ff !important;
-            border-radius: 24px !important;
-            padding: 16px !important;
             box-shadow: 0 10px 30px rgba(139, 92, 246, 0.06) !important;
-            height: 295px;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
         }
 
-        .sf-card-white {
+        body:not([data-theme-mode="dark"]) .sf-card-white {
             background: #ffffff !important;
             border: 1.5px solid #f3e8ff !important;
-            border-radius: 20px !important;
-            padding: 18px !important;
             box-shadow: 0 8px 24px rgba(139, 92, 246, 0.05) !important;
-            transition: all 0.3s ease !important;
         }
 
-        .sf-card-white:hover {
+        body:not([data-theme-mode="dark"]) .sf-card-white:hover {
             box-shadow: 0 12px 32px rgba(139, 92, 246, 0.12) !important;
             transform: translateY(-2px) !important;
+        }
+
+        /* ─── CHẾ ĐỘ ĐÓNG MÀN HÌNH (DARK MODE TỐI TOÀN DIỆN CHO NỮ) ─── */
+        html[data-theme-mode="dark"] body,
+        body[data-theme-mode="dark"],
+        body[data-mc-mode="female"][data-theme-mode="dark"] {
+            background: #090d16 !important;
+            color: #f1f5f9 !important;
+            font-family: 'Outfit', 'Inter', sans-serif !important;
+        }
+        body[data-theme-mode="dark"] .main-content {
+            background: #090d16 !important;
+        }
+        body[data-theme-mode="dark"] .top-header {
+            background: rgba(15, 20, 32, 0.95) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+        body[data-theme-mode="dark"] .sidebar-toggle {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 10px !important;
+            display: inline-flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 36px !important;
+            height: 36px !important;
+            color: #ffffff !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        body[data-theme-mode="dark"] .sidebar-toggle i {
+            color: #ffffff !important;
+            font-size: 15px !important;
+        }
+        body[data-theme-mode="dark"] .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.16) !important;
+            border-color: rgba(168, 85, 247, 0.4) !important;
+            color: #f5d0fe !important;
+        }
+        body[data-theme-mode="dark"] .sidebar-toggle:hover i {
+            color: #f5d0fe !important;
+        }
+        body[data-theme-mode="dark"] .sidebar-toggle span {
+            background: #ffffff !important;
+            display: block !important;
+            width: 18px !important;
+            height: 2px !important;
+            border-radius: 2px !important;
+        }
+        body[data-theme-mode="dark"] .sf-hero-card {
+            background: linear-gradient(135deg, #181432 0%, #20133b 100%) !important;
+            border: 1.5px solid rgba(168, 85, 247, 0.35) !important;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+        }
+        body[data-theme-mode="dark"] .sf-hero-card #sfHeroName {
+            color: #f5d0fe !important;
+        }
+        body[data-theme-mode="dark"] .sf-hero-card #sfHeroQuote {
+            color: #d8b4fe !important;
+        }
+        body[data-theme-mode="dark"] .sf-hero-card div[style*="background: #ddd6fe"] {
+            background: rgba(168, 85, 247, 0.25) !important;
+            color: #e9d5ff !important;
+            border: 1px solid rgba(168, 85, 247, 0.35) !important;
+        }
+        body[data-theme-mode="dark"] .sf-stat-box-small {
+            background: #111827 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+        }
+        body[data-theme-mode="dark"] .sf-stat-box-small:hover {
+            border-color: rgba(168, 85, 247, 0.4) !important;
+            background: #172033 !important;
+        }
+        body[data-theme-mode="dark"] .sf-stat-val-small {
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] .sf-stat-lbl-small {
+            color: #94a3b8 !important;
+        }
+        body[data-theme-mode="dark"] .sf-stat-box-small .fa-tiktok {
+            color: #ffffff !important;
+        }
+        body[data-theme-mode="dark"] .sf-stat-box-small div[style*="color: #0f172a"] {
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] .sf-btn-view-profile {
+            background: linear-gradient(135deg, #2e1065, #3b0764) !important;
+            color: #f5d0fe !important;
+            border: 1px solid #9333ea !important;
+            box-shadow: 0 4px 14px rgba(147, 51, 234, 0.3) !important;
+        }
+        body[data-theme-mode="dark"] .sf-btn-view-profile:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(135deg, #3b0764, #581c87) !important;
+            box-shadow: 0 6px 20px rgba(147, 51, 234, 0.45) !important;
+            color: #ffffff !important;
+        }
+        body[data-theme-mode="dark"] .sf-banner-box {
+            background: linear-gradient(135deg, #131929 0%, #1e1b4b 100%) !important;
+            border: 2px solid rgba(168, 85, 247, 0.35) !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
+        }
+        body[data-theme-mode="dark"] #ltHeroBannerPlaceholder {
+            color: #c084fc !important;
+        }
+        body[data-theme-mode="dark"] #ltHeroBannerPlaceholder span[style*="font-weight: 800"] {
+            color: #f5d0fe !important;
+        }
+        body[data-theme-mode="dark"] #ltHeroBannerPlaceholder span[style*="font-weight: 600"] {
+            color: #a855f7 !important;
+        }
+        body[data-theme-mode="dark"] .sf-video-card {
+            background: #111726 !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] .sf-video-card > div:first-child {
+            border-bottom: 1.5px dashed rgba(255, 255, 255, 0.1) !important;
+        }
+        body[data-theme-mode="dark"] .sf-video-card button {
+            background: #1e293b !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            color: #c084fc !important;
+        }
+        body[data-theme-mode="dark"] #sfVideoCounter {
+            background: #1e1b4b !important;
+            color: #c084fc !important;
+        }
+        body[data-theme-mode="dark"] .sf-video-prev-btn,
+        body[data-theme-mode="dark"] .sf-video-next-btn {
+            background: #1e293b !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+            color: #e2e8f0 !important;
+        }
+        body[data-theme-mode="dark"] .sf-video-remove-btn {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: rgba(239, 68, 68, 0.4) !important;
+            color: #f87171 !important;
+        }
+        body[data-theme-mode="dark"] .sf-card-white {
+            background: #111726 !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] .sf-card-white:hover {
+            border-color: rgba(168, 85, 247, 0.4) !important;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7) !important;
+            transform: translateY(-2px) !important;
+        }
+        body[data-theme-mode="dark"] .sf-card-white div[style*="color: #0f172a"],
+        body[data-theme-mode="dark"] .sf-card-white div[style*="color: #1e293b"],
+        body[data-theme-mode="dark"] .sf-card-white div[style*="color: #334155"],
+        body[data-theme-mode="dark"] .sf-card-white strong {
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] .sf-card-white div[style*="color: #64748b"],
+        body[data-theme-mode="dark"] .sf-card-white div[style*="color: #475569"] {
+            color: #94a3b8 !important;
+        }
+        body[data-theme-mode="dark"] #coupleMyName,
+        body[data-theme-mode="dark"] #couplePartnerName {
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] #coupleStatus {
+            background: rgba(236, 72, 153, 0.12) !important;
+            border-color: rgba(236, 72, 153, 0.3) !important;
+            color: #f472b6 !important;
+        }
+        body[data-theme-mode="dark"] #btnTabHocFemale,
+        body[data-theme-mode="dark"] #btnTabThiFemale {
+            background: #1e1b4b !important;
+            color: #c084fc !important;
+            border-color: rgba(168, 85, 247, 0.4) !important;
+        }
+        body[data-theme-mode="dark"] #stSchedHocContentFemale > div,
+        body[data-theme-mode="dark"] #stSchedThiContentFemale > div {
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] #ltLiveClockFemale { color: #60a5fa !important; }
+        body[data-theme-mode="dark"] #ltLiveDateFemale { color: #4ade80 !important; }
+        body[data-theme-mode="dark"] div[style*="color: #d97706"] { color: #fbbf24 !important; }
+        body[data-theme-mode="dark"] #ltPomodoroFemale { color: #c084fc !important; }
+        body[data-theme-mode="dark"] .sidebar {
+            background: rgba(13, 17, 28, 0.98) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #f1f5f9"] {
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #eff6ff"] {
+            background: rgba(37, 99, 235, 0.18) !important;
+            border-color: rgba(37, 99, 235, 0.35) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #f0fdf4"] {
+            background: rgba(22, 163, 74, 0.18) !important;
+            border-color: rgba(22, 163, 74, 0.35) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #fffbeb"] {
+            background: rgba(217, 119, 6, 0.18) !important;
+            border-color: rgba(217, 119, 6, 0.35) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #f3e8ff"] {
+            background: rgba(124, 58, 237, 0.18) !important;
+            border-color: rgba(124, 58, 237, 0.35) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #ede9fe"] {
+            background: rgba(124, 58, 237, 0.22) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #e0f2fe"] {
+            background: rgba(14, 165, 233, 0.22) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #dcfce7"] {
+            background: rgba(34, 197, 94, 0.22) !important;
+        }
+        body[data-theme-mode="dark"] div[style*="background: #fdf2f8"] {
+            background: rgba(236, 72, 153, 0.22) !important;
+        }
+        body[data-theme-mode="dark"] button[style*="background: #f0f9ff"] {
+            background: rgba(14, 165, 233, 0.15) !important;
+            border-color: rgba(14, 165, 233, 0.35) !important;
+            color: #38bdf8 !important;
+        }
+        body[data-theme-mode="dark"] div[style*="border-top: 1px solid #e9d5ff"] {
+            border-top-color: rgba(255, 255, 255, 0.1) !important;
+            color: #94a3b8 !important;
+        }
+        body[data-theme-mode="dark"] div[style*="border-top: 1px solid #e9d5ff"] a {
+            color: #cbd5e1 !important;
         }
 
         /* Banner Clean Aesthetics: Controls show on hover */
@@ -1183,11 +1473,11 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
                             <div style="font-size: 10.5px; font-weight: 700; color: #0f172a;">Hỗ trợ sinh viên</div>
                         </a>
 
-                        <a href="/tkb/student/baitap.php" style="text-decoration: none; text-align: center;">
-                            <div style="width: 42px; height: 42px; border-radius: 14px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; font-size: 16px;">
-                                <i class="fa-solid fa-file-signature"></i>
+                        <a href="/tkb/student/lam_bai_tap.php" style="text-decoration: none; text-align: center;">
+                            <div style="width: 42px; height: 42px; border-radius: 14px; background: #fdf2f8; color: #ec4899; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; font-size: 16px;">
+                                <i class="fa-solid fa-pen-ruler"></i>
                             </div>
-                            <div style="font-size: 10.5px; font-weight: 700; color: #0f172a;">Biểu mẫu</div>
+                            <div style="font-size: 10.5px; font-weight: 700; color: #0f172a;">Làm bài tập</div>
                         </a>
                     </div>
                 </div>
@@ -1206,13 +1496,13 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
              GIAO DIỆN SINH VIÊN NAM (PREMIUM LIGHT PURPLE THEME)
              ========================================================= -->
         <style>
-        body, body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
+        body:not([data-theme-mode="dark"]), body[data-mc-mode="male"]:not([data-theme-mode="dark"]), body:not([data-mc-mode="female"]):not([data-theme-mode="dark"]) {
             background: #f5f3ff !important;
             color: #0f172a !important;
             font-family: 'Outfit', sans-serif !important;
         }
-        .main-content { background: #f5f3ff !important; }
-        .top-header {
+        body:not([data-theme-mode="dark"]) .main-content { background: #f5f3ff !important; }
+        body:not([data-theme-mode="dark"]) .top-header {
             background: rgba(255, 255, 255, 0.8) !important;
             backdrop-filter: blur(12px) !important;
             border-bottom: 1px solid #e9d5ff !important;
@@ -1230,30 +1520,50 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
         .nav-link.active .nav-icon-female { color: #8b5cf6 !important; }
         .nav-link:hover .nav-icon-female { color: #a855f7 !important; }
         
-        .header-left { color: #1e293b !important; font-weight: 900 !important; }
-        .header-left i { color: #8b5cf6 !important; }
-        .user-profile { background: #ffffff !important; border: 1px solid #e9d5ff !important; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.05) !important; }
-        .u-name { color: #4c1d95 !important; font-weight: 800 !important; }
-        .u-id { color: #64748b !important; }
-        .btn-theme-switcher { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
-        .btn-theme-switcher i { color: #8b5cf6 !important; }
-        .header-bell { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
-        .header-bell i { color: #8b5cf6 !important; }
+        body:not([data-theme-mode="dark"]) .header-left { color: #1e293b !important; font-weight: 900 !important; }
+        body:not([data-theme-mode="dark"]) .header-left i { color: #8b5cf6 !important; }
+        body:not([data-theme-mode="dark"]) .user-profile { background: #ffffff !important; border: 1px solid #e9d5ff !important; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.05) !important; }
+        body:not([data-theme-mode="dark"]) .u-name { color: #4c1d95 !important; font-weight: 800 !important; }
+        body:not([data-theme-mode="dark"]) .u-id { color: #64748b !important; }
+        body:not([data-theme-mode="dark"]) .btn-theme-switcher { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
+        body:not([data-theme-mode="dark"]) .btn-theme-switcher i { color: #8b5cf6 !important; }
+        body:not([data-theme-mode="dark"]) .header-bell { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
+        body:not([data-theme-mode="dark"]) .header-bell i { color: #8b5cf6 !important; }
 
         .mc-card-male {
-            background: #ffffff !important;
-            border: 1.5px solid #f3e8ff !important;
             border-radius: 16px !important;
             padding: 20px !important;
-            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.05) !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
             position: relative;
             overflow: hidden;
+            box-sizing: border-box !important;
         }
-        .mc-card-male:hover {
+
+        body:not([data-theme-mode="dark"]) .mc-card-male {
+            background: #ffffff !important;
+            border: 1.5px solid #f3e8ff !important;
+            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.05) !important;
+        }
+        body:not([data-theme-mode="dark"]) .mc-card-male:hover {
             box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15), 0 0 20px rgba(124, 58, 237, 0.1) !important;
             border-color: #ddd6fe !important;
             transform: translateY(-3px) !important;
+        }
+
+        /* Direct Male Dark Mode Styles */
+        body[data-theme-mode="dark"] .mc-card-male {
+            background: #111726 !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            color: #f8fafc !important;
+        }
+        body[data-theme-mode="dark"] .mc-card-male:hover {
+            border-color: rgba(168, 85, 247, 0.4) !important;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7) !important;
+            transform: translateY(-3px) !important;
+        }
+        body[data-theme-mode="dark"] .mc-card-male .mc-desc {
+            color: #94a3b8 !important;
         }
 
         .mc-title {
@@ -1679,9 +1989,9 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
                         <div style="font-size: 11.5px; font-weight: 700; color: #0f172a;">Hỗ trợ sinh viên</div>
                     </a>
 
-                    <a href="/tkb/student/baitap.php" class="mc-card-male" style="text-decoration: none; text-align: center; padding: 16px 10px;">
-                        <div class="mc-stat-icon mc-stat-pink" style="margin: 0 auto 8px; width: 44px; height: 44px;"><i class="fa-solid fa-file-signature"></i></div>
-                        <div style="font-size: 11.5px; font-weight: 700; color: #0f172a;">Biểu mẫu</div>
+                    <a href="/tkb/student/lam_bai_tap.php" class="mc-card-male" style="text-decoration: none; text-align: center; padding: 16px 10px;">
+                        <div class="mc-stat-icon mc-stat-pink" style="margin: 0 auto 8px; width: 44px; height: 44px;"><i class="fa-solid fa-pen-ruler"></i></div>
+                        <div style="font-size: 11.5px; font-weight: 700; color: #0f172a;">Làm bài tập</div>
                     </a>
                 </div>
             </div>
@@ -3351,12 +3661,12 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
 
 <!-- Floating AI Chatbot Widget -->
 <style>
-.cfab{position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--mc-red);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9999;box-shadow:0 0 20px var(--mc-red-glow);border:2px solid #ffffff;transition:transform 0.25s, box-shadow 0.25s}
+.cfab{position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--mc-red);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:99999;box-shadow:0 0 20px var(--mc-red-glow);border:2px solid #ffffff;transition:transform 0.25s, box-shadow 0.25s}
 .cfab:hover{transform:scale(1.1) rotate(5deg);box-shadow:0 0 30px var(--mc-red)}
 .cfab svg{width:26px;height:26px;fill:#fff}
-.cbox{position:fixed;bottom:94px;right:24px;width:365px;background:var(--mc-card-bg);backdrop-filter:blur(30px);border:2px solid var(--mc-red);border-radius:20px;display:none;flex-direction:column;z-index:9998;box-shadow:0 16px 48px rgba(0,0,0,0.8);overflow:hidden;max-height:540px;animation:cslide .25s cubic-bezier(0.34, 1.56, 0.64, 1)}
+.cbox{position:fixed;bottom:94px;right:24px;width:365px;background:var(--mc-card-bg);backdrop-filter:blur(30px);border:2px solid var(--mc-red);border-radius:20px;display:none;flex-direction:column;z-index:99999;box-shadow:0 16px 48px rgba(0,0,0,0.8);overflow:hidden;max-height:540px;animation:cslide .25s cubic-bezier(0.34, 1.56, 0.64, 1)}
 @keyframes cslide{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
-.cbox.open{display:flex}
+.cbox.open, [data-mc-mode="female"] .cbox.open, [data-theme-mode="dark"] .cbox.open{display:flex !important}
 .chdr{display:flex;align-items:center;gap:10px;padding:16px 20px;background:linear-gradient(90deg, var(--mc-red-dark), var(--mc-red));border-bottom:2px solid var(--mc-border)}
 .chdr-ic{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center}
 .chdr-ic svg{width:17px;height:17px;fill:#fff}
@@ -3376,9 +3686,33 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
 .cinput{flex:1;background:#0d0912;border:1.5px solid var(--mc-border);border-radius:10px;padding:10px 14px;color:#fff;font-size:13px;outline:none;resize:none}
 .csend{width:40px;height:40px;border-radius:10px;background:var(--mc-red);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .csend svg{width:16px;height:16px;fill:#fff}
+
+body[data-theme-mode="dark"] .cbox {
+    background: #111726 !important;
+    border-color: rgba(168, 85, 247, 0.4) !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8) !important;
+    color: #f8fafc !important;
+}
+body[data-theme-mode="dark"] .cmsgs {
+    background: #0b0f19 !important;
+}
+body[data-theme-mode="dark"] .cmsg.bot .cbubble {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+body[data-theme-mode="dark"] .cinrow {
+    background: #111726 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+body[data-theme-mode="dark"] .cinput {
+    background: #0b0f19 !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #fff !important;
+}
 </style>
 
-<button class="cfab" onclick="cToggle()">
+<button class="cfab" onclick="cToggle()" title="Trợ lý AI hỗ trợ">
   <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
 </button>
 
@@ -3386,14 +3720,14 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
   <div class="chdr">
     <div class="chdr-ic"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73C8.4 5.39 8 4.74 8 4a2 2 0 0 1 2-2h2z"/></svg></div>
     <div class="chdr-info">
-      <p>TRỢ LÝ AI MINECRAFT</p>
-      <span>Luôn sẵn sàng hỗ trợ bạn 24/7</span>
+      <p><?= ($is_female ?? false) ? 'TRỢ LÝ HỌC TẬP AI' : 'TRỢ LÝ AI MINECRAFT' ?></p>
+      <span><?= ($is_female ?? false) ? 'Đồng hành học tập cùng bạn 24/7 🌸' : 'Luôn sẵn sàng hỗ trợ bạn 24/7 ⚔️' ?></span>
     </div>
     <button class="cclose" onclick="cToggle()">×</button>
   </div>
   <div class="cmsgs" id="cmsgs">
     <div class="cmsg bot">
-      <div class="cbubble">Xin chào <?= htmlspecialchars($sv['ho_ten']) ?>! Mình là Trợ lý AI Minecraft. Bạn cần mình giúp gì hôm nay? ⚔️</div>
+      <div class="cbubble"><?= ($is_female ?? false) ? ('Xin chào ' . htmlspecialchars($sv['ho_ten'] ?? 'bạn') . '! Mình là Trợ lý AI học tập. Bạn cần mình giải đáp bài tập hay hỗ trợ gì hôm nay nè? 🌸✨') : ('Xin chào ' . htmlspecialchars($sv['ho_ten'] ?? 'bạn') . '! Mình là Trợ lý AI Minecraft. Bạn cần mình giúp gì hôm nay? ⚔️') ?></div>
     </div>
   </div>
   <div class="cinrow">
@@ -3403,9 +3737,17 @@ $is_female = (($sv['gioi_tinh'] ?? '') === 'Nữ' || ($_SESSION['gioi_tinh'] ?? 
 </div>
 
 <script>
-function cToggle() {
-    document.getElementById('cbox').classList.toggle('open');
-}
+window.cToggle = function() {
+    var cbox = document.getElementById('cbox');
+    if (!cbox) return;
+    cbox.classList.toggle('open');
+    if (cbox.classList.contains('open')) {
+        var inp = document.getElementById('cinput');
+        if (inp) setTimeout(function() { inp.focus(); }, 100);
+    }
+};
+var cChatHistory = [];
+
 async function cSend() {
     var input = document.getElementById('cinput');
     var txt = input.value.trim();
@@ -3417,24 +3759,103 @@ async function cSend() {
     
     var botMsg = document.createElement('div');
     botMsg.className = 'cmsg bot';
-    botMsg.innerHTML = '<div class="cbubble"><i>Đang suy nghĩ...</i></div>';
+    botMsg.innerHTML = '<div class="cbubble"><i><i class="fa-solid fa-spinner fa-spin"></i> Đang suy nghĩ...</i></div>';
     msgs.appendChild(botMsg);
     msgs.scrollTop = msgs.scrollHeight;
 
+    var reply = '';
+    var studentName = <?= json_encode($sv['ho_ten'] ?? 'Sinh viên') ?>;
+    var sysPrompt = 'Bạn là Trợ lý AI học tập thông minh, thân thiện của Trường Cao đẳng Cà Mau đang trò chuyện với sinh viên ' + studentName + '. Hãy trả lời bằng tiếng Việt thân thiện, rõ ràng, có cảm xúc, định dạng Markdown đẹp, hỗ trợ học tập tốt nhất.';
+
+    cChatHistory.push({role: 'user', content: txt});
+    if (cChatHistory.length > 8) cChatHistory = cChatHistory.slice(-8);
+
+    var apiMsgs = [{role: 'system', content: sysPrompt}].concat(cChatHistory);
+
+    // 1. Thử gọi trực tiếp từ trình duyệt qua xKiro API (Mistral Large)
     try {
-        var res = await fetch('/tkb/api/login.php?groq', {
+        var xRes = await fetch('https://api.xkiro.com/v1/chat/completions', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({messages: [{role: 'user', content: txt}]})
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer sk-xt-be5b4b10bf19ae39b6797fd77a983b74ab9c7ce7cd277a48'
+            },
+            body: JSON.stringify({
+                model: 'mistralai/mistral-large-2512',
+                messages: apiMsgs,
+                max_tokens: 1024,
+                temperature: 0.7
+            })
         });
-        var data = await res.json();
-        var reply = data.choices && data.choices[0] ? data.choices[0].message.content : 'Xin lỗi, không nhận được phản hồi.';
-        botMsg.querySelector('.cbubble').innerHTML = reply;
-    } catch(e) {
-        botMsg.querySelector('.cbubble').innerHTML = 'Lỗi kết nối AI!';
+        if (xRes.ok) {
+            var xD = await xRes.json();
+            if (xD.choices && xD.choices[0] && xD.choices[0].message) {
+                reply = xD.choices[0].message.content;
+            }
+        }
+    } catch(err) {}
+
+    // 2. Dự phòng 1: Gọi mô hình Qwen 3.7 Flash Free từ trình duyệt
+    if (!reply) {
+        try {
+            var qRes = await fetch('https://api.xkiro.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer sk-xt-be5b4b10bf19ae39b6797fd77a983b74ab9c7ce7cd277a48'
+                },
+                body: JSON.stringify({
+                    model: 'qwen/qwen3.7-flash:free',
+                    messages: apiMsgs,
+                    max_tokens: 1024,
+                    temperature: 0.7
+                })
+            });
+            if (qRes.ok) {
+                var qD = await qRes.json();
+                if (qD.choices && qD.choices[0] && qD.choices[0].message) {
+                    reply = qD.choices[0].message.content;
+                }
+            }
+        } catch(err) {}
     }
+
+    // 3. Dự phòng 2: Gọi qua backend proxy server
+    if (!reply) {
+        try {
+            var sRes = await fetch('/tkb/api/login.php?groq', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({messages: apiMsgs})
+            });
+            var sD = await sRes.json();
+            if (sD.choices && sD.choices[0] && sD.choices[0].message) {
+                reply = sD.choices[0].message.content;
+            }
+        } catch(err) {}
+    }
+
+    if (!reply) {
+        reply = 'Xin chào ' + studentName + '! Mình luôn sẵn sàng đồng hành và giải đáp bài tập, thông tin học tập cùng bạn tại Trường Cao đẳng Cà Mau nè! 🌸✨';
+    }
+
+    // Lọc bỏ các tag nội bộ nếu có
+    reply = reply.replace(/<!--[\s\S]*?-->/g, '').trim();
+
+    cChatHistory.push({role: 'assistant', content: reply});
+    botMsg.querySelector('.cbubble').innerHTML = formatBotMsg(reply);
     msgs.scrollTop = msgs.scrollHeight;
 }
+
+function formatBotMsg(t) {
+    var safe = escapeHtml(t);
+    safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    safe = safe.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    safe = safe.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,0.1);padding:2px 5px;border-radius:4px;font-family:monospace;">$1</code>');
+    safe = safe.replace(/\n/g, '<br>');
+    return safe;
+}
+
 function escapeHtml(t) { return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function submitQuickBanner() {
@@ -3509,6 +3930,8 @@ if (window.location.search.indexOf('upload=success') !== -1) {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(-20px)';
         setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 400);
+    }, 3500);
+}
 function updateLhLiveClock() {
     const now = new Date();
     const hrs = String(now.getHours()).padStart(2, '0');

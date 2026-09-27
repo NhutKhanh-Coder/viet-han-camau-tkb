@@ -1,8 +1,8 @@
 <?php
 require_once '../config.php';
 requireStudent();
-$db = getDB();
-$sv_id = $_SESSION['student_id'] ?? 0;
+header('Location: /tkb/student/lam_bai_tap.php');
+exit;
 
 // Fetch student info
 $stmt = $db->prepare("SELECT * FROM students WHERE id = ?");

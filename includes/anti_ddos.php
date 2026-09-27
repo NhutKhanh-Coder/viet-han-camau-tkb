@@ -233,7 +233,7 @@ function renderCloudflareChallengePage($user_ip) {
                     <img src="https://flagcdn.com/w40/vn.png" style="height: 12px; border-radius: 2px;">
                     <span class="top-led-text">TRƯỜNG CAO ĐẲNG CÀ MAU</span>
                 </div>
-                <div>DEVELOPER BY LÊ NHỰT KHÁNH · CLOUDFLARE SHIELD V2.0</div>
+                <div>SMARTEDU AI · CLOUDFLARE SHIELD V2.0</div>
             </div>
         </div>
 
@@ -423,7 +423,7 @@ function renderDDoSShieldPage($user_ip, $retry_after_seconds) {
                     <img src="https://flagcdn.com/w40/vn.png" style="height: 12px; border-radius: 2px;">
                     <span class="top-led-text">TRƯỜNG CAO ĐẲNG CÀ MAU</span>
                 </div>
-                <div>DEVELOPER BY LÊ NHỰT KHÁNH · FIREWALL V2.0</div>
+                <div>SMARTEDU AI · FIREWALL V2.0</div>
             </div>
         </div>
 

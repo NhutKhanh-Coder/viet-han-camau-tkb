@@ -8,16 +8,18 @@ $current_adm_name = $_SESSION['ho_ten'] ?? 'Quản Trị Viên';
 $current_adm_user = $_SESSION['username'] ?? 'admin';
 $current_adm_avatar = '/tkb/assets/img/avatar_khanh.png';
 
-$res_cur = @$_nav_db->query("SELECT id, username, ho_ten, avatar FROM users WHERE id = $cur_uid LIMIT 1");
-if ($res_cur && ($cur_row = $res_cur->fetch_assoc())) {
-    if (!empty($cur_row['ho_ten'])) $current_adm_name = $cur_row['ho_ten'];
-    if (!empty($cur_row['username'])) $current_adm_user = $cur_row['username'];
-    if (!empty($cur_row['avatar'])) {
-        $av = $cur_row['avatar'];
-        $current_adm_avatar = (strpos($av, '/') === 0 || strpos($av, 'http') === 0) ? $av : '/tkb/assets/img/avatars/' . $av;
+if ($_nav_db) {
+    $res_cur = @$_nav_db->query("SELECT id, username, ho_ten, avatar FROM users WHERE id = $cur_uid LIMIT 1");
+    if ($res_cur && ($cur_row = $res_cur->fetch_assoc())) {
+        if (!empty($cur_row['ho_ten'])) $current_adm_name = $cur_row['ho_ten'];
+        if (!empty($cur_row['username'])) $current_adm_user = $cur_row['username'];
+        if (!empty($cur_row['avatar'])) {
+            $av = $cur_row['avatar'];
+            $current_adm_avatar = (strpos($av, '/') === 0 || strpos($av, 'http') === 0) ? $av : '/tkb/assets/img/avatars/' . $av;
+        }
     }
+    @$_nav_db->close();
 }
-@$_nav_db->close();
 
 $is_tuyen = (isset($_SESSION['username']) && in_array(strtolower($_SESSION['username']), ['phanngoctuyen', 'admin_tuyen', 'tuyen']))
     || (isset($current_adm_user) && in_array(strtolower($current_adm_user), ['phanngoctuyen', 'admin_tuyen', 'tuyen']))
@@ -76,22 +78,24 @@ if ($is_tuyen) {
    MODERN WHITE & SOFT LAVENDER THEME FOR CÔ PHAN NGỌC TUYỀN (40 TUỔI)
    ============================================================ */
 body.tuyen-theme,
-body.admin-portal.tuyen-theme {
+body.adm-light-mode,
+body.admin-portal.tuyen-theme,
+body.admin-portal.adm-light-mode {
     background: #f8fafc !important;
     background-color: #f8fafc !important;
     background-image: none !important;
     color: #1e293b !important;
 }
 
-body.tuyen-theme ::-webkit-scrollbar-track { background: #f1f5f9 !important; }
-body.tuyen-theme ::-webkit-scrollbar-thumb { background: #cbd5e1 !important; border-radius: 4px; }
-body.tuyen-theme ::-webkit-scrollbar-thumb:hover { background: #a855f7 !important; }
+body.tuyen-theme ::-webkit-scrollbar-track , body.adm-light-mode ::-webkit-scrollbar-track { background: #f1f5f9 !important; }
+body.tuyen-theme ::-webkit-scrollbar-thumb , body.adm-light-mode ::-webkit-scrollbar-thumb { background: #cbd5e1 !important; border-radius: 4px; }
+body.tuyen-theme ::-webkit-scrollbar-thumb:hover , body.adm-light-mode ::-webkit-scrollbar-thumb:hover { background: #a855f7 !important; }
 
 /* Hide all Lofi Chill music player elements for Cô Phan Ngọc Tuyền */
-body.tuyen-theme .adm-topbar-music,
-body.tuyen-theme #topbarMusicPlayer,
-body.tuyen-theme #admLofiPlaylistModal,
-body.tuyen-theme #lofiYtPlayerHolder {
+body.tuyen-theme:not(.adm-light-mode) .adm-topbar-music,
+body.tuyen-theme:not(.adm-light-mode) #topbarMusicPlayer,
+body.tuyen-theme:not(.adm-light-mode) #admLofiPlaylistModal,
+body.tuyen-theme:not(.adm-light-mode) #lofiYtPlayerHolder {
     display: none !important;
 }
 
@@ -157,106 +161,106 @@ body.tuyen-theme .adm-nav-item a.active i {
     color: #7c3aed !important;
 }
 
-body.tuyen-theme .adm-topbar {
+body.tuyen-theme .adm-topbar , body.adm-light-mode .adm-topbar {
     background: rgba(255, 255, 255, 0.96) !important;
     border-bottom: 1px solid #f1f5f9 !important;
     box-shadow: 0 1px 12px rgba(0, 0, 0, 0.02) !important;
 }
 
-body.tuyen-theme .adm-ham-btn {
+body.tuyen-theme .adm-ham-btn , body.adm-light-mode .adm-ham-btn {
     color: #334155 !important;
 }
-body.tuyen-theme .adm-ham-btn:hover {
+body.tuyen-theme .adm-ham-btn:hover , body.adm-light-mode .adm-ham-btn:hover {
     background: #f1f5f9 !important;
 }
 
-body.tuyen-theme .adm-search-input {
+body.tuyen-theme .adm-search-input , body.adm-light-mode .adm-search-input {
     background: #f8fafc !important;
     border: 1px solid #e2e8f0 !important;
     color: #0f172a !important;
 }
-body.tuyen-theme .adm-search-input:focus {
+body.tuyen-theme .adm-search-input:focus , body.adm-light-mode .adm-search-input:focus {
     background: #ffffff !important;
     border-color: #7c3aed !important;
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12) !important;
 }
-body.tuyen-theme .adm-shortcut-badge {
+body.tuyen-theme .adm-shortcut-badge , body.adm-light-mode .adm-shortcut-badge {
     background: #e2e8f0 !important;
     color: #64748b !important;
     border: 1px solid #cbd5e1 !important;
 }
 
-body.tuyen-theme .adm-action-icon-btn {
+body.tuyen-theme .adm-action-icon-btn , body.adm-light-mode .adm-action-icon-btn {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     color: #475569 !important;
 }
-body.tuyen-theme .adm-action-icon-btn:hover {
+body.tuyen-theme .adm-action-icon-btn:hover , body.adm-light-mode .adm-action-icon-btn:hover {
     background: #f5f3ff !important;
     color: #7c3aed !important;
     border-color: #ddd6fe !important;
 }
 
-body.tuyen-theme .adm-topbar-music {
+body.tuyen-theme .adm-topbar-music , body.adm-light-mode .adm-topbar-music {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
 }
-body.tuyen-theme .adm-topbar-music:hover {
+body.tuyen-theme .adm-topbar-music:hover , body.adm-light-mode .adm-topbar-music:hover {
     border-color: #c4b5fd !important;
     box-shadow: 0 4px 16px rgba(124, 58, 237, 0.1) !important;
 }
-body.tuyen-theme .adm-topbar-music .adm-music-song {
+body.tuyen-theme .adm-topbar-music .adm-music-song , body.adm-light-mode .adm-topbar-music .adm-music-song {
     color: #1e293b !important;
 }
-body.tuyen-theme .adm-topbar-music .adm-music-ctrl-btn {
+body.tuyen-theme .adm-topbar-music .adm-music-ctrl-btn , body.adm-light-mode .adm-topbar-music .adm-music-ctrl-btn {
     background: #f5f3ff !important;
     border: 1px solid #ede9fe !important;
     color: #7c3aed !important;
 }
 
-body.tuyen-theme .adm-profile-pill {
+body.tuyen-theme .adm-profile-pill , body.adm-light-mode .adm-profile-pill {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
 }
-body.tuyen-theme .adm-profile-pill strong {
+body.tuyen-theme .adm-profile-pill strong , body.adm-light-mode .adm-profile-pill strong {
     color: #0f172a !important;
 }
-body.tuyen-theme .adm-profile-pill span {
+body.tuyen-theme .adm-profile-pill span , body.adm-light-mode .adm-profile-pill span {
     color: #64748b !important;
 }
-body.tuyen-theme .adm-profile-av {
+body.tuyen-theme .adm-profile-av , body.adm-light-mode .adm-profile-av {
     border: 2px solid #ddd6fe !important;
 }
 
-body.tuyen-theme #admProfileDropdown {
+body.tuyen-theme #admProfileDropdown , body.adm-light-mode #admProfileDropdown {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
 }
-body.tuyen-theme #admProfileDropdown > div:first-child {
+body.tuyen-theme #admProfileDropdown > div:first-child , body.adm-light-mode #admProfileDropdown > div:first-child {
     border-bottom: 1px solid #f1f5f9 !important;
 }
-body.tuyen-theme #admProfileDropdown div:first-child div:first-child {
+body.tuyen-theme #admProfileDropdown div:first-child div:first-child , body.adm-light-mode #admProfileDropdown div:first-child div:first-child {
     color: #0f172a !important;
 }
-body.tuyen-theme #admProfileDropdown a {
+body.tuyen-theme #admProfileDropdown a , body.adm-light-mode #admProfileDropdown a {
     color: #334155 !important;
 }
-body.tuyen-theme #admProfileDropdown a:hover {
+body.tuyen-theme #admProfileDropdown a:hover , body.adm-light-mode #admProfileDropdown a:hover {
     background: #f5f3ff !important;
     color: #7c3aed !important;
 }
 
 /* Cards, Tables, Forms & Modals in Tuyen Theme */
-body.tuyen-theme .page-title {
+body.tuyen-theme .page-title , body.adm-light-mode .page-title {
     color: #1e1b4b !important;
 }
-body.tuyen-theme .page-sub {
+body.tuyen-theme .page-sub , body.adm-light-mode .page-sub {
     color: #64748b !important;
 }
-body.tuyen-theme .card {
+body.tuyen-theme .card , body.adm-light-mode .card {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
@@ -264,74 +268,74 @@ body.tuyen-theme .card {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
-body.tuyen-theme .card-head {
+body.tuyen-theme .card-head , body.adm-light-mode .card-head {
     border-bottom: 1px solid #f1f5f9 !important;
 }
-body.tuyen-theme .card-title {
+body.tuyen-theme .card-title , body.adm-light-mode .card-title {
     color: #0f172a !important;
 }
-body.tuyen-theme th {
+body.tuyen-theme th , body.adm-light-mode th {
     background: #f8fafc !important;
     color: #475569 !important;
     border-bottom: 1px solid #e2e8f0 !important;
 }
-body.tuyen-theme td {
+body.tuyen-theme td , body.adm-light-mode td {
     color: #1e293b !important;
     border-bottom: 1px solid #f1f5f9 !important;
 }
-body.tuyen-theme tr:hover td {
+body.tuyen-theme tr:hover td , body.adm-light-mode tr:hover td {
     background: #f8fafc !important;
 }
-body.tuyen-theme .filter-bar {
+body.tuyen-theme .filter-bar , body.adm-light-mode .filter-bar {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
 }
-body.tuyen-theme .filter-bar .search-input {
+body.tuyen-theme .filter-bar .search-input , body.adm-light-mode .filter-bar .search-input {
     background: #f8fafc !important;
     border: 1px solid #e2e8f0 !important;
     color: #0f172a !important;
 }
-body.tuyen-theme .filter-bar .form-select {
+body.tuyen-theme .filter-bar .form-select , body.adm-light-mode .filter-bar .form-select {
     background: #f8fafc !important;
     border: 1px solid #e2e8f0 !important;
     color: #0f172a !important;
 }
-body.tuyen-theme .filter-bar .btn-ghost {
+body.tuyen-theme .filter-bar .btn-ghost , body.adm-light-mode .filter-bar .btn-ghost {
     background: #f8fafc !important;
     border: 1px solid #cbd5e1 !important;
     color: #475569 !important;
 }
 
 /* Modals in Tuyen Theme */
-body.tuyen-theme .modal-overlay {
+body.tuyen-theme .modal-overlay , body.adm-light-mode .modal-overlay {
     background: rgba(15, 23, 42, 0.45) !important;
 }
-body.tuyen-theme .modal-box {
+body.tuyen-theme .modal-box , body.adm-light-mode .modal-box {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15) !important;
     color: #1e293b !important;
 }
-body.tuyen-theme .modal-title {
+body.tuyen-theme .modal-title , body.adm-light-mode .modal-title {
     color: #0f172a !important;
 }
-body.tuyen-theme .modal-sub {
+body.tuyen-theme .modal-sub , body.adm-light-mode .modal-sub {
     color: #64748b !important;
 }
-body.tuyen-theme .form-label {
+body.tuyen-theme .form-label , body.adm-light-mode .form-label {
     color: #334155 !important;
 }
-body.tuyen-theme .form-group .form-input,
-body.tuyen-theme .form-group .form-select,
-body.tuyen-theme .form-group .form-control {
+body.tuyen-theme .form-group .form-input, body.adm-light-mode .form-group .form-input,
+body.tuyen-theme .form-group .form-select, body.adm-light-mode .form-group .form-select,
+body.tuyen-theme .form-group .form-control , body.adm-light-mode .form-group .form-control {
     background: #ffffff !important;
     border: 1.5px solid #cbd5e1 !important;
     color: #0f172a !important;
 }
-body.tuyen-theme .form-group .form-input:focus,
-body.tuyen-theme .form-group .form-select:focus,
-body.tuyen-theme .form-group .form-control:focus {
+body.tuyen-theme .form-group .form-input:focus, body.adm-light-mode .form-group .form-input:focus,
+body.tuyen-theme .form-group .form-select:focus, body.adm-light-mode .form-group .form-select:focus,
+body.tuyen-theme .form-group .form-control:focus , body.adm-light-mode .form-group .form-control:focus {
     border-color: #7c3aed !important;
     background: #ffffff !important;
 }
@@ -355,20 +359,35 @@ body.admin-portal {
 
 /* Sidebar */
 .adm-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 270px;
-    height: 100vh;
-    background: var(--adm-sidebar-bg);
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-    overflow-y: auto;
-    overflow-x: hidden;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 270px !important;
+    height: 100vh !important;
+    background: var(--adm-sidebar-bg) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    z-index: 1000 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 4px 0 30px rgba(0, 0, 0, 0.45);
     border-right: 1px solid var(--adm-sidebar-border);
+}
+.adm-sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+.adm-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.adm-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 4px;
+}
+.adm-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.6);
 }
 
 .adm-overlay {
@@ -645,6 +664,12 @@ body.admin-portal {
     background: #20133d;
     color: #ffffff;
     border-color: rgba(192, 132, 252, 0.4);
+}
+.adm-action-icon-btn.active {
+    background: rgba(168, 85, 247, 0.35) !important;
+    border-color: #c084fc !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.7), inset 0 0 8px rgba(192, 132, 252, 0.3) !important;
 }
 .adm-badge-count {
     position: absolute;
@@ -1006,7 +1031,7 @@ body.admin-portal .adm-page-body {
 }
 
 /* Typography & Headings */
-body.admin-portal .page-header {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1014,7 +1039,7 @@ body.admin-portal .page-header {
     gap: 16px;
     flex-wrap: wrap;
 }
-body.admin-portal .page-title {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .page-title {
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 22px !important;
     font-weight: 800 !important;
@@ -1026,11 +1051,11 @@ body.admin-portal .page-title {
     letter-spacing: -0.2px;
     text-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
 }
-body.admin-portal .page-title i {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .page-title i {
     color: #c084fc !important;
     font-size: 22px;
 }
-body.admin-portal .page-sub {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .page-sub {
     font-size: 13px !important;
     color: #a79bb7 !important;
     margin-top: 4px;
@@ -1038,7 +1063,7 @@ body.admin-portal .page-sub {
 }
 
 /* Modern Lofi Admin Cards */
-body.admin-portal .card {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .card {
     background: rgba(20, 13, 38, 0.85) !important;
     border: 1px solid rgba(168, 85, 247, 0.16) !important;
     border-radius: 18px !important;
@@ -1049,7 +1074,7 @@ body.admin-portal .card {
     -webkit-backdrop-filter: blur(16px) !important;
     color: #f3e8ff !important;
 }
-body.admin-portal .card-head {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .card-head {
     padding: 18px 24px !important;
     border-bottom: 1px solid rgba(168, 85, 247, 0.12) !important;
     display: flex;
@@ -1057,7 +1082,7 @@ body.admin-portal .card-head {
     align-items: center;
     background: transparent !important;
 }
-body.admin-portal .card-title {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .card-title {
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 15px !important;
     font-weight: 800 !important;
@@ -1069,17 +1094,17 @@ body.admin-portal .card-title {
     gap: 8px;
     margin: 0;
 }
-body.admin-portal .card-body {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .card-body {
     padding: 24px;
 }
 
 /* Modern Lofi Admin Tables */
-body.admin-portal table {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) table {
     width: 100% !important;
     border-collapse: separate !important;
     border-spacing: 0 !important;
 }
-body.admin-portal th {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) th {
     background: rgba(24, 15, 48, 0.9) !important;
     color: #c084fc !important;
     font-size: 11.5px !important;
@@ -1092,7 +1117,7 @@ body.admin-portal th {
     white-space: nowrap !important;
     text-align: left;
 }
-body.admin-portal td {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) td {
     padding: 14px 18px !important;
     font-size: 13.5px !important;
     color: #e9d5ff !important;
@@ -1101,15 +1126,15 @@ body.admin-portal td {
     background: transparent !important;
     transition: background 0.15s ease;
 }
-body.admin-portal tr:hover td {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) tr:hover td {
     background: rgba(139, 92, 246, 0.1) !important;
 }
-body.admin-portal tr:last-child td {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) tr:last-child td {
     border-bottom: none !important;
 }
 
 /* Modern Lofi Admin Buttons */
-body.admin-portal .btn {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn {
     padding: 10px 18px !important;
     border-radius: 10px !important;
     font-size: 13px !important;
@@ -1126,34 +1151,34 @@ body.admin-portal .btn {
     box-sizing: border-box !important;
     line-height: 1.4 !important;
 }
-body.admin-portal .btn-primary {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-primary {
     background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
     color: #ffffff !important;
     box-shadow: 0 4px 18px rgba(168, 85, 247, 0.4) !important;
     border: none !important;
 }
-body.admin-portal .btn-primary:hover {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-primary:hover {
     transform: translateY(-1px) !important;
     box-shadow: 0 6px 22px rgba(168, 85, 247, 0.55) !important;
 }
-body.admin-portal .btn-ghost {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-ghost {
     background: rgba(24, 15, 48, 0.85) !important;
     border: 1px solid rgba(168, 85, 247, 0.25) !important;
     color: #e9d5ff !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
 }
-body.admin-portal .btn-ghost:hover {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-ghost:hover {
     background: #25164a !important;
     border-color: rgba(192, 132, 252, 0.45) !important;
     color: #ffffff !important;
     transform: translateY(-1px) !important;
 }
-body.admin-portal .btn-sm {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-sm {
     padding: 6px 12px !important;
     font-size: 12px !important;
     border-radius: 8px !important;
 }
-body.admin-portal .btn-edit {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-edit {
     width: 32px !important;
     height: 32px !important;
     padding: 0 !important;
@@ -1167,19 +1192,19 @@ body.admin-portal .btn-edit {
     text-decoration: none !important;
     font-size: 12px !important;
 }
-body.admin-portal .btn-edit:hover {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-edit:hover {
     background: #7c3aed !important;
     color: #ffffff !important;
     border-color: #7c3aed !important;
     transform: translateY(-1px) !important;
 }
-body.admin-portal .btn-danger {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-danger {
     background: rgba(239, 68, 68, 0.15) !important;
     color: #fca5a5 !important;
     border: 1px solid rgba(239, 68, 68, 0.3) !important;
 }
-body.admin-portal .btn-danger.btn-sm,
-body.admin-portal a.btn-danger.btn-sm {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-danger.btn-sm,
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) a.btn-danger.btn-sm {
     width: 32px !important;
     height: 32px !important;
     padding: 0 !important;
@@ -1189,7 +1214,7 @@ body.admin-portal a.btn-danger.btn-sm {
     border-radius: 8px !important;
     font-size: 12px !important;
 }
-body.admin-portal .btn-danger:hover {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .btn-danger:hover {
     background: #dc2626 !important;
     color: #ffffff !important;
     border-color: #dc2626 !important;
@@ -1197,7 +1222,7 @@ body.admin-portal .btn-danger:hover {
 }
 
 /* Filter Bar & Search */
-body.admin-portal .filter-bar {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -1211,14 +1236,14 @@ body.admin-portal .filter-bar {
     flex-wrap: wrap !important;
     backdrop-filter: blur(16px) !important;
 }
-body.admin-portal .filter-bar form {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar form {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
     flex: 1 !important;
     flex-wrap: wrap !important;
 }
-body.admin-portal .filter-bar .search-wrap {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar .search-wrap {
     position: relative !important;
     display: flex !important;
     align-items: center !important;
@@ -1226,7 +1251,7 @@ body.admin-portal .filter-bar .search-wrap {
     min-width: 220px !important;
     max-width: 380px !important;
 }
-body.admin-portal .filter-bar .search-wrap i {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar .search-wrap i {
     position: absolute !important;
     left: 14px !important;
     top: 50% !important;
@@ -1235,7 +1260,7 @@ body.admin-portal .filter-bar .search-wrap i {
     font-size: 13.5px !important;
     pointer-events: none !important;
 }
-body.admin-portal .filter-bar .search-input {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar .search-input {
     width: 100% !important;
     padding: 10px 14px 10px 38px !important;
     background: #140d27 !important;
@@ -1247,12 +1272,12 @@ body.admin-portal .filter-bar .search-input {
     transition: all 0.2s !important;
     box-sizing: border-box !important;
 }
-body.admin-portal .filter-bar .search-input:focus {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar .search-input:focus {
     background: #1c1136 !important;
     border-color: #a855f7 !important;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2) !important;
 }
-body.admin-portal .filter-bar .form-select {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar .form-select {
     width: auto !important;
     min-width: 200px !important;
     max-width: 280px !important;
@@ -1266,12 +1291,12 @@ body.admin-portal .filter-bar .form-select {
     outline: none !important;
     box-sizing: border-box !important;
 }
-body.admin-portal .filter-bar .form-select:focus {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar .form-select:focus {
     background: #1c1136 !important;
     border-color: #a855f7 !important;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2) !important;
 }
-body.admin-portal .filter-bar .btn {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .filter-bar .btn {
     padding: 10px 18px !important;
     font-size: 13px !important;
     white-space: nowrap !important;
@@ -1279,7 +1304,7 @@ body.admin-portal .filter-bar .btn {
 }
 
 /* Modals & Forms */
-body.admin-portal .modal-overlay {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .modal-overlay {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -1293,12 +1318,12 @@ body.admin-portal .modal-overlay {
     align-items: center;
     justify-content: center;
 }
-body.admin-portal .modal-overlay.active,
-body.admin-portal .modal-overlay.open,
-body.admin-portal .modal-overlay.show {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .modal-overlay.active,
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .modal-overlay.open,
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .modal-overlay.show {
     display: flex !important;
 }
-body.admin-portal .modal-box {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .modal-box {
     background: #150d29 !important;
     border: 1px solid rgba(168, 85, 247, 0.25) !important;
     border-radius: 18px !important;
@@ -1306,21 +1331,21 @@ body.admin-portal .modal-box {
     padding: 28px !important;
     color: #f3e8ff !important;
 }
-body.admin-portal .modal-title {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .modal-title {
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 18px !important;
     font-weight: 800 !important;
     color: #f3e8ff !important;
 }
-body.admin-portal .modal-sub {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .modal-sub {
     font-size: 13px !important;
     color: #a79bb7 !important;
     margin-bottom: 20px !important;
 }
-body.admin-portal .form-group {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-group {
     margin-bottom: 16px !important;
 }
-body.admin-portal .form-label {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-label {
     display: block !important;
     font-size: 12px !important;
     font-weight: 700 !important;
@@ -1329,9 +1354,9 @@ body.admin-portal .form-label {
     letter-spacing: 0 !important;
     margin-bottom: 6px !important;
 }
-body.admin-portal .form-group .form-input,
-body.admin-portal .form-group .form-select,
-body.admin-portal .form-group .form-control {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-group .form-input,
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-group .form-select,
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-group .form-control {
     background: rgba(22, 14, 42, 0.9) !important;
     border: 1.5px solid rgba(168, 85, 247, 0.2) !important;
     border-radius: 10px !important;
@@ -1344,12 +1369,241 @@ body.admin-portal .form-group .form-control {
     width: 100% !important;
     box-sizing: border-box !important;
 }
-body.admin-portal .form-group .form-input:focus,
-body.admin-portal .form-group .form-select:focus,
-body.admin-portal .form-group .form-control:focus {
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-group .form-input:focus,
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-group .form-select:focus,
+body.admin-portal:not(.adm-light-mode):not(.tuyen-theme) .form-group .form-control:focus {
     background: #1c1136 !important;
     border-color: #a855f7 !important;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2) !important;
+}
+
+
+/* ============================================================
+   ★ COMPREHENSIVE LIGHT THEME OVERRIDES FOR ALL ADMIN FUNCTIONS ★
+   Áp dụng đồng bộ cho toàn bộ chức năng (Sinh viên, Giảng viên, Lớp, Môn, Điểm, Bài tập, Tài liệu, Phân quyền, Cài đặt,...)
+   ============================================================ */
+body.admin-portal.adm-light-mode,
+body.admin-portal.tuyen-theme,
+body.adm-light-mode,
+body.tuyen-theme {
+    background-color: #f8fafc !important;
+    background-image: none !important;
+    color: #0f172a !important;
+}
+
+body.admin-portal.adm-light-mode .page-title,
+body.admin-portal.tuyen-theme .page-title {
+    color: #0f172a !important;
+    text-shadow: none !important;
+}
+body.admin-portal.adm-light-mode .page-title i,
+body.admin-portal.tuyen-theme .page-title i {
+    color: #7c3aed !important;
+}
+body.admin-portal.adm-light-mode .page-sub,
+body.admin-portal.tuyen-theme .page-sub {
+    color: #64748b !important;
+}
+
+/* Cards & Containers */
+body.admin-portal.adm-light-mode .card,
+body.admin-portal.tuyen-theme .card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+    color: #0f172a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+body.admin-portal.adm-light-mode .card-head,
+body.admin-portal.tuyen-theme .card-head {
+    border-bottom: 1px solid #f1f5f9 !important;
+    background: #ffffff !important;
+}
+body.admin-portal.adm-light-mode .card-title,
+body.admin-portal.tuyen-theme .card-title {
+    color: #0f172a !important;
+}
+
+/* Tables (Danh sách sinh viên, giảng viên, môn học, lớp,...) */
+body.admin-portal.adm-light-mode table,
+body.admin-portal.tuyen-theme table {
+    background: #ffffff !important;
+}
+body.admin-portal.adm-light-mode th,
+body.admin-portal.tuyen-theme th {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    border-bottom: 1.5px solid #e2e8f0 !important;
+    border-top: none !important;
+}
+body.admin-portal.adm-light-mode td,
+body.admin-portal.tuyen-theme td {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+body.admin-portal.adm-light-mode tr:hover td,
+body.admin-portal.tuyen-theme tr:hover td {
+    background: #f8fafc !important;
+}
+
+/* Filter Bar (Thanh tìm kiếm & lọc trên các trang chức năng) */
+body.admin-portal.adm-light-mode .filter-bar,
+body.admin-portal.tuyen-theme .filter-bar {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+    backdrop-filter: none !important;
+}
+body.admin-portal.adm-light-mode .filter-bar .search-wrap i,
+body.admin-portal.tuyen-theme .filter-bar .search-wrap i {
+    color: #94a3b8 !important;
+}
+body.admin-portal.adm-light-mode .filter-bar .search-input,
+body.admin-portal.tuyen-theme .filter-bar .search-input {
+    background: #f8fafc !important;
+    border: 1.5px solid #e2e8f0 !important;
+    color: #0f172a !important;
+}
+body.admin-portal.adm-light-mode .filter-bar .search-input:focus,
+body.admin-portal.tuyen-theme .filter-bar .search-input:focus {
+    background: #ffffff !important;
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12) !important;
+}
+body.admin-portal.adm-light-mode .filter-bar .form-select,
+body.admin-portal.tuyen-theme .filter-bar .form-select {
+    background: #f8fafc !important;
+    border: 1.5px solid #e2e8f0 !important;
+    color: #0f172a !important;
+}
+body.admin-portal.adm-light-mode .filter-bar .form-select:focus,
+body.admin-portal.tuyen-theme .filter-bar .form-select:focus {
+    background: #ffffff !important;
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12) !important;
+}
+
+/* Buttons */
+body.admin-portal.adm-light-mode .btn-ghost,
+body.admin-portal.tuyen-theme .btn-ghost {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+}
+body.admin-portal.adm-light-mode .btn-ghost:hover,
+body.admin-portal.tuyen-theme .btn-ghost:hover {
+    background: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
+    color: #0f172a !important;
+}
+
+/* Modals & Forms */
+body.admin-portal.adm-light-mode .modal-overlay,
+body.admin-portal.tuyen-theme .modal-overlay {
+    background: rgba(15, 23, 42, 0.45) !important;
+}
+body.admin-portal.adm-light-mode .modal-box,
+body.admin-portal.tuyen-theme .modal-box {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15) !important;
+    color: #0f172a !important;
+}
+body.admin-portal.adm-light-mode .modal-title,
+body.admin-portal.tuyen-theme .modal-title {
+    color: #0f172a !important;
+}
+body.admin-portal.adm-light-mode .modal-sub,
+body.admin-portal.tuyen-theme .modal-sub {
+    color: #64748b !important;
+}
+body.admin-portal.adm-light-mode .form-label,
+body.admin-portal.tuyen-theme .form-label {
+    color: #334155 !important;
+}
+body.admin-portal.adm-light-mode .form-group .form-input,
+body.admin-portal.adm-light-mode .form-group .form-select,
+body.admin-portal.adm-light-mode .form-group .form-control,
+body.admin-portal.tuyen-theme .form-group .form-input,
+body.admin-portal.tuyen-theme .form-group .form-select,
+body.admin-portal.tuyen-theme .form-group .form-control {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+body.admin-portal.adm-light-mode .form-group .form-input:focus,
+body.admin-portal.adm-light-mode .form-group .form-select:focus,
+body.admin-portal.adm-light-mode .form-group .form-control:focus,
+body.admin-portal.tuyen-theme .form-group .form-input:focus,
+body.admin-portal.tuyen-theme .form-group .form-select:focus,
+body.admin-portal.tuyen-theme .form-group .form-control:focus {
+    border-color: #7c3aed !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12) !important;
+}
+
+/* Fallback for inline dark styles across all admin pages */
+body.adm-light-mode [style*="background:#140d27"],
+body.adm-light-mode [style*="background: #140d27"],
+body.adm-light-mode [style*="background:#150d29"],
+body.adm-light-mode [style*="background: #150d29"],
+body.adm-light-mode [style*="background:rgba(20, 13, 38"],
+body.adm-light-mode [style*="background: rgba(20, 13, 38"],
+body.adm-light-mode [style*="background:rgba(24, 15, 48"],
+body.adm-light-mode [style*="background: rgba(24, 15, 48"] {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+body.adm-light-mode select[style*="background:#140d27"],
+body.adm-light-mode select[style*="background: #140d27"],
+body.adm-light-mode input[style*="background:#140d27"],
+body.adm-light-mode input[style*="background: #140d27"] {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+/* Custom Function Cards across all admin modules in Light Mode */
+body.adm-light-mode .kpi-card-admin,
+body.tuyen-theme .kpi-card-admin,
+body.adm-light-mode .kpi-box,
+body.tuyen-theme .kpi-box,
+body.adm-light-mode .assignment-item-card,
+body.tuyen-theme .assignment-item-card,
+body.adm-light-mode .doc-card,
+body.tuyen-theme .doc-card,
+body.adm-light-mode .adm-card,
+body.tuyen-theme .adm-card,
+body.adm-light-mode .aim-stat-card,
+body.tuyen-theme .aim-stat-card,
+body.adm-light-mode .aim-model-card,
+body.tuyen-theme .aim-model-card,
+body.adm-light-mode .profile-side-card,
+body.tuyen-theme .profile-side-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+    color: #0f172a !important;
+}
+
+body.adm-light-mode .tab-btn-admin,
+body.tuyen-theme .tab-btn-admin,
+body.adm-light-mode .grade-tab-btn,
+body.tuyen-theme .grade-tab-btn {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+}
+body.adm-light-mode .tab-btn-admin.active,
+body.tuyen-theme .tab-btn-admin.active,
+body.adm-light-mode .grade-tab-btn.active,
+body.tuyen-theme .grade-tab-btn.active {
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
 }
 
 /* Alert Boxes */
@@ -1388,6 +1642,663 @@ body.admin-portal .alert-error {
         padding: 20px 16px 36px !important;
     }
 }
+
+/* ============================================================
+   SCREEN CURTAIN TRANSITION (ĐÓNG MÀN HÌNH - HIỆN MẶT TRỜI - MỞ MÀN HÌNH)
+   ============================================================ */
+.adm-theme-curtain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999999;
+    pointer-events: none;
+    visibility: hidden;
+    overflow: hidden;
+}
+.adm-theme-curtain.active {
+    visibility: visible;
+    pointer-events: all;
+}
+.adm-curtain-half {
+    position: absolute;
+    top: 0;
+    width: 50.5vw;
+    height: 100vh;
+    background: radial-gradient(ellipse at 50% 45%, #241142 0%, #130726 50%, #07020d 100%);
+    transition: transform 0.44s cubic-bezier(0.77, 0, 0.175, 1);
+    will-change: transform;
+    z-index: 1;
+}
+.adm-curtain-left {
+    left: 0;
+    transform: translateX(-101%);
+    border-right: 1.5px solid rgba(168, 85, 247, 0.2);
+    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.9);
+}
+.adm-curtain-right {
+    right: 0;
+    transform: translateX(101%);
+    border-left: 1.5px solid rgba(168, 85, 247, 0.2);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.9);
+}
+.adm-theme-curtain.closing .adm-curtain-left,
+.adm-theme-curtain.closed .adm-curtain-left {
+    transform: translateX(0);
+}
+.adm-theme-curtain.closing .adm-curtain-right,
+.adm-theme-curtain.closed .adm-curtain-right {
+    transform: translateX(0);
+}
+.adm-theme-curtain.opening .adm-curtain-left {
+    transform: translateX(-101%);
+}
+.adm-theme-curtain.opening .adm-curtain-right {
+    transform: translateX(101%);
+}
+
+/* ============================================================
+   CHẾ ĐỘ SÁNG: BẦU TRỜI XANH, MÂY TRẮNG, CHIM ÉN & CHIM SẺ
+   ============================================================ */
+.adm-theme-curtain.curtain-mode-light .adm-curtain-half {
+    background: linear-gradient(180deg, #bae6fd 0%, #e0f2fe 28%, #fef9c3 68%, #ffffff 100%) !important;
+}
+.adm-theme-curtain.curtain-mode-light .adm-curtain-left {
+    border-right: 1.5px solid rgba(245, 158, 11, 0.25) !important;
+    box-shadow: 15px 0 50px rgba(0, 0, 0, 0.04) !important;
+}
+.adm-theme-curtain.curtain-mode-light .adm-curtain-right {
+    border-left: 1.5px solid rgba(245, 158, 11, 0.25) !important;
+    box-shadow: -15px 0 50px rgba(0, 0, 0, 0.04) !important;
+}
+.adm-theme-curtain.curtain-mode-light .adm-curtain-sun .adm-curtain-title {
+    font-size: 32px !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #b45309 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: none !important;
+    margin-top: 18px !important;
+    position: relative;
+    z-index: 5;
+}
+.adm-theme-curtain.curtain-mode-light .adm-curtain-sun .adm-curtain-sub {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    margin-top: 6px !important;
+    letter-spacing: 0.3px !important;
+    position: relative;
+    z-index: 5;
+}
+.adm-curtain-moon .adm-curtain-title {
+    font-size: 32px !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 40%, #c084fc 80%, #38bdf8 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: 0 0 25px rgba(168, 85, 247, 0.7) !important;
+    margin-top: 18px !important;
+    position: relative;
+    z-index: 5;
+}
+.adm-curtain-moon .adm-curtain-sub {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #c4b5fd !important;
+    margin-top: 6px !important;
+    letter-spacing: 0.5px !important;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.4) !important;
+    position: relative;
+    z-index: 5;
+}
+
+/* Center Stage for Sun / Moon */
+.adm-curtain-stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.adm-theme-curtain.closed .adm-curtain-stage {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+.adm-theme-curtain.opening .adm-curtain-stage {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.15);
+    transition: opacity 0.25s ease, transform 0.35s ease-out;
+}
+
+/* LOADING PROGRESS BAR */
+.adm-morning-progress-bar {
+    position: relative;
+    width: 300px;
+    height: 32px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+.adm-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #fef08a, #f59e0b, #fbbf24);
+    animation: progressFill 2.8s cubic-bezier(0.1, 0.85, 0.35, 1) forwards 0.1s;
+    border-radius: 20px;
+}
+.adm-progress-text {
+    position: relative;
+    z-index: 2;
+    font-size: 11px;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+@keyframes progressFill {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+/* DARK MODE PROGRESS BAR */
+.adm-night-progress-bar {
+    position: relative;
+    width: 290px;
+    height: 32px;
+    border-radius: 20px;
+    background: rgba(20, 13, 39, 0.85);
+    border: 1.5px solid rgba(168, 85, 247, 0.35);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+.adm-night-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #c084fc, #a855f7, #38bdf8);
+    animation: progressFill 2.8s cubic-bezier(0.1, 0.85, 0.35, 1) forwards 0.1s;
+    border-radius: 20px;
+}
+.adm-night-progress-text {
+    position: relative;
+    z-index: 2;
+    font-size: 11px;
+    font-weight: 800;
+    color: #f3e8ff;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* EXPANDING SUN RIPPLES */
+.adm-sun-ripple {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid rgba(245, 158, 11, 0.4);
+    pointer-events: none;
+    z-index: 1;
+}
+.adm-sun-ripple.r-1 {
+    width: 160px;
+    height: 160px;
+    animation: sunRipple 2.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+.adm-sun-ripple.r-2 {
+    width: 210px;
+    height: 210px;
+    animation: sunRipple 2.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite 0.7s;
+}
+@keyframes sunRipple {
+    0% { transform: scale(0.65); opacity: 0.8; border-color: rgba(245, 158, 11, 0.6); }
+    100% { transform: scale(1.6); opacity: 0; border-color: rgba(251, 191, 36, 0); }
+}
+
+/* MÂY TRẮNG BỒNG BỀNH (CLOUDS) */
+.adm-morning-cloud {
+    position: absolute;
+    color: #ffffff;
+    filter: drop-shadow(0 12px 28px rgba(186, 230, 253, 0.5)) drop-shadow(0 4px 12px rgba(148, 163, 184, 0.15));
+    pointer-events: none;
+    z-index: 2;
+}
+.adm-morning-cloud.cloud-1 {
+    top: 10%;
+    left: 6%;
+    font-size: 95px;
+    animation: floatCloud1 8s ease-in-out infinite alternate;
+    opacity: 0.95;
+}
+.adm-morning-cloud.cloud-2 {
+    top: 15%;
+    right: 8%;
+    font-size: 115px;
+    animation: floatCloud2 9s ease-in-out infinite alternate;
+    opacity: 0.95;
+}
+.adm-morning-cloud.cloud-3 {
+    bottom: 16%;
+    left: 8%;
+    font-size: 85px;
+    animation: floatCloud1 7s ease-in-out infinite alternate 1s;
+    opacity: 0.9;
+}
+.adm-morning-cloud.cloud-4 {
+    bottom: 20%;
+    right: 10%;
+    font-size: 80px;
+    animation: floatCloud2 8.5s ease-in-out infinite alternate 0.5s;
+    opacity: 0.9;
+}
+.adm-morning-cloud.cloud-5 {
+    top: 24%;
+    left: 22%;
+    font-size: 55px;
+    animation: floatCloud1 6s ease-in-out infinite alternate 1.5s;
+    opacity: 0.8;
+}
+@keyframes floatCloud1 {
+    from { transform: translateX(0) translateY(0); }
+    to { transform: translateX(25px) translateY(-10px); }
+}
+@keyframes floatCloud2 {
+    from { transform: translateX(0) translateY(0); }
+    to { transform: translateX(-25px) translateY(10px); }
+}
+
+/* ĐÀN CHIM ÉN (SWALLOWS - ĐUÔI CHẺ) */
+.adm-flock-en {
+    position: absolute;
+    top: 12%;
+    left: 18%;
+    z-index: 3;
+    pointer-events: none;
+    animation: enChaoLieng 9s ease-in-out infinite alternate;
+}
+.adm-chim-en {
+    position: absolute;
+    filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.15));
+}
+.adm-chim-en.en-1 { top: 0; left: 0; animation: enCanh 1.2s ease-in-out infinite alternate; }
+.adm-chim-en.en-2 { top: 22px; left: 45px; animation: enCanh 1.2s ease-in-out infinite alternate 0.2s; }
+.adm-chim-en.en-3 { top: -14px; left: 70px; animation: enCanh 1.2s ease-in-out infinite alternate 0.4s; }
+
+@keyframes enChaoLieng {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(45px, -15px) rotate(-3deg); }
+    100% { transform: translate(90px, -5px) rotate(2deg); }
+}
+@keyframes enCanh {
+    0% { transform: scaleY(1); }
+    50% { transform: scaleY(0.85); }
+    100% { transform: scaleY(1); }
+}
+
+/* ĐÀN CHIM SẺ (SPARROWS - THÂN TRÒN DỄ THƯƠNG) */
+.adm-flock-se {
+    position: absolute;
+    top: 28%;
+    right: 20%;
+    z-index: 3;
+    pointer-events: none;
+    animation: seTungCanh 7s ease-in-out infinite alternate;
+}
+.adm-chim-se {
+    position: absolute;
+    filter: drop-shadow(0 2px 4px rgba(120, 53, 15, 0.2));
+}
+.adm-chim-se.se-1 { top: 0; right: 0; animation: seVoCanh 0.6s ease-in-out infinite alternate; }
+.adm-chim-se.se-2 { top: 30px; right: 35px; animation: seVoCanh 0.6s ease-in-out infinite alternate 0.15s; }
+.adm-chim-se.se-3 { top: -18px; right: 55px; animation: seVoCanh 0.6s ease-in-out infinite alternate 0.3s; }
+
+@keyframes seTungCanh {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(-35px, 12px); }
+    100% { transform: translate(-70px, -8px); }
+}
+@keyframes seVoCanh {
+    0% { transform: translateY(0) scaleY(1); }
+    50% { transform: translateY(-3px) scaleY(0.9); }
+    100% { transform: translateY(0) scaleY(1); }
+}
+
+.adm-curtain-entity {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.adm-curtain-entity.show {
+    display: flex;
+}
+
+/* SUN STYLING (HIỆN MẶT TRỜI) */
+.adm-sun-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.adm-sun-glow {
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.55) 0%, rgba(251, 191, 36, 0.25) 45%, transparent 75%);
+    animation: sunGlowPulse 2s ease-in-out infinite alternate;
+    z-index: 1;
+}
+.adm-sun-rays {
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    z-index: 2;
+    animation: spinSunRays 14s linear infinite;
+}
+.adm-sun-rays span {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 6px;
+    height: 100%;
+    margin-left: -3px;
+    transform: rotate(var(--r));
+}
+.adm-sun-rays span::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 6px;
+    height: 28px;
+    background: linear-gradient(to top, rgba(245, 158, 11, 0.1), #fbbf24);
+    border-radius: 4px;
+    box-shadow: 0 0 16px #f59e0b;
+}
+.adm-sun-core {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fef08a 25%, #f59e0b 65%, #d97706 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 55px rgba(245, 158, 11, 0.95), 0 0 110px rgba(251, 191, 36, 0.65), inset 0 0 22px rgba(255,255,255,0.9);
+    position: relative;
+    z-index: 3;
+    animation: sunCorePulse 2s ease-in-out infinite alternate;
+}
+.adm-sun-core i {
+    font-size: 48px;
+    color: #ffffff;
+    filter: drop-shadow(0 2px 8px rgba(180, 83, 9, 0.8));
+    animation: spinSunIcon 14s linear infinite;
+}
+
+/* MOON STYLING (HIỆN MẶT TRĂNG - CHẾ ĐỘ BAN ĐÊM) */
+.adm-moon-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.adm-moon-glow {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.55) 0%, rgba(139, 92, 246, 0.25) 45%, transparent 75%);
+    animation: moonGlowPulse 2.2s ease-in-out infinite alternate;
+    z-index: 1;
+}
+.adm-moon-ripple {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid rgba(168, 85, 247, 0.45);
+    pointer-events: none;
+    z-index: 1;
+}
+.adm-moon-ripple.mr-1 {
+    width: 170px;
+    height: 170px;
+    animation: moonRipple 2.8s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+.adm-moon-ripple.mr-2 {
+    width: 230px;
+    height: 230px;
+    animation: moonRipple 2.8s cubic-bezier(0.1, 0.8, 0.3, 1) infinite 0.9s;
+}
+@keyframes moonRipple {
+    0% { transform: scale(0.65); opacity: 0.85; border-color: rgba(192, 132, 252, 0.7); }
+    100% { transform: scale(1.7); opacity: 0; border-color: rgba(168, 85, 247, 0); }
+}
+
+.adm-moon-stars {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    z-index: 2;
+}
+.adm-moon-stars i {
+    position: absolute;
+    color: #e9d5ff;
+    animation: starTwinkle 1.8s ease-in-out infinite alternate;
+}
+.adm-moon-stars .star-1 { top: 20px; left: 30px; font-size: 16px; animation-delay: 0.1s; color: #fbbf24; }
+.adm-moon-stars .star-2 { top: 25px; right: 30px; font-size: 14px; animation-delay: 0.5s; color: #c084fc; }
+.adm-moon-stars .star-3 { bottom: 25px; left: 35px; font-size: 13px; animation-delay: 0.9s; color: #e9d5ff; }
+.adm-moon-stars .star-4 { bottom: 20px; right: 40px; font-size: 17px; animation-delay: 0.3s; color: #38bdf8; }
+.adm-moon-core {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f5f3ff 0%, #ddd6fe 30%, #a855f7 70%, #7c3aed 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 60px rgba(168, 85, 247, 0.95), 0 0 120px rgba(139, 92, 246, 0.65), inset 0 0 25px rgba(255,255,255,0.9);
+    position: relative;
+    z-index: 3;
+    animation: moonCoreFloat 3s ease-in-out infinite alternate;
+}
+.adm-moon-core i {
+    font-size: 48px;
+    color: #ffffff;
+    filter: drop-shadow(0 0 15px rgba(233, 213, 255, 0.95)) drop-shadow(0 2px 10px rgba(91, 33, 182, 0.9));
+}
+
+/* MÂY ĐÊM HUYỀN ẢO (ETHEREAL NIGHT CLOUDS) */
+.adm-night-cloud {
+    position: absolute;
+    color: rgba(45, 20, 85, 0.65);
+    filter: drop-shadow(0 12px 28px rgba(147, 51, 234, 0.35)) drop-shadow(0 0 15px rgba(192, 132, 252, 0.2));
+    pointer-events: none;
+    z-index: 2;
+}
+.adm-night-cloud.ncloud-1 {
+    top: 9%;
+    left: 7%;
+    font-size: 100px;
+    animation: floatCloud1 9s ease-in-out infinite alternate;
+    opacity: 0.85;
+}
+.adm-night-cloud.ncloud-2 {
+    top: 14%;
+    right: 8%;
+    font-size: 115px;
+    animation: floatCloud2 10s ease-in-out infinite alternate;
+    opacity: 0.85;
+}
+.adm-night-cloud.ncloud-3 {
+    bottom: 14%;
+    left: 9%;
+    font-size: 85px;
+    animation: floatCloud1 8s ease-in-out infinite alternate 1s;
+    opacity: 0.75;
+}
+.adm-night-cloud.ncloud-4 {
+    bottom: 18%;
+    right: 10%;
+    font-size: 90px;
+    animation: floatCloud2 9.5s ease-in-out infinite alternate 0.5s;
+    opacity: 0.75;
+}
+
+/* SAO BĂNG LƯỚT QUA BẦU TRỜI (SHOOTING STARS / METEORS) */
+.adm-shooting-star {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,255,255,0), #c084fc, #38bdf8, #ffffff);
+    border-radius: 999px;
+    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.95)) drop-shadow(0 0 14px rgba(56, 189, 248, 0.8));
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+}
+.adm-shooting-star.star-shoot-1 {
+    top: 15%;
+    left: 15%;
+    width: 140px;
+    transform: rotate(-32deg);
+    animation: shootMeteor1 4.5s ease-in-out infinite;
+}
+.adm-shooting-star.star-shoot-2 {
+    top: 25%;
+    right: 18%;
+    width: 160px;
+    transform: rotate(-38deg);
+    animation: shootMeteor2 5.5s ease-in-out infinite 1.8s;
+}
+@keyframes shootMeteor1 {
+    0% { transform: translate(-80px, -60px) rotate(-32deg); opacity: 0; width: 0; }
+    15% { opacity: 1; width: 140px; }
+    35% { transform: translate(140px, 90px) rotate(-32deg); opacity: 0; width: 40px; }
+    100% { transform: translate(140px, 90px) rotate(-32deg); opacity: 0; width: 0; }
+}
+@keyframes shootMeteor2 {
+    0% { transform: translate(80px, -60px) rotate(-38deg); opacity: 0; width: 0; }
+    15% { opacity: 1; width: 160px; }
+    35% { transform: translate(-150px, 110px) rotate(-38deg); opacity: 0; width: 40px; }
+    100% { transform: translate(-150px, 110px) rotate(-38deg); opacity: 0; width: 0; }
+}
+
+/* NGÀN SAO VŨ TRỤ TRẢI RỘNG (SCATTERED NIGHT SKY STARS) */
+.adm-night-star {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    animation: starTwinkle 2s ease-in-out infinite alternate;
+}
+
+/* ĐOM ĐÓM PHÁT SÁNG (BIOLUMINESCENT FIREFLIES) */
+.adm-firefly {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a3e635;
+    box-shadow: 0 0 10px #a3e635, 0 0 20px #84cc16, 0 0 30px #4d7c0f;
+    pointer-events: none;
+    z-index: 4;
+}
+.adm-firefly.ff-1 { top: 42%; left: 32%; animation: flyWander1 6s ease-in-out infinite; }
+.adm-firefly.ff-2 { top: 46%; right: 30%; animation: flyWander2 7s ease-in-out infinite 1s; }
+.adm-firefly.ff-3 { bottom: 34%; left: 36%; animation: flyWander3 6.5s ease-in-out infinite 2s; }
+.adm-firefly.ff-4 { bottom: 25%; right: 34%; animation: flyWander1 7.5s ease-in-out infinite 0.5s; }
+.adm-firefly.ff-5 { top: 32%; right: 42%; animation: flyWander2 5.5s ease-in-out infinite 1.5s; }
+
+@keyframes flyWander1 {
+    0%, 100% { transform: translate(0, 0) scale(0.8); opacity: 0.3; }
+    50% { transform: translate(25px, -20px) scale(1.3); opacity: 1; }
+}
+@keyframes flyWander2 {
+    0%, 100% { transform: translate(0, 0) scale(0.7); opacity: 0.2; }
+    50% { transform: translate(-30px, 18px) scale(1.25); opacity: 0.95; }
+}
+@keyframes flyWander3 {
+    0%, 100% { transform: translate(0, 0) scale(0.9); opacity: 0.4; }
+    50% { transform: translate(20px, 22px) scale(1.35); opacity: 1; }
+}
+
+.adm-curtain-title {
+    margin-top: 26px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+.adm-curtain-sun .adm-curtain-title {
+    text-shadow: 0 4px 18px rgba(0,0,0,0.8), 0 0 35px rgba(245, 158, 11, 0.75);
+}
+.adm-curtain-moon .adm-curtain-title {
+    text-shadow: 0 4px 18px rgba(0,0,0,0.8), 0 0 35px rgba(168, 85, 247, 0.75);
+}
+.adm-curtain-sub {
+    margin-top: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.adm-curtain-sun .adm-curtain-sub {
+    color: #fde68a;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+.adm-curtain-moon .adm-curtain-sub {
+    color: #ddd6fe;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+@keyframes spinSunRays { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes spinSunIcon { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes sunGlowPulse { from { transform: scale(0.92); opacity: 0.7; } to { transform: scale(1.15); opacity: 1; } }
+@keyframes sunCorePulse { from { transform: scale(0.96); } to { transform: scale(1.04); } }
+@keyframes moonGlowPulse { from { transform: scale(0.92); opacity: 0.7; } to { transform: scale(1.15); opacity: 1; } }
+@keyframes moonCoreFloat { from { transform: translateY(-4px) rotate(-4deg); } to { transform: translateY(4px) rotate(4deg); } }
+@keyframes starTwinkle { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.25); } }
 </style>
 
 <div class="adm-overlay" id="admOverlay" onclick="toggleAdminNav()"></div>
@@ -1493,16 +2404,29 @@ body.admin-portal .alert-error {
                 <span>Quản lý Quiz &amp; Thi</span>
             </a>
         </li>
+
+        <!-- TRÍ TUỆ NHÂN TẠO & AI MODELS -->
+        <li style="padding: 12px 18px 4px; font-size: 10px; font-weight: 800; color: #a79bb7; text-transform: uppercase; letter-spacing: 0.8px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-robot" style="font-size:10px; color:#c084fc;"></i>
+            <span>Trí Tuệ Nhân Tạo &amp; Models AI</span>
+        </li>
+        <li class="adm-nav-item <?= $cur_file === 'quanly_ai_models.php' ? 'active' : '' ?>" id="navItemAiModels">
+            <a href="/tkb/admin/quanly_ai_models.php" class="<?= $cur_file === 'quanly_ai_models.php' ? 'active' : '' ?>">
+                <i class="fa-solid fa-microchip" style="color: <?= $cur_file === 'quanly_ai_models.php' ? '#fff' : '#38bdf8' ?>;"></i>
+                <span>Models AI Botchat</span>
+            </a>
+        </li>
+        <li class="adm-nav-item <?= in_array($cur_file, ['ai_studio.php', 'botchat.php']) ? 'active' : '' ?>">
+            <a href="/tkb/admin/ai_studio.php" class="<?= in_array($cur_file, ['ai_studio.php', 'botchat.php']) ? 'active' : '' ?>">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color: <?= in_array($cur_file, ['ai_studio.php', 'botchat.php']) ? '#fff' : '#c084fc' ?>;"></i>
+                <span>AI Cosmic Admin Studio</span>
+            </a>
+        </li>
+
         <li class="adm-nav-item <?= $cur_file === 'doan.php' ? 'active' : '' ?>">
             <a href="/tkb/teacher/doan.php" class="<?= $cur_file === 'doan.php' ? 'active' : '' ?>">
                 <i class="fa-solid fa-file-code" style="color: #818cf8;"></i>
                 <span>Quản lý Đồ án</span>
-            </a>
-        </li>
-        <li class="adm-nav-item <?= $cur_file === 'diemdanh.php' ? 'active' : '' ?>">
-            <a href="/tkb/teacher/diemdanh.php" class="<?= $cur_file === 'diemdanh.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-user-check" style="color: #f59e0b;"></i>
-                <span>Quản lý Điểm danh</span>
             </a>
         </li>
         <li class="adm-nav-item <?= $cur_file === 'baocao_tien_do.php' ? 'active' : '' ?>">
@@ -1520,12 +2444,6 @@ body.admin-portal .alert-error {
             <a href="/tkb/admin/youtube.php" class="<?= $cur_file === 'youtube.php' ? 'active' : '' ?>">
                 <i class="fa-brands fa-youtube" style="color: <?= $cur_file === 'youtube.php' ? '#fff' : '#f43f5e' ?>;"></i>
                 <span>Quản lý YouTube</span>
-            </a>
-        </li>
-        <li class="adm-nav-item <?= $cur_file === 'quanly_ai_models.php' ? 'active' : '' ?>">
-            <a href="/tkb/admin/quanly_ai_models.php" class="<?= $cur_file === 'quanly_ai_models.php' ? 'active' : '' ?>">
-                <i class="fa-solid fa-robot" style="color: <?= $cur_file === 'quanly_ai_models.php' ? '#fff' : '#c084fc' ?>;"></i>
-                <span>Models AI Botchat</span>
             </a>
         </li>
         <li class="adm-nav-item <?= $cur_file === 'phanquyen.php' ? 'active' : '' ?>">
@@ -1844,6 +2762,10 @@ body.admin-portal .alert-error {
                 </button>
             </div>
             <?php endif; ?>
+            <!-- Nút Chuyển Đổi Chế Độ Sáng / Tối (Light Mode / Dark Mode) -->
+            <button type="button" class="adm-action-icon-btn adm-theme-btn" id="admThemeToggleBtn" onclick="toggleAdminTheme(event)" title="Chuyển đổi Chế độ Sáng / Tối (Light / Dark Mode)" style="background:rgba(245,158,11,0.15); border-color:rgba(245,158,11,0.4); color:#f59e0b;">
+                <i class="fa-solid fa-sun" id="admThemeIcon"></i>
+            </button>
             <a href="/tkb/admin/nhatky.php" class="adm-action-icon-btn" title="Thông báo hệ thống">
                 <i class="fa-regular fa-bell"></i>
                 <span class="adm-badge-count" style="<?= $is_tuyen ? 'background:#ef4444;' : '' ?>"><?= $is_tuyen ? '3' : '1' ?></span>
@@ -1899,11 +2821,381 @@ body.admin-portal .alert-error {
         </div>
     </header>
 
+<!-- MÀN HÌNH ĐÓNG MỞ KHI CHUYỂN CHẾ ĐỘ SÁNG / TỐI (HIỆN MẶT TRỜI / MẶT TRĂNG) -->
+<div id="admThemeCurtain" class="adm-theme-curtain">
+    <div class="adm-curtain-half adm-curtain-left" id="curtainLeft"></div>
+    <div class="adm-curtain-half adm-curtain-right" id="curtainRight"></div>
+    <div class="adm-curtain-stage" id="curtainStage">
+        <!-- HIỆN MẶT TRỜI KHI BẬT CHẾ ĐỘ SÁNG (MÂY, BẦU TRỜI, CHIM ÉN, CHIM SẺ) -->
+        <div class="adm-curtain-entity adm-curtain-sun" id="curtainSun">
+            
+            <!-- Mây trắng bồng bềnh khắp bầu trời -->
+            <div class="adm-morning-cloud cloud-1"><i class="fa-solid fa-cloud"></i></div>
+            <div class="adm-morning-cloud cloud-2"><i class="fa-solid fa-cloud"></i></div>
+            <div class="adm-morning-cloud cloud-3"><i class="fa-solid fa-cloud"></i></div>
+            <div class="adm-morning-cloud cloud-4"><i class="fa-solid fa-cloud"></i></div>
+            <div class="adm-morning-cloud cloud-5"><i class="fa-solid fa-cloud"></i></div>
+
+            <!-- Đàn chim én chao liệng trên cao (đuôi chẻ) -->
+            <div class="adm-flock-en">
+                <svg class="adm-chim-en en-1" viewBox="0 0 40 24" width="42" height="25">
+                    <path d="M0,10 C8,2 16,5 20,11 C24,5 32,2 40,10 C32,8 26,13 22,22 C20,17 17,17 15,22 C12,13 6,8 0,10 Z" fill="#1e293b"/>
+                    <path d="M17,12 C19,9 21,9 23,12 C21,15 19,15 17,12 Z" fill="#f8fafc" opacity="0.75"/>
+                </svg>
+                <svg class="adm-chim-en en-2" viewBox="0 0 40 24" width="30" height="18">
+                    <path d="M0,10 C8,2 16,5 20,11 C24,5 32,2 40,10 C32,8 26,13 22,22 C20,17 17,17 15,22 C12,13 6,8 0,10 Z" fill="#334155" opacity="0.9"/>
+                </svg>
+                <svg class="adm-chim-en en-3" viewBox="0 0 40 24" width="22" height="13">
+                    <path d="M0,10 C8,2 16,5 20,11 C24,5 32,2 40,10 C32,8 26,13 22,22 C20,17 17,17 15,22 C12,13 6,8 0,10 Z" fill="#475569" opacity="0.8"/>
+                </svg>
+            </div>
+
+            <!-- Đàn chim sẻ vỗ cánh tung bay (thân tròn xinh xắn) -->
+            <div class="adm-flock-se">
+                <svg class="adm-chim-se se-1" viewBox="0 0 32 24" width="34" height="25">
+                    <path d="M28,8 C31,7 32,8 30,10 C27,12 25,13 23,13 C22,16 19,18 15,19 C11,20 7,19 4,21 C2,22 1,21 2,19 C3,17 4,15 5,13 C6,9 10,6 14,6 C17,6 20,4 23,4 C25,4 27,6 28,8 Z" fill="#92400e"/>
+                    <path d="M12,8 C16,4 20,6 18,11 C15,14 11,13 10,11 Z" fill="#78350f"/>
+                    <path d="M10,14 C14,14 17,16 15,19 C12,20 8,18 10,14 Z" fill="#fef3c7" opacity="0.85"/>
+                </svg>
+                <svg class="adm-chim-se se-2" viewBox="0 0 32 24" width="26" height="19">
+                    <path d="M28,8 C31,7 32,8 30,10 C27,12 25,13 23,13 C22,16 19,18 15,19 C11,20 7,19 4,21 C2,22 1,21 2,19 C3,17 4,15 5,13 C6,9 10,6 14,6 C17,6 20,4 23,4 C25,4 27,6 28,8 Z" fill="#92400e" opacity="0.9"/>
+                    <path d="M12,8 C16,4 20,6 18,11 C15,14 11,13 10,11 Z" fill="#78350f" opacity="0.9"/>
+                </svg>
+                <svg class="adm-chim-se se-3" viewBox="0 0 32 24" width="20" height="15">
+                    <path d="M28,8 C31,7 32,8 30,10 C27,12 25,13 23,13 C22,16 19,18 15,19 C11,20 7,19 4,21 C2,22 1,21 2,19 C3,17 4,15 5,13 C6,9 10,6 14,6 C17,6 20,4 23,4 C25,4 27,6 28,8 Z" fill="#b45309" opacity="0.85"/>
+                </svg>
+            </div>
+
+            <!-- Vầng thái dương rực rỡ ở trung tâm -->
+            <div class="adm-sun-wrap">
+                <div class="adm-sun-ripple r-1"></div>
+                <div class="adm-sun-ripple r-2"></div>
+                <div class="adm-sun-glow"></div>
+                <div class="adm-sun-rays">
+                    <span style="--r: 0deg"></span>
+                    <span style="--r: 30deg"></span>
+                    <span style="--r: 60deg"></span>
+                    <span style="--r: 90deg"></span>
+                    <span style="--r: 120deg"></span>
+                    <span style="--r: 150deg"></span>
+                    <span style="--r: 180deg"></span>
+                    <span style="--r: 210deg"></span>
+                    <span style="--r: 240deg"></span>
+                    <span style="--r: 270deg"></span>
+                    <span style="--r: 300deg"></span>
+                    <span style="--r: 330deg"></span>
+                </div>
+                <div class="adm-sun-core">
+                    <i class="fa-solid fa-sun"></i>
+                </div>
+            </div>
+
+            <!-- Tiêu đề & Phụ đề -->
+            <div class="adm-curtain-title">CHẾ ĐỘ BAN NGÀY</div>
+            <div class="adm-curtain-sub">Chào ngày mới • Bầu trời trong xanh tươi sáng</div>
+
+            <!-- Thanh tiến trình nạp 3s -->
+            <div class="adm-morning-progress-bar">
+                <div class="adm-progress-fill"></div>
+                <span class="adm-progress-text"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Đang kích hoạt giao diện sáng...</span>
+            </div>
+        </div>
+
+        <!-- HIỆN MẶT TRĂNG KHI BẬT CHẾ ĐỘ TỐI -->
+        <div class="adm-curtain-entity adm-curtain-moon" id="curtainMoon">
+            <!-- MÂY ĐÊM HUYỀN ẢO -->
+            <div class="adm-night-cloud ncloud-1"><i class="fa-solid fa-cloud"></i></div>
+            <div class="adm-night-cloud ncloud-2"><i class="fa-solid fa-cloud"></i></div>
+            <div class="adm-night-cloud ncloud-3"><i class="fa-solid fa-cloud"></i></div>
+            <div class="adm-night-cloud ncloud-4"><i class="fa-solid fa-cloud"></i></div>
+
+            <!-- SAO BĂNG LƯỚT QUA BẦU TRỜI -->
+            <div class="adm-shooting-star star-shoot-1"></div>
+            <div class="adm-shooting-star star-shoot-2"></div>
+
+            <!-- NGÀN SAO VŨ TRỤ LẤP LÁNH -->
+            <i class="fa-solid fa-star adm-night-star" style="top: 8%; left: 24%; font-size: 15px; color: #fbbf24; animation-delay: 0.2s; filter: drop-shadow(0 0 8px #fbbf24);"></i>
+            <i class="fa-solid fa-sparkles adm-night-star" style="top: 22%; left: 12%; font-size: 18px; color: #c084fc; animation-delay: 0.7s; filter: drop-shadow(0 0 8px #c084fc);"></i>
+            <i class="fa-solid fa-star adm-night-star" style="top: 35%; left: 20%; font-size: 13px; color: #38bdf8; animation-delay: 1.2s; filter: drop-shadow(0 0 8px #38bdf8);"></i>
+            <i class="fa-solid fa-sparkles adm-night-star" style="bottom: 28%; left: 16%; font-size: 16px; color: #ffffff; animation-delay: 0.4s; filter: drop-shadow(0 0 10px #ffffff);"></i>
+            <i class="fa-solid fa-star adm-night-star" style="bottom: 12%; left: 26%; font-size: 14px; color: #fef08a; animation-delay: 0.9s; filter: drop-shadow(0 0 8px #fef08a);"></i>
+            <i class="fa-solid fa-star adm-night-star" style="top: 7%; right: 25%; font-size: 17px; color: #c084fc; animation-delay: 0.3s; filter: drop-shadow(0 0 8px #c084fc);"></i>
+            <i class="fa-solid fa-sparkles adm-night-star" style="top: 20%; right: 13%; font-size: 14px; color: #fbbf24; animation-delay: 0.8s; filter: drop-shadow(0 0 8px #fbbf24);"></i>
+            <i class="fa-solid fa-star adm-night-star" style="top: 36%; right: 22%; font-size: 15px; color: #38bdf8; animation-delay: 1.4s; filter: drop-shadow(0 0 8px #38bdf8);"></i>
+            <i class="fa-solid fa-sparkles adm-night-star" style="bottom: 26%; right: 17%; font-size: 15px; color: #e9d5ff; animation-delay: 0.5s; filter: drop-shadow(0 0 8px #e9d5ff);"></i>
+            <i class="fa-solid fa-star adm-night-star" style="bottom: 10%; right: 27%; font-size: 18px; color: #fbbf24; animation-delay: 1.1s; filter: drop-shadow(0 0 8px #fbbf24);"></i>
+            <i class="fa-solid fa-star adm-night-star" style="top: 30%; left: 38%; font-size: 12px; color: #ffffff; animation-delay: 1.6s; filter: drop-shadow(0 0 8px #ffffff);"></i>
+            <i class="fa-solid fa-sparkles adm-night-star" style="top: 28%; right: 36%; font-size: 13px; color: #fef08a; animation-delay: 0.6s; filter: drop-shadow(0 0 8px #fef08a);"></i>
+
+            <!-- ĐOM ĐÓM PHÁT SÁNG -->
+            <div class="adm-firefly ff-1"></div>
+            <div class="adm-firefly ff-2"></div>
+            <div class="adm-firefly ff-3"></div>
+            <div class="adm-firefly ff-4"></div>
+            <div class="adm-firefly ff-5"></div>
+
+            <!-- VÒNG TRĂNG HUYỀN ẢO & RIPPLES -->
+            <div class="adm-moon-wrap">
+                <div class="adm-moon-ripple mr-1"></div>
+                <div class="adm-moon-ripple mr-2"></div>
+                <div class="adm-moon-glow"></div>
+                <div class="adm-moon-stars">
+                    <i class="fa-solid fa-star star-1"></i>
+                    <i class="fa-solid fa-star star-2"></i>
+                    <i class="fa-solid fa-star star-3"></i>
+                    <i class="fa-solid fa-sparkles star-4"></i>
+                </div>
+                <div class="adm-moon-core">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+            </div>
+
+            <!-- TIÊU ĐỀ & CHÚ THÍCH -->
+            <div class="adm-curtain-title">CHẾ ĐỘ BAN ĐÊM</div>
+            <div class="adm-curtain-sub">Lofi vũ trụ • Bầu trời ngàn sao huyền ảo &amp; thư giãn</div>
+
+            <!-- Dynamic Loading Progress Bar for Dark Mode -->
+            <div class="adm-night-progress-bar">
+                <div class="adm-night-progress-fill"></div>
+                <span class="adm-night-progress-text" id="nightProgressText"><i class="fa-solid fa-moon" style="color:#c084fc;"></i> Đang kích hoạt giao diện tối...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.body.classList.add('admin-portal');
 <?php if ($is_tuyen): ?>
 document.body.classList.add('tuyen-theme');
 <?php endif; ?>
+
+// Âm thanh synth chime nhẹ nhàng (Web Audio API không cần file ngoài)
+function playThemeChime(isSun) {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        if (isSun) {
+            // Hợp âm bình minh ấm áp (C5 - E5 - G5 - C6)
+            [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                gain.gain.setValueAtTime(0, now + idx * 0.08);
+                gain.gain.linearRampToValueAtTime(0.08, now + idx * 0.08 + 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.6);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 0.65);
+            });
+        } else {
+            // Hợp âm đêm trăng lofi du dương (A4 - C5 - E5)
+            [440, 523.25, 659.25].forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                gain.gain.setValueAtTime(0, now + idx * 0.1);
+                gain.gain.linearRampToValueAtTime(0.06, now + idx * 0.1 + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.1 + 0.7);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + idx * 0.1);
+                osc.stop(now + idx * 0.1 + 0.75);
+            });
+        }
+    } catch(e) {}
+}
+
+let isThemeTransitioning = false;
+
+// === HỆ THỐNG ĐIỀU KHIỂN CHẾ ĐỘ SÁNG / TỐI (LIGHT / DARK MODE) ===
+(function() {
+    const savedTheme = localStorage.getItem('adm_theme');
+    // MẶC ĐỊNH LÀ DARK MODE (LOFI DREAMY TÍM ĐEN) CHO ADMIN
+    const isLight = (savedTheme === 'light');
+    if (isLight) {
+        document.body.classList.add('adm-light-mode');
+    } else {
+        document.body.classList.remove('adm-light-mode');
+    }
+})();
+
+function updateAdminThemeUI(isLight) {
+    const btn = document.getElementById('admThemeToggleBtn');
+    const icon = document.getElementById('admThemeIcon');
+    if (isLight) {
+        document.body.classList.add('adm-light-mode');
+        if (icon) {
+            icon.className = 'fa-solid fa-sun';
+            icon.style.color = '#f59e0b';
+        }
+        if (btn) {
+            btn.setAttribute('title', 'Đang ở Chế độ Sáng (Mặt Trời) — Bấm để chuyển sang Chế độ Tối');
+            btn.style.background = '#fffbeb';
+            btn.style.borderColor = '#fde68a';
+            btn.style.color = '#d97706';
+            btn.style.boxShadow = '0 2px 10px rgba(245, 158, 11, 0.2)';
+        }
+    } else {
+        document.body.classList.remove('adm-light-mode');
+        if (icon) {
+            icon.className = 'fa-solid fa-moon';
+            icon.style.color = '#c084fc';
+        }
+        if (btn) {
+            btn.setAttribute('title', 'Đang ở Chế độ Tối (Mặt Trăng) — Bấm để chuyển sang Chế độ Sáng');
+            btn.style.background = 'rgba(168, 85, 247, 0.16)';
+            btn.style.borderColor = 'rgba(168, 85, 247, 0.35)';
+            btn.style.color = '#c084fc';
+            btn.style.boxShadow = 'none';
+        }
+    }
+}
+
+// BẤM NÚT NÀY SẼ ĐÓNG MÀN HÌNH, HIỆN HÌNH MẶT TRỜI / MẶT TRĂNG VÀ MỞ MÀN HÌNH RA
+function toggleAdminTheme(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (isThemeTransitioning) return;
+    isThemeTransitioning = true;
+
+    const isCurrentlyLight = document.body.classList.contains('adm-light-mode');
+    const newIsLight = !isCurrentlyLight;
+
+    const curtain = document.getElementById('admThemeCurtain');
+    const curtainSun = document.getElementById('curtainSun');
+    const curtainMoon = document.getElementById('curtainMoon');
+
+    if (!curtain) {
+        localStorage.setItem('adm_theme', newIsLight ? 'light' : 'dark');
+        document.cookie = 'adm_theme=' + (newIsLight ? 'light' : 'dark') + ';path=/;max-age=31536000';
+        updateAdminThemeUI(newIsLight);
+        isThemeTransitioning = false;
+        return;
+    }
+
+    // Cập nhật hiển thị biểu tượng tương ứng
+    if (newIsLight) {
+        curtain.classList.add('curtain-mode-light');
+        if (curtainSun) curtainSun.classList.add('show');
+        if (curtainMoon) curtainMoon.classList.remove('show');
+    } else {
+        curtain.classList.remove('curtain-mode-light');
+        if (curtainMoon) curtainMoon.classList.add('show');
+        if (curtainSun) curtainSun.classList.remove('show');
+    }
+
+    // BƯỚC 1: ĐÓNG MÀN HÌNH (2 cánh cửa trượt khép kín lại ở giữa)
+    curtain.classList.remove('opening', 'closed');
+    curtain.classList.add('active', 'closing');
+
+    // Reset lại animation của progress bar để chạy mượt mà từ 0% trong 3 giây
+    const sunBar = document.querySelector('.adm-progress-fill');
+    const moonBar = document.querySelector('.adm-night-progress-fill');
+    if (sunBar) {
+        sunBar.style.animation = 'none';
+        sunBar.offsetHeight;
+        sunBar.style.animation = 'progressFill 2.8s cubic-bezier(0.1, 0.85, 0.35, 1) forwards 0.1s';
+    }
+    if (moonBar) {
+        moonBar.style.animation = 'none';
+        moonBar.offsetHeight;
+        moonBar.style.animation = 'progressFill 2.8s cubic-bezier(0.1, 0.85, 0.35, 1) forwards 0.1s';
+    }
+
+    setTimeout(function() {
+        // Màn hình đã đóng kín hoàn toàn
+        curtain.classList.remove('closing');
+        curtain.classList.add('closed');
+
+        // Phát âm thanh chime du dương
+        playThemeChime(newIsLight);
+
+        // BƯỚC 2: ĐỔI GIAO DIỆN (LÚC NÀY ĐANG ĐÓNG KÍN MÀN HÌNH)
+        localStorage.setItem('adm_theme', newIsLight ? 'light' : 'dark');
+        document.cookie = 'adm_theme=' + (newIsLight ? 'light' : 'dark') + ';path=/;max-age=31536000';
+        updateAdminThemeUI(newIsLight);
+
+        // Đếm ngược 3 giây trực tiếp trên thanh tiến trình
+        let remaining = 3;
+        const sunText = document.querySelector('.adm-progress-text');
+        const moonText = document.querySelector('.adm-night-progress-text');
+        if (sunText) sunText.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#d97706;"></i> Đang kích hoạt giao diện sáng... (3s)';
+        if (moonText) moonText.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#c084fc;"></i> Đang kích hoạt giao diện tối... (3s)';
+
+        const countInterval = setInterval(function() {
+            remaining--;
+            if (remaining > 0) {
+                if (sunText) sunText.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#d97706;"></i> Đang kích hoạt giao diện sáng... (' + remaining + 's)';
+                if (moonText) moonText.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#c084fc;"></i> Đang kích hoạt giao diện tối... (' + remaining + 's)';
+            } else {
+                clearInterval(countInterval);
+                if (sunText) sunText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Đã kích hoạt Chế độ Sáng thành công!';
+                if (moonText) moonText.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Đã kích hoạt Chế độ Tối thành công!';
+            }
+        }, 1000);
+
+        // BƯỚC 3: GIỮ HÌNH MẶT TRỜI / MẶT TRĂNG VÀ CHỜ ĐÚNG 3 GIÂY (3000ms)
+        setTimeout(function() {
+            clearInterval(countInterval);
+            // BƯỚC 4: MỞ MÀN HÌNH RA (2 cánh cửa trượt mở toang sang 2 bên)
+            curtain.classList.remove('closed');
+            curtain.classList.add('opening');
+
+            // BƯỚC 5: HOÀN TẤT VÀ GIẢI PHÓNG TRẠNG THÁI
+            setTimeout(function() {
+                curtain.classList.remove('active', 'opening', 'curtain-mode-light');
+                if (curtainSun) curtainSun.classList.remove('show');
+                if (curtainMoon) curtainMoon.classList.remove('show');
+                isThemeTransitioning = false;
+            }, 460);
+        }, 3000);
+    }, 440);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('adm_theme');
+    // MẶC ĐỊNH LÀ DARK MODE (LOFI DREAMY TÍM ĐEN)
+    const isLight = (savedTheme === 'light');
+    document.cookie = 'adm_theme=' + (isLight ? 'light' : 'dark') + ';path=/;max-age=31536000';
+    updateAdminThemeUI(isLight);
+
+    // === CỐ ĐỊNH VÀ GIỮ VỊ TRÍ CUỘN THANH SIDEBAR (TỰ ĐỘNG CUỘN ĐẾN MỤC ĐANG ACTIVE) ===
+    const sidebar = document.getElementById('admSidebar');
+    if (sidebar) {
+        const activeItem = sidebar.querySelector('.adm-nav-item.active');
+        const scrollToActive = function() {
+            if (activeItem) {
+                const targetY = activeItem.offsetTop - (sidebar.clientHeight / 2) + (activeItem.clientHeight / 2);
+                sidebar.scrollTop = Math.max(0, targetY);
+            } else {
+                const savedScroll = sessionStorage.getItem('adm_sidebar_scroll');
+                if (savedScroll !== null) {
+                    sidebar.scrollTop = parseInt(savedScroll, 10);
+                }
+            }
+        };
+
+        // Cuộn ngay lập tức không trễ, không giật trang
+        scrollToActive();
+        setTimeout(scrollToActive, 50);
+        setTimeout(scrollToActive, 250);
+
+        sidebar.addEventListener('scroll', function() {
+            sessionStorage.setItem('adm_sidebar_scroll', sidebar.scrollTop);
+        }, { passive: true });
+
+        sidebar.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                sessionStorage.setItem('adm_sidebar_scroll', sidebar.scrollTop);
+            });
+        });
+    }
+
+});
 
 function toggleProfileDropdown(e) {
     e.stopPropagation();
@@ -1928,6 +3220,26 @@ function toggleFullScreen() {
         document.documentElement.requestFullscreen();
     } else if (document.exitFullscreen) {
         document.exitFullscreen();
+    }
+}
+
+function toggleCosmicStation(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (typeof window.toggleVtModal === 'function') {
+        window.toggleVtModal();
+    } else {
+        const m = document.getElementById('vtModal');
+        if (m) {
+            const isOpen = m.classList.toggle('open');
+            const topBtn = document.getElementById('admCosmicStationBtn');
+            if (topBtn) topBtn.classList.toggle('active', isOpen);
+            if (isOpen) {
+                const inp = document.getElementById('vtmInput');
+                if (inp) setTimeout(() => inp.focus(), 150);
+            }
+        } else {
+            window.location.href = '/tkb/admin/ai_studio.php';
+        }
     }
 }
 
@@ -2826,3 +4138,12 @@ try {
 } catch(e) {}
 <?php endif; ?>
 </script>
+
+<?php
+// Nhúng Widget Trợ Lý AI Vũ Trụ Cosmic Admin
+if (file_exists(__DIR__ . '/admin_cosmic_bot.php')) {
+    include __DIR__ . '/admin_cosmic_bot.php';
+}
+?>
+<!-- 🌸 Hiệu ứng Hoa Anh Đào Rơi Tự Nhiên (Sakura Falling Canvas Engine) 🌸 -->
+<script src="/tkb/assets/sakura_fall.js?v=<?= time() ?>" defer></script>

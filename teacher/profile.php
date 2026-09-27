@@ -229,7 +229,7 @@ if ($msg) { [$msgType, $msgText] = explode(':', $msg, 2); }
 
         <!-- Face ID section -->
         <h3 class="prof-title" style="margin-top:20px;">
-            <i class="fa-solid fa-face-viewfinder" style="color:var(--accent); margin-right:8px;"></i> Face ID Đăng Nhập
+            <i class="fa-solid fa-camera" style="color:var(--accent); margin-right:8px;"></i> Face ID Đăng Nhập
             <?php if ($hasFace): ?>
                 <span class="badge-face-yes"><i class="fa-solid fa-shield-check"></i> Đang hoạt động</span>
             <?php else: ?>

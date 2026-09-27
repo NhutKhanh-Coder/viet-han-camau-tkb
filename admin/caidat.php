@@ -66,7 +66,7 @@ $db->close();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/tkb/assets/style.css">
 </head>
-<body class="admin-portal">
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
     <?php include '../includes/admin_nav.php'; ?>
 
     <div class="main-content">

@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['groq'])) {
     $GEMINI_KEY = 'AQ.Ab8RN6KhYYAj9hQMSKIADsz9qPRHc1THSWrXDBOq6m9UlhvAJQ';
     $body = file_get_contents('php://input');
     $inputData = json_decode($body, true);
-    $reqModel = 'deepseek/deepseek-chat-v3.1';
+    $reqModel = 'mistralai/mistral-large-2512';
     if (is_array($inputData)) {
         if (!empty($inputData['model'])) {
             $reqModel = $inputData['model'];
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['groq'])) {
             $inputData['model'] = $reqModel;
         }
         if (empty($inputData['max_tokens'])) {
-            $inputData['max_tokens'] = 4096;
+            $inputData['max_tokens'] = 2048;
         }
         $body = json_encode($inputData);
     }
@@ -174,34 +174,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['groq'])) {
         }
     }
 
-    // 2. If requested model failed and was not default deepseek, try default deepseek on xKiro
-    if (!$success && $reqModel !== 'deepseek/deepseek-chat-v3.1' && is_array($inputData)) {
-        $inputData['model'] = 'deepseek/deepseek-chat-v3.1';
-        $ch2 = curl_init('https://api.xkiro.com/v1/chat/completions');
-        curl_setopt_array($ch2, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => json_encode($inputData),
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $AI_KEY,
-            ],
-            CURLOPT_TIMEOUT        => 25,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-        ]);
-        $response2 = curl_exec($ch2);
-        $httpCode2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
-        curl_close($ch2);
+    // 2. If requested model failed, try qwen/qwen3.7-flash:free on xKiro
+    if (!$success && is_array($inputData)) {
+        $fallbackModels = ['mistralai/mistral-large-2512', 'qwen/qwen3.7-flash:free', 'qwen/qwen3.7-plus:free'];
+        foreach ($fallbackModels as $fbModel) {
+            if ($reqModel === $fbModel) continue;
+            $inputData['model'] = $fbModel;
+            $ch2 = curl_init('https://api.xkiro.com/v1/chat/completions');
+            curl_setopt_array($ch2, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => json_encode($inputData),
+                CURLOPT_HTTPHEADER     => [
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $AI_KEY,
+                ],
+                CURLOPT_TIMEOUT        => 15,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+            ]);
+            $response2 = curl_exec($ch2);
+            $httpCode2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
+            curl_close($ch2);
 
-        if ($httpCode2 === 200 && !empty($response2)) {
-            $parsed2 = json_decode($response2, true);
-            if (isset($parsed2['choices'][0]['message']['content']) && trim($parsed2['choices'][0]['message']['content']) !== '') {
-                $success = true;
-                if (ob_get_length()) @ob_clean();
-                header('Content-Type: application/json; charset=utf-8');
-                echo $response2;
-                exit();
+            if ($httpCode2 === 200 && !empty($response2)) {
+                $parsed2 = json_decode($response2, true);
+                if (isset($parsed2['choices'][0]['message']['content']) && trim($parsed2['choices'][0]['message']['content']) !== '') {
+                    $success = true;
+                    if (ob_get_length()) @ob_clean();
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo $response2;
+                    exit();
+                }
             }
         }
     }
@@ -281,20 +285,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['groq'])) {
         }
     }
 
-    // 4. Guaranteed Safe Fallback (Always HTTP 200, never 500)
+    // 4. Guaranteed Safe Fallback (Local Intelligent Knowledge Base)
+    $lastMsg = '';
+    if (isset($inputData['messages']) && is_array($inputData['messages'])) {
+        $last = end($inputData['messages']);
+        $lastMsg = mb_strtolower(trim($last['content'] ?? ''));
+    }
+    
+    $smartReply = "Xin chào bạn! Mình là Trợ lý AI học tập Trường Cao đẳng Cà Mau. Bạn cần hỗ trợ tra cứu thời khóa biểu, tài liệu môn học, làm bài tập hay ôn luyện kiến thức nào hôm nay nè? 🌸✨";
+    if (strpos($lastMsg, 'tkb') !== false || strpos($lastMsg, 'thời khóa biểu') !== false || strpos($lastMsg, 'lịch học') !== false) {
+        $smartReply = "Bạn có thể xem Thời khóa biểu chi tiết bằng cách bấm vào mục **Thời Khóa Biểu** trên menu bên trái hoặc ngay trên thanh điều hướng nhé!";
+    } elseif (strpos($lastMsg, 'bài tập') !== false || strpos($lastMsg, 'nộp bài') !== false) {
+        $smartReply = "Để làm và nộp bài tập, bạn vào mục **Làm bài tập** trên menu điều hướng để xem danh sách bài tập được giao và hạn nộp nhé!";
+    } elseif (strpos($lastMsg, 'quiz') !== false || strpos($lastMsg, 'trắc nghiệm') !== false || strpos($lastMsg, 'thi') !== false) {
+        $smartReply = "Bạn có thể vào mục **Làm Quiz** để tham gia các bài thi trắc nghiệm AI và xem điểm trực tuyến ngay lập tức!";
+    } elseif (strpos($lastMsg, 'cố vấn') !== false || strpos($lastMsg, 'radar') !== false || strpos($lastMsg, 'năng lực') !== false) {
+        $smartReply = "Tính năng **AI Cố Vấn Năng Lực** sẽ phân tích bản đồ Radar 6 chiều điểm mạnh, điểm yếu và gợi ý lộ trình học tập tối ưu cho bạn!";
+    } elseif (strpos($lastMsg, 'điểm') !== false || strpos($lastMsg, 'kết quả') !== false) {
+        $smartReply = "Điểm số và tiến độ học tập của các môn học được thống kê chi tiết ngay tại bảng theo dõi trên trang cá nhân của bạn!";
+    }
+
     if (ob_get_length()) @ob_clean();
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'id' => 'chatcmpl-' . uniqid(),
         'object' => 'chat.completion',
         'created' => time(),
-        'model' => 'deepseek-local',
+        'model' => 'smartedu-local-assistant',
         'choices' => [
             [
                 'index' => 0,
                 'message' => [
                     'role' => 'assistant',
-                    'content' => "Đã ghi nhận yêu cầu và xử lý thành công trên hệ thống.\n<!-- CODEX_AGENT_PAYLOAD\n{\"kind\":\"analysis\",\"summary\":\"Đã phân tích và ghi nhận yêu cầu\",\"changes\":[]}\n-->"
+                    'content' => $smartReply
                 ],
                 'finish_reason' => 'stop'
             ]

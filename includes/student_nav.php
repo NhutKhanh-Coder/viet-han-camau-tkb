@@ -20,9 +20,32 @@
 <?php if ($st_gender === 'Nữ'): ?>
 <link rel="stylesheet" href="/tkb/assets/soft_female.css?v=<?= time() ?>">
 <?php endif; ?>
+<link rel="stylesheet" href="/tkb/assets/student_dark_mode.css?v=<?= time() ?>">
+<link rel="preload" as="image" href="/tkb/assets/img/curtain_scene_light.png?v=<?= time() ?>">
+<link rel="preload" as="image" href="/tkb/assets/img/curtain_scene_dark.png?v=<?= time() ?>">
 
 <script>
 (function() {
+    var p1 = new Image(); p1.src = '/tkb/assets/img/curtain_scene_light.png?v=<?= time() ?>';
+    var p2 = new Image(); p2.src = '/tkb/assets/img/curtain_scene_dark.png?v=<?= time() ?>';
+})();
+
+(function() {
+    var savedThemeMode = localStorage.getItem('student_dark_mode') || 'light';
+    document.documentElement.setAttribute('data-theme-mode', savedThemeMode);
+    function applyDarkModeEarly() {
+        if (document.body) {
+            document.body.setAttribute('data-theme-mode', savedThemeMode);
+        }
+    }
+    applyDarkModeEarly();
+    document.addEventListener('DOMContentLoaded', function() {
+        applyDarkModeEarly();
+        if (typeof updateDarkModeButtonUI === 'function') {
+            updateDarkModeButtonUI(savedThemeMode);
+        }
+    });
+
     var studentGender = <?= json_encode($st_gender) ?>;
     
     if (studentGender === 'Nữ') {
@@ -65,13 +88,13 @@
 <?php if ($st_gender !== 'Nữ'): ?>
 <style>
 /* Global Light Purple Theme for Male Student Pages */
-body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
+body[data-mc-mode="male"]:not([data-theme-mode="dark"]), body:not([data-mc-mode="female"]):not([data-theme-mode="dark"]) {
     background: #f5f3ff !important;
     color: #0f172a !important;
     font-family: 'Outfit', sans-serif !important;
 }
-.main-content { background: #f5f3ff !important; }
-.top-header {
+body:not([data-theme-mode="dark"]) .main-content { background: #f5f3ff !important; }
+body:not([data-theme-mode="dark"]) .top-header {
     background: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(12px) !important;
     border-bottom: 1px solid #e9d5ff !important;
@@ -116,15 +139,15 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
 }
 
 /* Header Elements */
-.header-left { color: #1e293b !important; font-weight: 900 !important; }
-.header-left i { color: #8b5cf6 !important; }
-.user-profile { background: #ffffff !important; border: 1px solid #e9d5ff !important; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.05) !important; }
-.u-name { color: #4c1d95 !important; font-weight: 800 !important; }
-.u-id { color: #64748b !important; }
-.btn-theme-switcher { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
-.btn-theme-switcher i { color: #8b5cf6 !important; }
-.header-bell { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
-.header-bell i { color: #8b5cf6 !important; }
+body:not([data-theme-mode="dark"]) .header-left { color: #1e293b !important; font-weight: 900 !important; }
+body:not([data-theme-mode="dark"]) .header-left i { color: #8b5cf6 !important; }
+body:not([data-theme-mode="dark"]) .user-profile { background: #ffffff !important; border: 1px solid #e9d5ff !important; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.05) !important; }
+body:not([data-theme-mode="dark"]) .u-name { color: #4c1d95 !important; font-weight: 800 !important; }
+body:not([data-theme-mode="dark"]) .u-id { color: #64748b !important; }
+body:not([data-theme-mode="dark"]) .btn-theme-switcher { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
+body:not([data-theme-mode="dark"]) .btn-theme-switcher i { color: #8b5cf6 !important; }
+body:not([data-theme-mode="dark"]) .header-bell { background: #faf5ff !important; border: 1px solid #e9d5ff !important; color: #8b5cf6 !important; }
+body:not([data-theme-mode="dark"]) .header-bell i { color: #8b5cf6 !important; }
 
 /* Student Info Card inside Sidebar */
 .sidebar-st-info {
@@ -144,7 +167,11 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
 }
 
 /* Cards on all subpages */
-.card, .mc-card, .box, .panel, .container-box {
+body:not([data-theme-mode="dark"]) .card, 
+body:not([data-theme-mode="dark"]) .mc-card, 
+body:not([data-theme-mode="dark"]) .box, 
+body:not([data-theme-mode="dark"]) .panel, 
+body:not([data-theme-mode="dark"]) .container-box {
     background: #ffffff !important;
     border: 1.5px solid #f3e8ff !important;
     border-radius: 16px !important;
@@ -160,6 +187,29 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
 <div class="mc-outer-led-strip-bottom"></div>
 <div class="mc-outer-led-strip-left"></div>
 <div class="mc-outer-led-strip-right"></div>
+
+<!-- Screen Transition Curtain (Đóng / Mở Màn Hình Chuyển Giao Sáng / Tối Full Màn Hình) -->
+<div id="screenCurtain" class="screen-curtain-wrap">
+    <!-- Nửa màn hình trên -->
+    <div class="curtain-half curtain-top">
+        <div class="curtain-scene-layer layer-dark" id="curtainTopDark">
+            <img src="/tkb/assets/img/curtain_scene_dark.png?v=<?= time() ?>" alt="Dark Mode" class="curtain-full-img img-top" loading="eager" decoding="sync">
+        </div>
+        <div class="curtain-scene-layer layer-light" id="curtainTopLight">
+            <img src="/tkb/assets/img/curtain_scene_light.png?v=<?= time() ?>" alt="Light Mode" class="curtain-full-img img-top" loading="eager" decoding="sync">
+        </div>
+    </div>
+
+    <!-- Nửa màn hình dưới -->
+    <div class="curtain-half curtain-bottom">
+        <div class="curtain-scene-layer layer-dark" id="curtainBottomDark">
+            <img src="/tkb/assets/img/curtain_scene_dark.png?v=<?= time() ?>" alt="Dark Mode" class="curtain-full-img img-bottom" loading="eager" decoding="sync">
+        </div>
+        <div class="curtain-scene-layer layer-light" id="curtainBottomLight">
+            <img src="/tkb/assets/img/curtain_scene_light.png?v=<?= time() ?>" alt="Light Mode" class="curtain-full-img img-bottom" loading="eager" decoding="sync">
+        </div>
+    </div>
+</div>
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
@@ -195,8 +245,8 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
         <li><a href="/tkb/student/dashboard.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='dashboard.php'?'active':'' ?>">
             <i class="fa-solid fa-house-chimney nav-icon-female" style="color: #0284c7;"></i> Cổng sinh viên
         </a></li>
-        <li><a href="/tkb/student/hoc_bai.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='hoc_bai.php'?'active':'' ?>">
-            <i class="fa-solid fa-book-open-reader nav-icon-female" style="color: #ec4899;"></i> Học bài
+        <li><a href="/tkb/student/hoc_bai.php" class="nav-link <?= (basename($_SERVER['PHP_SELF'])=='hoc_bai.php'||basename($_SERVER['PHP_SELF'])=='tailieu.php')?'active':'' ?>">
+            <i class="fa-solid fa-book-open-reader nav-icon-female" style="color: #ec4899;"></i> Tài liệu &amp; Bài học
         </a></li>
         <li><a href="/tkb/student/quiz.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='quiz.php'?'active':'' ?>">
             <i class="fa-solid fa-graduation-cap nav-icon-female" style="color: #10b981;"></i> Làm Quiz
@@ -210,8 +260,8 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
         <li><a href="/tkb/student/ai_advisor.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='ai_advisor.php'?'active':'' ?>" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3);">
             <i class="fa-solid fa-brain nav-icon-female" style="color: #c084fc;"></i> AI Cố Vấn Năng Lực
         </a></li>
-        <li><a href="/tkb/student/baitap.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='baitap.php'?'active':'' ?>">
-            <i class="fa-solid fa-file-arrow-up nav-icon-female" style="color: #f97316;"></i> Nộp bài
+        <li><a href="/tkb/student/lam_bai_tap.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='lam_bai_tap.php'?'active':'' ?>">
+            <i class="fa-solid fa-pen-ruler nav-icon-female" style="color: #ec4899;"></i> Làm bài tập
         </a></li>
         <li><a href="/tkb/student/code_ide.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='code_ide.php'?'active':'' ?>">
             <i class="fa-solid fa-code nav-icon-female" style="color: #06b6d4;"></i> Thực hành Code
@@ -240,9 +290,6 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
         <li><a href="javascript:void(0)" onclick="openBannerManagerModal()" class="nav-link">
             <i class="fa-solid fa-image nav-icon-female" style="color: #0284c7;"></i> Đổi Banner Trang Chủ
         </a></li>
-        <li><a href="javascript:void(0)" onclick="toggleThemeModal()" class="nav-link">
-            <i class="fa-solid fa-palette nav-icon-female" style="color: #ec4899;"></i> Chọn Tone Màu
-        </a></li>
         <?php else: ?>
         <!-- =========================================================
              DANH SÁCH MENU DÀNH RIÊNG CHO SINH VIÊN NAM (GIAO DIỆN CHUẨN 100% THEO ẢNH)
@@ -250,8 +297,8 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
         <li><a href="/tkb/student/dashboard.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='dashboard.php'?'active':'' ?>">
             <svg class="mc-svg-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" fill="#5b8731"/><path d="M12 2L22 7V17L12 22V2Z" fill="#4a7227"/><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#7cbc37"/><path d="M2 7.5L12 12.5V22L2 17V7.5Z" fill="#866043"/><path d="M22 7.5L12 12.5V22L22 17V7.5Z" fill="#684832"/><path d="M2 7L12 12L22 7L20 8.5L12 10.5L4 8.5L2 7Z" fill="#5b8731"/><path d="M2 10L5 9V11L8 10.5V12.5L12 12L16 12.5V10.5L19 11V9L22 10V11L19 12.5V13.5L16 14V13L12 13.5L8 13V14L5 13.5V11.5L2 11V10Z" fill="#7cbc37"/></svg> Cổng sinh viên
         </a></li>
-        <li><a href="/tkb/student/hoc_bai.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='hoc_bai.php'?'active':'' ?>">
-            <svg class="mc-svg-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4H10V19H4V4Z" fill="#f5f5f5"/><path d="M14 4H20V19H14V4Z" fill="#e0e0e0"/><path d="M2 3H4V20H2V3Z" fill="#8b0000"/><path d="M20 3H22V20H20V3Z" fill="#8b0000"/><path d="M3 2H21V4H3V2Z" fill="#b22222"/><path d="M3 19H21V21H3V19Z" fill="#b22222"/><path d="M11 4H13V20H11V4Z" fill="#7f1d1d"/><path d="M6 7H9V8H6V7ZM6 10H9V11H6V10ZM6 13H9V14H6V13ZM15 7H18V8H15V7ZM15 10H18V11H15V10ZM15 13H18V14H15V13Z" fill="#666"/></svg> Học bài
+        <li><a href="/tkb/student/hoc_bai.php" class="nav-link <?= (basename($_SERVER['PHP_SELF'])=='hoc_bai.php'||basename($_SERVER['PHP_SELF'])=='tailieu.php')?'active':'' ?>">
+            <svg class="mc-svg-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4H10V19H4V4Z" fill="#f5f5f5"/><path d="M14 4H20V19H14V4Z" fill="#e0e0e0"/><path d="M2 3H4V20H2V3Z" fill="#8b0000"/><path d="M20 3H22V20H20V3Z" fill="#8b0000"/><path d="M3 2H21V4H3V2Z" fill="#b22222"/><path d="M3 19H21V21H3V19Z" fill="#b22222"/><path d="M11 4H13V20H11V4Z" fill="#7f1d1d"/><path d="M6 7H9V8H6V7ZM6 10H9V11H6V10ZM6 13H9V14H6V13ZM15 7H18V8H15V7ZM15 10H18V11H15V10ZM15 13H18V14H15V13Z" fill="#666"/></svg> Tài liệu &amp; Bài học
         </a></li>
         <li><a href="/tkb/student/quiz.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='quiz.php'?'active':'' ?>">
             <svg class="mc-svg-icon" viewBox="0 0 24 24" fill="none"><path d="M7 2H17L22 7V17L17 22H7L2 17V7L7 2Z" fill="#059669"/><path d="M8 4H16L20 8V16L16 20H8L4 16V8L8 4Z" fill="#10b981"/><path d="M9 6H15L18 9V15L15 18H9L6 15V9L9 6Z" fill="#34d399"/><path d="M10 8H14L15 9V13L14 14H10L9 13V9L10 8Z" fill="#a7f3d0"/><path d="M11 9H13V11H11V9Z" fill="#ffffff"/></svg> Làm Quiz
@@ -265,8 +312,8 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
         <li><a href="/tkb/student/ai_advisor.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='ai_advisor.php'?'active':'' ?>" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3);">
             <i class="fa-solid fa-brain" style="color: #c084fc; font-size: 16px; margin-right: 6px;"></i> AI Cố Vấn Năng Lực
         </a></li>
-        <li><a href="/tkb/student/baitap.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='baitap.php'?'active':'' ?>">
-            <i class="fa-solid fa-file-pen nav-icon-female" style="color: #f97316;"></i> Nộp bài
+        <li><a href="/tkb/student/lam_bai_tap.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='lam_bai_tap.php'?'active':'' ?>">
+            <i class="fa-solid fa-pen-ruler nav-icon-female" style="color: #ec4899; font-size: 16px; margin-right: 6px;"></i> Làm bài tập
         </a></li>
         <li><a href="/tkb/student/code_ide.php" class="nav-link <?= basename($_SERVER['PHP_SELF'])=='code_ide.php'?'active':'' ?>">
             <i class="fa-solid fa-code nav-icon-female" style="color: #38bdf8;"></i> Thực hành Code
@@ -294,9 +341,6 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
         </a></li>
         <li><a href="javascript:void(0)" onclick="openBannerManagerModal()" class="nav-link">
             <i class="fa-solid fa-image nav-icon-female" style="color: #f59e0b;"></i> Đổi Banner Trang Chủ
-        </a></li>
-        <li><a href="javascript:void(0)" onclick="toggleThemeModal()" class="nav-link">
-            <i class="fa-solid fa-palette nav-icon-female" style="color: #f43f5e;"></i> Chọn Tone Màu
         </a></li>
         <?php endif; ?>
     </ul>
@@ -339,19 +383,22 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
 <div class="main-content">
     <div class="top-header">
         <div class="header-left">
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <span></span><span></span><span></span>
+            <button class="sidebar-toggle" onclick="toggleSidebar()" title="Đóng / Mở thanh menu">
+                <i class="fa-solid fa-bars"></i>
             </button>
             <?php if ($st_gender === 'Nữ'): ?>
-                <i class="fa-solid fa-graduation-cap" style="color: #ec4899; font-size: 18px; margin-right: 8px;"></i> <span style="font-family: 'Outfit', 'Inter', sans-serif; font-weight: 800; color: #0f172a; letter-spacing: 0.5px;">CỔNG THÔNG TIN SINH VIÊN</span>
+                <i class="fa-solid fa-graduation-cap" style="color: #ec4899; font-size: 18px; margin-right: 8px;"></i> <span class="st-header-title-text" style="font-family: 'Outfit', 'Inter', sans-serif; font-weight: 800; letter-spacing: 0.5px;">CỔNG THÔNG TIN SINH VIÊN</span>
             <?php else: ?>
-                <i class="fa-solid fa-cube"></i> CỔNG THÔNG TIN SINH VIÊN
+                <i class="fa-solid fa-cube"></i> <span class="st-header-title-text" style="font-family: 'Outfit', 'Inter', sans-serif; font-weight: 800; letter-spacing: 0.5px;">CỔNG THÔNG TIN SINH VIÊN</span>
             <?php endif; ?>
         </div>
         <div class="header-right">
-            <button class="btn-theme-switcher" onclick="toggleThemeModal()" title="Chọn tone màu giao diện Minecraft">
-                <i class="fa-solid fa-palette"></i> <span>Tone Màu</span>
+            <!-- Nút chuyển đổi Chế độ Sáng / Tối -->
+            <button type="button" class="btn-theme-toggle" id="btnThemeToggle" onclick="toggleStudentDarkMode()" title="Chuyển đổi giao diện Sáng / Tối">
+                <i class="fa-solid fa-moon" id="themeToggleIcon" style="color: #6366f1;"></i>
+                <span id="themeToggleText">Chế độ tối</span>
             </button>
+
             <div class="header-bell">
                 <i class="fa-solid fa-bell"></i>
                 <span class="header-bell-badge">3</span>
@@ -512,10 +559,17 @@ body[data-mc-mode="male"], body:not([data-mc-mode="female"]) {
 
 <script>
 function toggleSidebar() {
-    const sb = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    sb.classList.toggle('active');
-    overlay.classList.toggle('active');
+    var isDesktop = window.innerWidth > 992;
+    if (isDesktop) {
+        document.body.classList.toggle('sidebar-collapsed');
+        var collapsed = document.body.classList.contains('sidebar-collapsed');
+        localStorage.setItem('student_sidebar_collapsed', collapsed ? '1' : '0');
+    } else {
+        const sb = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sb) sb.classList.toggle('active');
+        if (overlay) overlay.classList.toggle('active');
+    }
 }
 
 function triggerSidebarBannerUpload() {
@@ -556,11 +610,102 @@ function setStudentBg(bg) {
     updateThemeModalUI();
 }
 
+var isScreenTransitioning = false;
+
+function toggleStudentDarkMode() {
+    if (isScreenTransitioning) return;
+    
+    var current = document.documentElement.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    
+    playScreenTransition(next, function() {
+        document.documentElement.setAttribute('data-theme-mode', next);
+        if (document.body) document.body.setAttribute('data-theme-mode', next);
+        localStorage.setItem('student_dark_mode', next);
+        updateDarkModeButtonUI(next);
+    });
+}
+
+function playScreenTransition(targetMode, onClosedCallback) {
+    isScreenTransitioning = true;
+    var curtain = document.getElementById('screenCurtain');
+    var topDark = document.getElementById('curtainTopDark');
+    var topLight = document.getElementById('curtainTopLight');
+    var botDark = document.getElementById('curtainBottomDark');
+    var botLight = document.getElementById('curtainBottomLight');
+    
+    if (!curtain) {
+        if (onClosedCallback) onClosedCallback();
+        isScreenTransitioning = false;
+        return;
+    }
+    
+    var themeClass = targetMode === 'light' ? 'theme-light' : 'theme-dark';
+    
+    // Kích hoạt layer ảnh tương ứng cho cả nửa trên và nửa dưới
+    if (targetMode === 'dark') {
+        if (topDark) topDark.classList.add('active');
+        if (topLight) topLight.classList.remove('active');
+        if (botDark) botDark.classList.add('active');
+        if (botLight) botLight.classList.remove('active');
+    } else {
+        if (topLight) topLight.classList.add('active');
+        if (topDark) topDark.classList.remove('active');
+        if (botLight) botLight.classList.add('active');
+        if (botDark) botDark.classList.remove('active');
+    }
+    
+    // 1. Đóng màn hình full screen (hai nửa cánh rèm khép lại ở giữa)
+    curtain.className = 'screen-curtain-wrap closing ' + themeClass;
+    
+    // 2. Khi màn hình vừa đóng kín hoàn toàn (420ms) -> kích hoạt đổi theme ngầm
+    setTimeout(function() {
+        if (onClosedCallback) onClosedCallback();
+        
+        // 3. Giữ trọn bức tranh nghệ thuật full màn hình trong 900ms để chiêm ngưỡng
+        setTimeout(function() {
+            // 4. Mở màn hình ra (hai nửa cánh rèm tách ra trên và dưới)
+            curtain.className = 'screen-curtain-wrap opening ' + themeClass;
+            
+            // 5. Kết thúc hiệu ứng sau khi rèm mở hoàn tất
+            setTimeout(function() {
+                curtain.className = 'screen-curtain-wrap';
+                isScreenTransitioning = false;
+            }, 460);
+        }, 900);
+    }, 420);
+}
+
+function updateDarkModeButtonUI(mode) {
+    var btn = document.getElementById('btnThemeToggle');
+    var icon = document.getElementById('themeToggleIcon');
+    var text = document.getElementById('themeToggleText');
+    if (!btn || !icon || !text) return;
+    
+    if (mode === 'dark') {
+        icon.className = 'fa-solid fa-sun';
+        icon.style.color = '#fbbf24';
+        text.textContent = 'Chế độ sáng';
+        btn.classList.add('is-dark');
+        btn.title = 'Chuyển sang Chế độ Sáng';
+    } else {
+        icon.className = 'fa-solid fa-moon';
+        icon.style.color = '#6366f1';
+        text.textContent = 'Chế độ tối';
+        btn.classList.remove('is-dark');
+        btn.title = 'Chuyển sang Chế độ Tối';
+    }
+}
+
 function setStudentWebMode(mode) {
-    document.documentElement.setAttribute('data-mc-mode', mode);
-    document.body.setAttribute('data-mc-mode', mode);
-    localStorage.setItem('student_mc_mode', mode);
-    updateThemeModalUI();
+    if (isScreenTransitioning) return;
+    playScreenTransition(mode, function() {
+        document.documentElement.setAttribute('data-theme-mode', mode);
+        if (document.body) document.body.setAttribute('data-theme-mode', mode);
+        localStorage.setItem('student_dark_mode', mode);
+        updateDarkModeButtonUI(mode);
+        updateThemeModalUI();
+    });
 }
 
 function updateThemeModalUI() {
@@ -592,4 +737,54 @@ function updateThemeModalUI() {
         }
     });
 }
+
+function toggleStudentFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+        var docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+            docEl.requestFullscreen().catch(function(e) {});
+        } else if (docEl.webkitRequestFullscreen) {
+            docEl.webkitRequestFullscreen();
+        } else if (docEl.mozRequestFullScreen) {
+            docEl.mozRequestFullScreen();
+        } else if (docEl.msRequestFullscreen) {
+            docEl.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen().catch(function(e) {});
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+}
+
+function updateFullscreenUI() {
+    var isFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+    var icon = document.getElementById('fullscreenIcon');
+    var text = document.getElementById('fullscreenText');
+    var btn = document.getElementById('btnFullscreenToggle');
+    if (!icon || !btn) return;
+    
+    if (isFull) {
+        icon.className = 'fa-solid fa-compress';
+        if (text) text.textContent = 'Thu nhỏ';
+        btn.title = 'Đóng toàn màn hình (Thu nhỏ)';
+    } else {
+        icon.className = 'fa-solid fa-expand';
+        if (text) text.textContent = 'Toàn màn hình';
+        btn.title = 'Mở toàn màn hình';
+    }
+}
+
+document.addEventListener('fullscreenchange', updateFullscreenUI);
+document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+document.addEventListener('mozfullscreenchange', updateFullscreenUI);
+document.addEventListener('MSFullscreenChange', updateFullscreenUI);
 </script>
+<!-- 🌸 Hiệu ứng Hoa Anh Đào Rơi Tự Nhiên (Sakura Falling Canvas Engine) 🌸 -->
+<script src="/tkb/assets/sakura_fall.js?v=<?= time() ?>" defer></script>

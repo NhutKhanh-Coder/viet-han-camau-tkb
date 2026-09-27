@@ -243,7 +243,57 @@ $preset_avatars = [
     <link rel="stylesheet" href="/tkb/assets/style.css">
 
     <style>
-        /* Modern Lofi Profile Layout */
+        :root {
+            /* Default: Dark Lofi Theme */
+            --adm-bg: #0c0717;
+            --adm-card-bg: #140d27;
+            --adm-border: rgba(168, 85, 247, 0.2);
+            --adm-card-hover-border: rgba(192, 132, 252, 0.45);
+            --adm-text-main: #ffffff;
+            --adm-text-muted: #a79bb7;
+            --adm-input-bg: #100922;
+            --adm-input-border: rgba(168, 85, 247, 0.3);
+            --adm-sub-card-bg: rgba(255, 255, 255, 0.04);
+            --adm-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        body.adm-light-mode {
+            /* Light Mode */
+            --adm-bg: #f8fafc;
+            --adm-card-bg: #ffffff;
+            --adm-border: #e2e8f0;
+            --adm-card-hover-border: #cbd5e1;
+            --adm-text-main: #0f172a;
+            --adm-text-muted: #64748b;
+            --adm-input-bg: #f8fafc;
+            --adm-input-border: #e2e8f0;
+            --adm-sub-card-bg: #f8fafc;
+            --adm-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+
+        body.admin-portal {
+            background-color: var(--adm-bg) !important;
+            color: var(--adm-text-main) !important;
+            font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+            display: block !important;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .page-title {
+            color: var(--adm-text-main) !important;
+            font-weight: 800;
+        }
+        .page-sub {
+            color: var(--adm-text-muted) !important;
+            font-size: 13.5px;
+            margin-top: 4px;
+        }
+
+        /* Modern Profile Layout */
         .profile-wrapper {
             display: grid;
             grid-template-columns: 340px 1fr;
@@ -253,18 +303,18 @@ $preset_avatars = [
 
         /* Identity Side Card */
         .profile-side-card {
-            background: rgba(20, 13, 38, 0.85);
-            border: 1px solid rgba(168, 85, 247, 0.18);
+            background: var(--adm-card-bg);
+            border: 1px solid var(--adm-border);
             border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: var(--adm-shadow);
             overflow: hidden;
             position: sticky;
             top: 88px;
-            backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
         }
         .profile-cover {
             height: 115px;
-            background: linear-gradient(135deg, #090514 0%, #1a0f30 50%, #7c3aed 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
             position: relative;
         }
         .profile-avatar-container {
@@ -278,9 +328,9 @@ $preset_avatars = [
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #140d27;
-            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.35);
-            background: #140d27;
+            border: 4px solid var(--adm-card-bg);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            background: var(--adm-card-bg);
             transition: transform 0.2s ease;
         }
         .profile-avatar-upload-btn {
@@ -290,20 +340,20 @@ $preset_avatars = [
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
             color: #ffffff;
-            border: 3px solid #140d27;
+            border: 3px solid var(--adm-card-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.5);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
             transition: all 0.2s ease;
             font-size: 14px;
         }
         .profile-avatar-upload-btn:hover {
             transform: scale(1.1);
-            background: #c084fc;
+            background: #6d28d9;
         }
 
         .profile-identity-info {
@@ -314,36 +364,33 @@ $preset_avatars = [
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 19px;
             font-weight: 800;
-            color: #f3e8ff;
-            margin: 0 0 4px;
+            color: var(--adm-text-main);
+            margin: 0 0 6px;
             letter-spacing: -0.2px;
-            text-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+            text-shadow: none;
         }
         .profile-user-id {
             font-size: 12px;
             font-weight: 700;
-            color: #c4b5fd;
-            background: rgba(30, 19, 56, 0.8);
-            border: 1px solid rgba(168, 85, 247, 0.2);
+            color: var(--adm-text-muted);
+            background: var(--adm-sub-card-bg);
+            border: 1px solid var(--adm-border);
             padding: 4px 12px;
             border-radius: 999px;
             display: inline-block;
             margin-bottom: 12px;
         }
         .profile-badge-role {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            color: #c084fc;
             padding: 8px 14px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             margin-bottom: 16px;
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.15);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
         /* Stats in Left Card */
@@ -352,27 +399,28 @@ $preset_avatars = [
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             padding: 16px 20px;
-            background: rgba(15, 9, 30, 0.85);
-            border-top: 1px solid rgba(168, 85, 247, 0.12);
-            border-bottom: 1px solid rgba(168, 85, 247, 0.12);
+            background: var(--adm-sub-card-bg);
+            border-top: 1px solid var(--adm-border);
+            border-bottom: 1px solid var(--adm-border);
         }
         .profile-stat-box {
-            background: rgba(26, 16, 51, 0.8);
+            background: var(--adm-card-bg);
             padding: 10px 12px;
             border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--adm-border);
             text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         }
         .profile-stat-val {
             font-size: 18px;
             font-weight: 800;
-            color: #ffffff;
+            color: var(--adm-text-main);
             line-height: 1.2;
-            text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+            text-shadow: none;
         }
         .profile-stat-lbl {
             font-size: 11px;
-            color: #a79bb7;
+            color: var(--adm-text-muted);
             font-weight: 600;
             margin-top: 2px;
         }
@@ -392,14 +440,14 @@ $preset_avatars = [
             gap: 8px;
         }
         .profile-meta-label {
-            color: #a79bb7;
+            color: var(--adm-text-muted);
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .profile-meta-val {
-            color: #f3e8ff;
+            color: var(--adm-text-main);
             font-weight: 700;
             text-align: right;
         }
@@ -409,13 +457,13 @@ $preset_avatars = [
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(20, 13, 38, 0.85);
+            background: var(--adm-card-bg);
             padding: 8px 12px;
             border-radius: 16px;
-            border: 1px solid rgba(168, 85, 247, 0.16);
+            border: 1px solid var(--adm-border);
             margin-bottom: 24px;
             overflow-x: auto;
-            backdrop-filter: blur(12px);
+            box-shadow: var(--adm-shadow);
         }
         .profile-tab-btn {
             background: transparent;
@@ -424,7 +472,7 @@ $preset_avatars = [
             border-radius: 10px;
             font-size: 13px;
             font-weight: 700;
-            color: #a79bb7;
+            color: var(--adm-text-muted);
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
@@ -435,13 +483,13 @@ $preset_avatars = [
         }
         .profile-tab-btn i { font-size: 14px; }
         .profile-tab-btn:hover {
-            color: #f3e8ff;
-            background: rgba(139, 92, 246, 0.12);
+            color: var(--adm-text-main);
+            background: var(--adm-sub-card-bg);
         }
         .profile-tab-btn.active {
-            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
             color: #ffffff;
-            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.4);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
         }
 
         .tab-pane {
@@ -456,6 +504,60 @@ $preset_avatars = [
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Card and Forms */
+        .card {
+            background: var(--adm-card-bg);
+            border: 1px solid var(--adm-border);
+            border-radius: 18px;
+            box-shadow: var(--adm-shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .card-head {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--adm-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--adm-text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-body {
+            padding: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--adm-text-main);
+            margin-bottom: 6px;
+        }
+        .form-control, .form-select, textarea.form-control {
+            width: 100%;
+            box-sizing: border-box;
+            background: var(--adm-input-bg);
+            border: 1.5px solid var(--adm-input-border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: var(--adm-text-main);
+            font-size: 13.5px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .form-control:focus, .form-select:focus, textarea.form-control:focus {
+            background: var(--adm-card-bg);
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+        }
+
         /* Input formatting */
         .input-icon-group {
             position: relative;
@@ -465,7 +567,7 @@ $preset_avatars = [
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #9d8ba7;
+            color: #94a3b8;
             font-size: 14px;
             pointer-events: none;
         }
@@ -478,19 +580,19 @@ $preset_avatars = [
             right: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #9d8ba7;
+            color: #94a3b8;
             background: none;
             border: none;
             cursor: pointer;
             font-size: 14px;
             padding: 4px;
         }
-        .toggle-password-btn:hover { color: #f3e8ff; }
+        .toggle-password-btn:hover { color: #0f172a; }
 
         /* Password Strength Bar */
         .pass-strength-bar {
             height: 6px;
-            background: rgba(168, 85, 247, 0.15);
+            background: #e2e8f0;
             border-radius: 4px;
             overflow: hidden;
             margin-top: 8px;
@@ -504,7 +606,7 @@ $preset_avatars = [
         .pass-strength-text {
             font-size: 11.5px;
             font-weight: 700;
-            color: #a79bb7;
+            color: #64748b;
             display: flex;
             justify-content: space-between;
         }
@@ -515,12 +617,12 @@ $preset_avatars = [
             width: 100%;
             max-width: 380px;
             aspect-ratio: 4/3;
-            background: #090514;
-            border: 2px solid rgba(168, 85, 247, 0.3);
+            background: #0f172a;
+            border: 2px solid #cbd5e1;
             border-radius: 18px;
             overflow: hidden;
             margin: 0 auto 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         #regVideo {
             width: 100%;
@@ -541,8 +643,8 @@ $preset_avatars = [
             left: 0;
             right: 0;
             height: 3px;
-            background: #c084fc;
-            box-shadow: 0 0 15px #c084fc;
+            background: #a855f7;
+            box-shadow: 0 0 15px #a855f7;
             animation: faceScanAnim 2s ease-in-out infinite;
             display: none;
         }
@@ -557,7 +659,7 @@ $preset_avatars = [
             text-align: center;
             font-size: 13.5px;
             font-weight: 700;
-            color: #c4b5fd;
+            color: #475569;
             min-height: 24px;
             margin-bottom: 16px;
         }
@@ -577,12 +679,12 @@ $preset_avatars = [
             cursor: pointer;
             border: 3px solid transparent;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .avatar-preset-item:hover {
             transform: scale(1.08);
-            border-color: #c084fc;
-            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.45);
+            border-color: #7c3aed;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
         }
 
         @media (max-width: 992px) {
@@ -595,7 +697,7 @@ $preset_avatars = [
         }
     </style>
 </head>
-<body class="admin-portal">
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
     <?php include '../includes/admin_nav.php'; ?>
 
     <div class="main-content">
@@ -647,7 +749,7 @@ $preset_avatars = [
                     <h2 class="profile-name"><?= htmlspecialchars($admin['ho_ten'] ?? 'Quản Trị Viên') ?></h2>
                     <span class="profile-user-id"><i class="fa-solid fa-hashtag"></i> ID: <?= htmlspecialchars($admin['username']) ?></span>
                     
-                    <div class="profile-badge-role" style="<?= isSuperAdmin() ? 'background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(168,85,247,0.2)); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);' : 'background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);' ?>">
+                    <div class="profile-badge-role" style="<?= isSuperAdmin() ? 'background:#fefce8; color:#b45309; border:1px solid #fef08a;' : 'background:#f0f9ff; color:#0284c7; border:1px solid #bae6fd;' ?>">
                         <i class="fa-solid <?= isSuperAdmin() ? 'fa-crown' : 'fa-shield-halved' ?>"></i> 
                         <?= isSuperAdmin() ? 'SUPER ADMIN • LÊ NHỰT KHÁNH (NGƯỜI SÁNG LẬP)' : 'QUẢN TRỊ VIÊN PHỤ (SUB-ADMIN • DƯỚI QUYỀN LÊ NHỰT KHÁNH)' ?>
                     </div>

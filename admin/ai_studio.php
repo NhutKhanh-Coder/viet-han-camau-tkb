@@ -1,0 +1,5320 @@
+<?php
+require_once __DIR__ . '/../config.php';
+
+// Safe development session initialization on localhost
+if (isset($isLocal) && $isLocal) {
+    $_SESSION['user_id'] = 1;
+    $_SESSION['username'] = 'admin';
+    $_SESSION['role'] = 'admin';
+    $_SESSION['ho_ten'] = 'Lê Nhựt Khánh';
+} else {
+    requireAdmin();
+}
+
+$admin_name = $_SESSION['ho_ten'] ?? 'Quản Trị Viên';
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VŨ TRỤ AI ★ Chat - Học - Sáng Tạo Không Giới Hạn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/tkb/assets/style.css">
+
+    <style>
+        /* =====================================================================
+           ★ VŨ TRỤ AI DESIGN SYSTEM - DUAL THEME (LOFI DARK & CLEAN WHITE) ★
+           Seamless automatic switching between Dark Cosmic & Pure White
+           ===================================================================== */
+        :root {
+            /* === DARK MODE DEFAULT: Deep Cosmic Neon Violet === */
+            --vt-void: #060214;
+            --vt-deep: #0e0722;
+            --vt-card: rgba(18, 9, 44, 0.92);
+            --vt-card-border: rgba(147, 51, 234, 0.32);
+            --vt-border-glow: rgba(192, 132, 252, 0.35);
+            
+            --vt-purple: #c084fc;
+            --vt-purple-grad: linear-gradient(135deg, #7c3aed, #a855f7);
+            --vt-blue-grad: linear-gradient(135deg, #0284c7, #38bdf8);
+            --vt-cyan: #38bdf8;
+            --vt-pink: #f472b6;
+            --vt-green: #34d399;
+            
+            --vt-text: #f8fafc;
+            --vt-sub: #cbd5e1;
+            --vt-muted: #8b7bb3;
+            
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+
+            /* Portal background */
+            --vt-portal-bg: #090514;
+            --vt-portal-bg-img: radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
+            --vt-canvas-display: block;
+
+            /* Top Row: Hi Keria */
+            --vt-keria-bg: radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.2) 0%, rgba(20, 10, 52, 0.92) 75%);
+            --vt-keria-border: rgba(168, 85, 247, 0.45);
+            --vt-keria-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(124, 58, 237, 0.2);
+            --vt-keria-overlay: radial-gradient(circle at 50% 35%, rgba(20, 10, 52, 0.35) 0%, rgba(14, 7, 34, 0.88) 60%, rgba(10, 5, 24, 0.98) 100%);
+            --vt-keria-btn-bg: rgba(25, 12, 55, 0.85);
+            --vt-keria-btn-border: rgba(168, 85, 247, 0.35);
+            --vt-keria-btn-color: #f1f5f9;
+            --vt-keria-persona-bg: rgba(10, 5, 24, 0.7);
+            --vt-keria-persona-border: rgba(147, 51, 234, 0.25);
+            --vt-keria-persona-text: #a79bb7;
+
+            /* Top Row: Hero Banner */
+            --vt-hero-banner-border: rgba(168, 85, 247, 0.35);
+            --vt-hero-banner-shadow: 0 8px 25px -6px rgba(0, 0, 0, 0.6), 0 0 25px rgba(147, 51, 234, 0.25);
+            --vt-hero-banner-bg: #080318;
+            --vt-hero-btn-bg: rgba(25, 12, 55, 0.85);
+            --vt-hero-btn-border: rgba(168, 85, 247, 0.4);
+            --vt-hero-btn-color: #f8fafc;
+
+            /* Chat Terminal */
+            --vt-terminal-bg: rgba(16, 8, 38, 0.94);
+            --vt-terminal-border: rgba(147, 51, 234, 0.32);
+            --vt-terminal-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(124, 58, 237, 0.15);
+            --vt-terminal-backdrop: blur(16px);
+
+            /* Left Sidebar */
+            --vt-sidebar-bg: linear-gradient(180deg, rgba(14, 7, 36, 0.96) 0%, rgba(9, 4, 25, 0.98) 100%);
+            --vt-sidebar-border: rgba(147, 51, 234, 0.22);
+            --vt-side-header-bg: rgba(18, 9, 44, 0.98);
+            --vt-side-header-border: rgba(147, 51, 234, 0.22);
+            --vt-side-title-color: #f8fafc;
+            --vt-side-icon-btn-bg: rgba(25, 12, 55, 0.8);
+            --vt-side-icon-btn-border: rgba(168, 85, 247, 0.3);
+            --vt-side-icon-btn-color: #a79bb7;
+
+            --vt-btn-new-chat-bg: rgba(124, 58, 237, 0.15);
+            --vt-btn-new-chat-border: #a855f7;
+            --vt-btn-new-chat-color: #d8b4fe;
+
+            --vt-search-box-bg: rgba(10, 5, 26, 0.7);
+            --vt-search-box-border: rgba(147, 51, 234, 0.3);
+            --vt-search-box-text: #f8fafc;
+            --vt-search-box-placeholder: #8b7bb3;
+
+            --vt-session-bg: rgba(22, 11, 50, 0.65);
+            --vt-session-border: rgba(147, 51, 234, 0.22);
+            --vt-session-title: #e2e8f0;
+            --vt-session-time: #8b7bb3;
+            --vt-session-meta: #a79bb7;
+            --vt-session-badge-bg: rgba(124, 58, 237, 0.25);
+            --vt-session-badge-border: rgba(168, 85, 247, 0.35);
+            --vt-session-badge-color: #d8b4fe;
+            --vt-session-hover-bg: rgba(35, 18, 75, 0.85);
+            --vt-session-hover-border: rgba(168, 85, 247, 0.45);
+            --vt-session-active-bg: rgba(124, 58, 237, 0.28);
+            --vt-session-active-border: #c084fc;
+            --vt-session-active-title: #f3e8ff;
+
+            /* Right Chat Area */
+            --vt-chat-main-bg: rgba(12, 6, 28, 0.88);
+            --vt-chat-header-bg: rgba(18, 9, 44, 0.96);
+            --vt-chat-header-border: rgba(147, 51, 234, 0.25);
+            --vt-chat-header-name: #f8fafc;
+
+            /* Model Trigger & Dropdown */
+            --vt-trigger-bg: #18181b;
+            --vt-trigger-border: rgba(255, 255, 255, 0.14);
+            --vt-trigger-text: #f4f4f5;
+            --vt-trigger-lbl: #a79bb7;
+            --vt-trigger-effort-bg: rgba(124, 58, 237, 0.2);
+            --vt-trigger-effort-border: rgba(168, 85, 247, 0.3);
+            --vt-trigger-effort-color: #d8b4fe;
+
+            --vt-dropdown-bg: rgba(18, 9, 44, 0.98);
+            --vt-dropdown-border: rgba(168, 85, 247, 0.35);
+            --vt-dropdown-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(124, 58, 237, 0.2);
+            --vt-dropdown-header-border: rgba(147, 51, 234, 0.25);
+            --vt-dropdown-title: #a79bb7;
+            --vt-dropdown-search-bg: rgba(10, 5, 26, 0.8);
+            --vt-dropdown-search-border: rgba(147, 51, 234, 0.35);
+            --vt-dropdown-search-text: #f8fafc;
+            --vt-dropdown-tabs-border: rgba(147, 51, 234, 0.25);
+            --vt-dropdown-tab-text: #a79bb7;
+            --vt-dropdown-model-border: rgba(147, 51, 234, 0.15);
+            --vt-dropdown-model-name: #f8fafc;
+            --vt-dropdown-model-sub: #8b7bb3;
+            --vt-dropdown-model-hover: rgba(124, 58, 237, 0.2);
+            --vt-dropdown-model-active: rgba(124, 58, 237, 0.35);
+
+            /* Message Bubbles */
+            --vt-bot-bubble-bg: rgba(22, 11, 56, 0.88);
+            --vt-bot-bubble-border: rgba(147, 51, 234, 0.25);
+            --vt-bot-bubble-text: #f8fafc;
+            --vt-bot-bubble-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.4);
+
+            /* Bottom Deck & Input */
+            --vt-input-deck-bg: rgba(12, 6, 28, 0.95);
+            --vt-input-deck-border: rgba(147, 51, 234, 0.22);
+            --vt-input-pill-bg: rgba(8, 4, 22, 0.85);
+            --vt-input-pill-border: rgba(147, 51, 234, 0.35);
+            --vt-input-pill-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+            --vt-input-text: #f8fafc;
+            --vt-input-placeholder: #8b7bb3;
+            --vt-action-chip-bg: rgba(22, 11, 52, 0.7);
+            --vt-action-chip-border: rgba(147, 51, 234, 0.25);
+            --vt-action-chip-color: #cbd5e1;
+            --vt-input-pill-focus-bg: rgba(14, 7, 34, 0.95);
+
+            /* Empty State */
+            --vt-empty-state-h4: #cbd5e1;
+            --vt-empty-state-p: #8b7bb3;
+            --vt-empty-state-icon: rgba(168, 85, 247, 0.4);
+
+            /* Voice Modal */
+            --vt-voice-card-bg: rgba(18, 9, 44, 0.98);
+            --vt-voice-card-border: rgba(168, 85, 247, 0.4);
+            --vt-voice-card-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(124, 58, 237, 0.3);
+            --vt-voice-transcript-bg: rgba(10, 5, 26, 0.7);
+            --vt-voice-transcript-border: rgba(147, 51, 234, 0.25);
+            --vt-voice-quick-bg: rgba(10, 5, 26, 0.8);
+            --vt-voice-quick-border: rgba(147, 51, 234, 0.3);
+        }
+
+        /* === LIGHT MODE: Crisp Modern White & Slate === */
+        body.adm-light-mode {
+            --vt-void: #f8fafc;
+            --vt-deep: #ffffff;
+            --vt-card: #ffffff;
+            --vt-card-border: #e2e8f0;
+            --vt-border-glow: rgba(124, 58, 237, 0.12);
+
+            --vt-purple: #7c3aed;
+            --vt-purple-grad: linear-gradient(135deg, #7c3aed, #9333ea);
+            --vt-blue-grad: linear-gradient(135deg, #0284c7, #38bdf8);
+            --vt-cyan: #0284c7;
+            --vt-pink: #ec4899;
+            --vt-green: #10b981;
+
+            --vt-text: #0f172a;
+            --vt-sub: #475569;
+            --vt-muted: #64748b;
+
+            --vt-portal-bg: #f8fafc !important;
+            --vt-portal-bg-img: none !important;
+            --vt-canvas-display: none !important;
+
+            --vt-keria-bg: linear-gradient(135deg, #ffffff 0%, #f5f3ff 60%, #eff6ff 100%);
+            --vt-keria-border: #e2e8f0;
+            --vt-keria-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            --vt-keria-overlay: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.82) 60%, rgba(255, 255, 255, 0.96) 100%);
+            --vt-keria-btn-bg: rgba(255, 255, 255, 0.95);
+            --vt-keria-btn-border: #cbd5e1;
+            --vt-keria-btn-color: #334155;
+            --vt-keria-persona-bg: #f1f5f9;
+            --vt-keria-persona-border: #e2e8f0;
+            --vt-keria-persona-text: #64748b;
+
+            --vt-hero-banner-border: #e2e8f0;
+            --vt-hero-banner-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --vt-hero-banner-bg: #ffffff;
+            --vt-hero-btn-bg: rgba(255, 255, 255, 0.95);
+            --vt-hero-btn-border: #cbd5e1;
+            --vt-hero-btn-color: #0f172a;
+
+            --vt-terminal-bg: #ffffff;
+            --vt-terminal-border: #e2e8f0;
+            --vt-terminal-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+            --vt-terminal-backdrop: none;
+
+            --vt-sidebar-bg: #f8fafc;
+            --vt-sidebar-border: #e2e8f0;
+            --vt-side-header-bg: #ffffff;
+            --vt-side-header-border: #e2e8f0;
+            --vt-side-title-color: #0f172a;
+            --vt-side-icon-btn-bg: #ffffff;
+            --vt-side-icon-btn-border: #e2e8f0;
+            --vt-side-icon-btn-color: #64748b;
+
+            --vt-btn-new-chat-bg: #ffffff;
+            --vt-btn-new-chat-border: #7c3aed;
+            --vt-btn-new-chat-color: #7c3aed;
+
+            --vt-search-box-bg: #ffffff;
+            --vt-search-box-border: #e2e8f0;
+            --vt-search-box-text: #0f172a;
+            --vt-search-box-placeholder: #94a3b8;
+
+            --vt-session-bg: #ffffff;
+            --vt-session-border: #e2e8f0;
+            --vt-session-title: #1e293b;
+            --vt-session-time: #94a3b8;
+            --vt-session-meta: #64748b;
+            --vt-session-badge-bg: #ede9fe;
+            --vt-session-badge-border: #ddd6fe;
+            --vt-session-badge-color: #7c3aed;
+            --vt-session-hover-bg: #f8fafc;
+            --vt-session-hover-border: #cbd5e1;
+            --vt-session-active-bg: #f5f3ff;
+            --vt-session-active-border: #c084fc;
+            --vt-session-active-title: #6d28d9;
+
+            --vt-chat-main-bg: #f8fafc;
+            --vt-chat-header-bg: #ffffff;
+            --vt-chat-header-border: #e2e8f0;
+            --vt-chat-header-name: #0f172a;
+
+            --vt-trigger-bg: #ffffff;
+            --vt-trigger-border: #cbd5e1;
+            --vt-trigger-text: #0f172a;
+            --vt-trigger-lbl: #64748b;
+            --vt-trigger-effort-bg: #f1f5f9;
+            --vt-trigger-effort-border: #e2e8f0;
+            --vt-trigger-effort-color: #475569;
+
+            --vt-dropdown-bg: #ffffff;
+            --vt-dropdown-border: #e2e8f0;
+            --vt-dropdown-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.03);
+            --vt-dropdown-header-border: #e2e8f0;
+            --vt-dropdown-title: #64748b;
+            --vt-dropdown-search-bg: #f8fafc;
+            --vt-dropdown-search-border: #cbd5e1;
+            --vt-dropdown-search-text: #0f172a;
+            --vt-dropdown-tabs-border: #e2e8f0;
+            --vt-dropdown-tab-text: #64748b;
+            --vt-dropdown-model-border: #f1f5f9;
+            --vt-dropdown-model-name: #0f172a;
+            --vt-dropdown-model-sub: #64748b;
+            --vt-dropdown-model-hover: #f8fafc;
+            --vt-dropdown-model-active: #f5f3ff;
+
+            --vt-bot-bubble-bg: #ffffff;
+            --vt-bot-bubble-border: #e2e8f0;
+            --vt-bot-bubble-text: #0f172a;
+            --vt-bot-bubble-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+            --vt-input-deck-bg: #ffffff;
+            --vt-input-deck-border: #e2e8f0;
+            --vt-input-pill-bg: #f8fafc;
+            --vt-input-pill-border: #cbd5e1;
+            --vt-input-pill-shadow: none;
+            --vt-input-text: #0f172a;
+            --vt-input-placeholder: #94a3b8;
+            --vt-action-chip-bg: #f1f5f9;
+            --vt-action-chip-border: #e2e8f0;
+            --vt-action-chip-color: #475569;
+            --vt-input-pill-focus-bg: #ffffff;
+
+            --vt-empty-state-h4: #0f172a;
+            --vt-empty-state-p: #64748b;
+            --vt-empty-state-icon: #cbd5e1;
+
+            --vt-voice-card-bg: #ffffff;
+            --vt-voice-card-border: #e2e8f0;
+            --vt-voice-card-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --vt-voice-transcript-bg: #f8fafc;
+            --vt-voice-transcript-border: #e2e8f0;
+            --vt-voice-quick-bg: #f8fafc;
+            --vt-voice-quick-border: #cbd5e1;
+        }
+
+        body.admin-portal {
+            background-color: var(--vt-portal-bg) !important;
+            background-image: var(--vt-portal-bg-img) !important;
+            background-attachment: fixed !important;
+            color: var(--vt-text) !important;
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Container */
+        .vutru-wrap {
+            max-width: 1560px;
+            margin: 0 auto;
+            padding: 6px 14px 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Ambient Starfield Canvas - Hidden in clean white mode */
+        #vutruCanvas {
+            display: var(--vt-canvas-display) !important;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        /* Reusable Card */
+        .vt-card {
+            background: var(--vt-card);
+            border: 1px solid var(--vt-card-border);
+            border-radius: 18px;
+            box-shadow: var(--vt-terminal-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* =====================================================================
+           ★ 1. TOP HEADER ROW: [HI KERIA SQUARE BOX] + [VŨ TRỤ AI BANNER] ★
+           ===================================================================== */
+        .vt-top-header-row {
+            display: flex;
+            align-items: stretch;
+            gap: 12px;
+            margin-bottom: 8px;
+            width: 100%;
+            height: 148px;
+            overflow: hidden;
+        }
+
+        /* SQUARE GREETING CARD (LEFT): HI KERIA WITH WAVING ROBOT */
+        .vt-keria-square-card {
+            width: 265px;
+            min-width: 265px;
+            flex-shrink: 0;
+            height: 100%;
+            margin: 0;
+            padding: 8px 12px;
+            background: var(--vt-keria-bg);
+            border: 1.5px solid var(--vt-keria-border);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--vt-keria-shadow);
+            cursor: default;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .vt-keria-square-card:hover {
+            transform: translateY(-2px);
+            border-color: #c084fc;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
+        }
+
+        /* Outer Background Image Layer */
+        .keria-card-bg-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.15;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+            filter: saturate(1.2);
+            pointer-events: none;
+        }
+        .vt-keria-square-card:hover .keria-card-bg-layer {
+            transform: scale(1.05);
+            opacity: 0.22;
+        }
+        .keria-card-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--vt-keria-overlay);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Button to change outer image */
+        .keria-bg-change-btn {
+            position: absolute;
+            top: 7px;
+            right: 8px;
+            background: var(--vt-keria-btn-bg);
+            border: 1px solid var(--vt-keria-btn-border);
+            color: var(--vt-keria-btn-color);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3.5px 9px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 25;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            opacity: 0.92;
+        }
+        .keria-bg-change-btn:hover {
+            opacity: 1;
+            background: #ffffff;
+            color: #7c3aed;
+            border-color: #7c3aed;
+            transform: scale(1.06);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.18);
+        }
+
+        .vt-keria-square-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 60%);
+            animation: keriaAuraSpin 8s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes keriaAuraSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Avatar circle */
+        .keria-robot-img-wrap {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 2.5px solid #7c3aed;
+            box-shadow: 0 0 16px rgba(124, 58, 237, 0.22);
+            overflow: hidden;
+            position: relative;
+            z-index: 10 !important;
+            margin-bottom: 3px;
+            animation: robotFloatWave 3.5s ease-in-out infinite;
+            background: #ffffff;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        @keyframes robotFloatWave {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(1.03); }
+        }
+        .keria-robot-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.25s ease;
+        }
+        .keria-robot-img-wrap:hover img {
+            transform: scale(1.08);
+        }
+        .keria-robot-img-wrap:hover .robot-change-hover-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .robot-change-hover-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #7c3aed;
+            font-size: 10.5px;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+            z-index: 12;
+            gap: 2px;
+            text-align: center;
+            pointer-events: none;
+        }
+        .robot-change-hover-overlay i {
+            font-size: 14px;
+            color: #7c3aed;
+        }
+        .robot-camera-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 19px;
+            height: 19px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            border: 1.5px solid #ffffff;
+            color: #ffffff;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 11;
+            transition: transform 0.2s;
+        }
+        .keria-robot-img-wrap:hover .robot-camera-badge {
+            transform: scale(1.18);
+        }
+        .keria-greeting-title {
+            font-family: var(--font-heading);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 3px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+            z-index: 10 !important;
+            line-height: 1.15;
+        }
+        .keria-greeting-title .wave-hand {
+            display: inline-block;
+            font-size: 15px;
+            animation: wavingHand 2s ease-in-out infinite;
+            transform-origin: 70% 70%;
+            -webkit-text-fill-color: initial;
+        }
+        @keyframes wavingHand {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(14deg); }
+            40% { transform: rotate(-10deg); }
+            60% { transform: rotate(14deg); }
+            80% { transform: rotate(-4deg); }
+        }
+
+        /* Mascot Persona Switcher */
+        .keria-persona-toggle {
+            display: inline-flex;
+            align-items: center;
+            background: var(--vt-keria-persona-bg);
+            border: 1px solid var(--vt-keria-persona-border);
+            border-radius: 18px;
+            padding: 2.5px;
+            margin: 2px 0 3px;
+            gap: 3px;
+            position: relative;
+            z-index: 10 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        .kpersona-btn {
+            background: transparent;
+            border: none;
+            color: var(--vt-keria-persona-text);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2.5px 9px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .kpersona-btn:hover {
+            color: #0f172a;
+        }
+        .kpersona-btn.active {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+        }
+        .kpersona-btn.active.anime {
+            background: linear-gradient(135deg, #d946ef, #f43f5e);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(244, 63, 94, 0.35);
+        }
+        .keria-greeting-sub {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--vt-sub);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+            z-index: 10 !important;
+        }
+        .keria-greeting-sub .online-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--vt-green);
+            box-shadow: 0 0 7px var(--vt-green);
+        }
+
+        /* HERO BANNER (RIGHT) */
+        .vt-hero-banner {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            border: 1.5px solid var(--vt-hero-banner-border);
+            box-shadow: var(--vt-hero-banner-shadow);
+            margin-bottom: 0;
+            background: var(--vt-hero-banner-bg);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .vt-hero-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .vt-hero-banner:hover .vt-hero-img {
+            transform: scale(1.02);
+        }
+        .vt-hero-banner:hover .hero-banner-change-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            background: var(--vt-hero-btn-bg);
+            border: 1.5px solid var(--vt-hero-btn-border);
+            color: var(--vt-hero-btn-color);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(6px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 4;
+        }
+        .hero-banner-change-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            background: var(--vt-hero-btn-bg);
+            border: 1.5px solid var(--vt-hero-btn-border);
+            color: var(--vt-hero-btn-color);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(6px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 4;
+        }
+        .hero-banner-change-btn:hover {
+            background: #ffffff;
+            color: #7c3aed;
+            border-color: #7c3aed;
+            transform: translateY(0) scale(1.04);
+        }
+
+        /* =====================================================================
+           ★ 2. MAIN CHAT TERMINAL ★
+           ===================================================================== */
+        .vt-main-grid {
+            display: block;
+            width: 100%;
+        }
+
+        .vt-chat-terminal {
+            height: calc(100vh - 225px);
+            min-height: 440px;
+            max-height: 720px;
+            display: flex;
+            flex-direction: row;
+            position: relative;
+            overflow: visible !important;
+            border-radius: 16px;
+            background: var(--vt-terminal-bg);
+            border: 1px solid var(--vt-terminal-border);
+            box-shadow: var(--vt-terminal-shadow);
+            backdrop-filter: var(--vt-terminal-backdrop);
+            -webkit-backdrop-filter: var(--vt-terminal-backdrop);
+        }
+
+        /* =====================================================================
+           ★ LEFT COMPACT CHAT HISTORY SIDEBAR ★
+           ===================================================================== */
+        .vt-history-sidebar {
+            width: 250px;
+            min-width: 250px;
+            height: 100%;
+            background: var(--vt-sidebar-bg);
+            border-right: 1px solid var(--vt-sidebar-border);
+            border-top-left-radius: 16px;
+            border-bottom-left-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+            position: relative;
+            z-index: 30;
+            flex-shrink: 0;
+        }
+
+        .vt-history-sidebar.collapsed {
+            width: 0 !important;
+            min-width: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-right: none !important;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .history-side-header {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--vt-side-header-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            background: var(--vt-side-header-bg);
+        }
+        .history-side-title {
+            font-family: var(--font-heading);
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--vt-side-title-color);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            letter-spacing: 0.02em;
+        }
+        .history-side-title i {
+            color: #7c3aed;
+            font-size: 13px;
+        }
+        .history-side-tools {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .side-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--vt-side-icon-btn-bg);
+            border: 1px solid var(--vt-side-icon-btn-border);
+            color: var(--vt-side-icon-btn-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .side-icon-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        .side-icon-btn.danger:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #ef4444;
+        }
+
+        .history-side-btn-wrap {
+            padding: 10px 12px 6px;
+        }
+        .btn-side-new-chat {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            background: var(--vt-btn-new-chat-bg);
+            border: 1.5px solid var(--vt-btn-new-chat-border);
+            color: var(--vt-btn-new-chat-color);
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-main);
+        }
+        .btn-side-new-chat:hover {
+            background: #7c3aed;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .history-side-search {
+            margin: 4px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--vt-search-box-bg);
+            border: 1px solid var(--vt-search-box-border);
+            border-radius: 8px;
+            padding: 5px 10px;
+            transition: all 0.2s;
+        }
+        .history-side-search:focus-within {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        .history-side-search i {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+        .history-side-search input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--vt-search-box-text);
+            font-size: 11.5px;
+            font-family: var(--font-main);
+            width: 100%;
+        }
+        .history-side-search input::placeholder {
+            color: var(--vt-search-box-placeholder);
+        }
+
+        .history-side-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .history-side-list::-webkit-scrollbar { width: 4px; }
+        .history-side-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+
+        .session-item {
+            background: var(--vt-session-bg);
+            border: 1px solid var(--vt-session-border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: relative;
+        }
+        .session-item:hover {
+            background: var(--vt-session-hover-bg);
+            border-color: var(--vt-session-hover-border);
+            transform: translateY(-1px);
+        }
+        .session-item.active {
+            background: var(--vt-session-active-bg);
+            border-color: var(--vt-session-active-border);
+            box-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+        }
+        .session-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .session-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--vt-session-title);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            line-height: 1.3;
+        }
+        .session-item.active .session-title {
+            color: var(--vt-session-active-title);
+            font-weight: 700;
+        }
+        .session-del-btn {
+            opacity: 0;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.18s ease;
+        }
+        .session-item:hover .session-del-btn {
+            opacity: 1;
+        }
+        .session-del-btn:hover {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .session-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--vt-session-meta);
+            gap: 4px;
+        }
+        .session-meta-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .session-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: var(--vt-session-badge-bg);
+            border: 1px solid var(--vt-session-badge-border);
+            color: var(--vt-session-badge-color);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+        .session-msg-count {
+            color: #64748b;
+            font-size: 9.5px;
+        }
+        .session-time {
+            font-size: 9.5px;
+            color: var(--vt-session-time);
+        }
+
+        .drawer-empty-state {
+            padding: 30px 14px;
+            text-align: center;
+            color: #64748b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 100%;
+        }
+        .drawer-empty-state i {
+            font-size: 26px;
+            color: var(--vt-empty-state-icon);
+        }
+        .drawer-empty-state h4 {
+            margin: 0;
+            font-size: 12.5px;
+            color: var(--vt-empty-state-h4);
+            font-weight: 700;
+        }
+        .drawer-empty-state p {
+            margin: 0;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--vt-empty-state-p);
+        }
+
+        .vt-history-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .vt-history-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* =====================================================================
+           ★ RIGHT MAIN CHAT TERMINAL AREA ★
+           ===================================================================== */
+        .vt-chat-main-area {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            background: var(--vt-chat-main-bg);
+            border-top-right-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 40;
+        }
+        .vt-history-sidebar.collapsed ~ .vt-chat-main-area {
+            border-radius: 16px;
+        }
+
+        .chat-top-header {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--vt-chat-header-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: var(--vt-chat-header-bg);
+            flex-wrap: nowrap;
+            position: relative;
+            z-index: 100;
+            border-top-right-radius: 16px;
+        }
+        .vt-history-sidebar.collapsed ~ .vt-chat-main-area .chat-top-header {
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+        .chat-bottom-deck {
+            border-bottom-right-radius: 16px;
+        }
+        .vt-history-sidebar.collapsed ~ .vt-chat-main-area .chat-bottom-deck {
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex-shrink: 1;
+        }
+        .btn-sidebar-toggle {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--vt-side-icon-btn-bg);
+            border: 1px solid var(--vt-side-icon-btn-border);
+            color: var(--vt-side-icon-btn-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .btn-sidebar-toggle:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        .chat-robot-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #7c3aed;
+            box-shadow: 0 0 12px rgba(124, 58, 237, 0.25);
+            flex-shrink: 0;
+            animation: orbFloat 4s ease-in-out infinite;
+        }
+        .chat-robot-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .chat-header-name h2 {
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--vt-chat-header-name);
+            letter-spacing: 0.03em;
+        }
+        .chat-online-badge {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 1px;
+        }
+        .chat-online-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #16a34a;
+            box-shadow: 0 0 8px #16a34a;
+        }
+
+        .chat-header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* =====================================================================
+           ★ ANTIGRAVITY MODEL PICKER SYSTEM ★
+           ===================================================================== */
+        .vt-model-picker-container {
+            position: relative;
+            display: inline-block;
+            z-index: 100;
+        }
+
+        .vt-antigravity-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--vt-trigger-bg);
+            border: 1px solid var(--vt-trigger-border);
+            border-radius: 9px;
+            padding: 6px 11px;
+            color: var(--vt-trigger-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: all 0.18s ease;
+            outline: none;
+            user-select: none;
+        }
+        .vt-antigravity-trigger:hover, .vt-antigravity-trigger.active {
+            background: var(--vt-dropdown-model-hover);
+            border-color: var(--vt-purple);
+            color: var(--vt-trigger-text);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .ag-trig-lbl {
+            color: var(--vt-trigger-lbl);
+            font-size: 11.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .ag-trig-lbl i {
+            color: #7c3aed;
+            font-size: 11px;
+        }
+        .ag-trig-name {
+            font-weight: 600;
+            color: var(--vt-trigger-text);
+            max-width: 155px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ag-trig-effort {
+            color: var(--vt-trigger-effort-color);
+            font-size: 11px;
+            background: var(--vt-trigger-effort-bg);
+            border: 1px solid var(--vt-trigger-effort-border);
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-weight: 600;
+        }
+        .ag-trig-fast {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            color: #0284c7;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+        .ag-trig-chevron {
+            font-size: 9.5px;
+            color: #94a3b8;
+            transition: transform 0.2s ease;
+            margin-left: 2px;
+        }
+        .vt-antigravity-trigger.active .ag-trig-chevron {
+            transform: rotate(180deg);
+        }
+
+        .vt-antigravity-dropdown {
+            position: absolute;
+            top: calc(100% + 7px);
+            left: 0 !important;
+            right: auto;
+            width: 380px;
+            max-width: min(380px, calc(100vw - 32px));
+            max-height: min(520px, calc(100vh - 160px));
+            background: var(--vt-dropdown-bg);
+            border: 1px solid var(--vt-dropdown-border);
+            border-radius: 12px;
+            box-shadow: var(--vt-dropdown-shadow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 8px 6px 12px;
+            display: none;
+            flex-direction: column;
+            z-index: 99999;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            animation: agDropFade 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
+        }
+        .vt-antigravity-dropdown.open {
+            display: flex;
+        }
+        @keyframes agDropFade {
+            from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .ag-dropdown-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px 8px;
+            border-bottom: 1px solid var(--vt-dropdown-header-border);
+        }
+        .ag-hdr-title {
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--vt-dropdown-title);
+        }
+        .ag-hdr-search {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--vt-dropdown-search-bg);
+            border: 1px solid var(--vt-dropdown-search-border);
+            border-radius: 6px;
+            padding: 3px 8px;
+            width: 145px;
+        }
+        .ag-hdr-search i {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+        .ag-hdr-search input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--vt-dropdown-search-text);
+            font-size: 11px;
+            width: 100%;
+        }
+        .ag-hdr-search input::placeholder {
+            color: #94a3b8;
+        }
+
+        .ag-tabs-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--vt-dropdown-tabs-border);
+            background: var(--vt-dropdown-bg);
+            padding: 2px 2px;
+        }
+        .ag-tabs-scroll-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 10px;
+            width: 20px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.15s;
+            z-index: 5;
+            padding: 0;
+            border-radius: 4px;
+        }
+        .ag-tabs-scroll-btn:hover {
+            color: #ffffff;
+            background: rgba(124, 58, 237, 0.25);
+        }
+        body.adm-light-mode .ag-tabs-scroll-btn:hover {
+            color: #0f172a;
+            background: #f1f5f9;
+        }
+        .ag-category-tabs {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 2px;
+            overflow-x: auto;
+            border-bottom: none;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            scrollbar-width: none;
+        }
+        .ag-category-tabs::-webkit-scrollbar { display: none; }
+        .ag-category-tabs.grabbing { cursor: grabbing !important; }
+        .ag-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--vt-dropdown-tab-text);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+            outline: none;
+        }
+        .ag-tab-btn:hover {
+            background: var(--vt-dropdown-model-hover, rgba(124, 58, 237, 0.2));
+            color: var(--vt-dropdown-model-name, #ffffff);
+        }
+        .ag-tab-btn.active {
+            background: #ffffff;
+            color: #7c3aed;
+            font-weight: 700;
+        }
+        body.adm-light-mode .ag-tab-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        body.adm-light-mode .ag-tab-btn.active {
+            background: #ede9fe;
+            color: #7c3aed;
+            font-weight: 700;
+        }
+
+        .ag-model-list {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden !important;
+            padding: 4px 6px 36px 4px;
+            max-height: min(400px, calc(100vh - 270px));
+            width: 100%;
+            box-sizing: border-box;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+        .ag-model-list::-webkit-scrollbar { width: 5px; }
+        .ag-model-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); border-radius: 4px; }
+        .ag-model-list::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
+        body.adm-light-mode .ag-model-list::-webkit-scrollbar-thumb { background: #cbd5e1; }
+        body.adm-light-mode .ag-model-list::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .ag-group-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 8px 8px 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ag-model-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 8px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: background 0.12s;
+            position: relative;
+            user-select: none;
+            border-bottom: 1px solid var(--vt-dropdown-model-border);
+        }
+        .ag-model-item:hover, .ag-model-item.has-sub-open {
+            background: var(--vt-dropdown-model-hover);
+        }
+        .ag-model-item.selected {
+            background: var(--vt-dropdown-model-active);
+        }
+        .ag-item-left {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+            flex: 1;
+        }
+        .ag-item-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: transparent;
+            flex-shrink: 0;
+        }
+        .ag-model-item.selected .ag-item-dot {
+            background: #7c3aed;
+            box-shadow: 0 0 6px rgba(124, 58, 237, 0.4);
+        }
+        .ag-item-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--vt-dropdown-model-name);
+            line-height: 1.25;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .ag-model-item.selected .ag-item-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--vt-dropdown-model-name);
+            line-height: 1.25;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .ag-item-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        .ag-item-effort {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 400;
+        }
+        .ag-item-fast-badge {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 9px;
+            font-weight: 500;
+        }
+        .ag-item-info {
+            color: #94a3b8;
+            font-size: 11.5px;
+            cursor: help;
+            padding: 2px;
+            transition: color 0.15s;
+        }
+        .ag-item-info:hover {
+            color: #7c3aed;
+        }
+        .ag-item-arrow {
+            color: #94a3b8;
+            font-size: 10px;
+            margin-left: 2px;
+            transition: transform 0.15s;
+        }
+        .ag-model-item:hover .ag-item-arrow {
+            color: #0f172a;
+            transform: translateX(1px);
+        }
+
+        .ag-effort-submenu {
+            position: absolute;
+            top: 0;
+            left: calc(100% + 4px);
+            width: 175px;
+            background: var(--vt-dropdown-bg);
+            border: 1px solid var(--vt-dropdown-border);
+            border-radius: 9px;
+            box-shadow: var(--vt-dropdown-shadow);
+            padding: 5px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 100000;
+            backdrop-filter: blur(16px);
+        }
+        .ag-model-item:hover .ag-effort-submenu,
+        .ag-effort-submenu.show {
+            display: flex;
+        }
+        @keyframes agSubFade {
+            from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
+            to { opacity: 1; transform: translateY(-50%) translateX(0); }
+        }
+        .ag-sub-btn {
+            background: transparent;
+            border: 1.5px solid transparent;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--vt-dropdown-model-name, #f8fafc);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.14s;
+            font-family: inherit;
+        }
+        .ag-sub-btn:hover {
+            background: var(--vt-dropdown-model-hover, rgba(124, 58, 237, 0.2));
+            color: var(--vt-dropdown-model-name, #ffffff);
+        }
+        .ag-sub-btn.selected {
+            border-color: #a855f7 !important;
+            background: var(--vt-dropdown-model-active, rgba(124, 58, 237, 0.35)) !important;
+            color: #d8b4fe !important;
+            font-weight: 600 !important;
+        }
+        body.adm-light-mode .ag-sub-btn {
+            color: #334155;
+        }
+        body.adm-light-mode .ag-sub-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        body.adm-light-mode .ag-sub-btn.selected {
+            border-color: #7c3aed !important;
+            background: #ede9fe !important;
+            color: #6d28d9 !important;
+        }
+
+        .btn-chat-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5.5px 12px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--vt-trigger-border);
+            background: var(--vt-trigger-bg);
+            color: var(--vt-trigger-text);
+            transition: all 0.18s;
+            outline: none;
+            white-space: nowrap;
+        }
+        .btn-chat-action:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
+        }
+        .btn-new-chat {
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+            border: none;
+            color: #ffffff !important;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+        }
+        .btn-new-chat:hover {
+            background: linear-gradient(135deg, #6d28d9, #7e22ce);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        }
+        .history-count-badge {
+            background: #7c3aed;
+            color: #ffffff;
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 8px;
+            margin-left: 2px;
+        }
+
+        /* Responsive on smaller screens */
+        @media (max-width: 860px) {
+            .vt-top-header-row {
+                flex-direction: column;
+                height: auto;
+                gap: 10px;
+            }
+            .vt-keria-square-card {
+            width: 265px;
+            min-width: 265px;
+            flex-shrink: 0;
+            height: 100%;
+            margin: 0;
+            padding: 8px 12px;
+            background: var(--vt-keria-bg);
+            border: 1.5px solid var(--vt-keria-border);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--vt-keria-shadow);
+            cursor: default;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+            .vt-hero-banner {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            border: 1.5px solid var(--vt-hero-banner-border);
+            box-shadow: var(--vt-hero-banner-shadow);
+            margin-bottom: 0;
+            background: var(--vt-hero-banner-bg);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+            .vt-history-sidebar {
+            width: 250px;
+            min-width: 250px;
+            height: 100%;
+            background: var(--vt-sidebar-bg);
+            border-right: 1px solid var(--vt-sidebar-border);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+            position: relative;
+            z-index: 30;
+            flex-shrink: 0;
+        }
+            .vt-history-sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .vt-history-sidebar.collapsed {
+                width: 260px !important;
+                min-width: 260px !important;
+                transform: translateX(-100%) !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* Chat Stream */
+        .chat-stream-deck {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--vt-chat-main-bg);
+        }
+        .chat-stream-deck::-webkit-scrollbar { width: 6px; }
+        .chat-stream-deck::-webkit-scrollbar-track { background: transparent; }
+        .chat-stream-deck::-webkit-scrollbar-thumb { 
+            background: #cbd5e1; 
+            border-radius: 10px; 
+        }
+
+        /* Message Rows */
+        .msg-row {
+            display: flex;
+            gap: 10px;
+            max-width: 90%;
+            animation: msgFade 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes msgFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg-row.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .msg-row.bot {
+            align-self: flex-start;
+        }
+
+        .msg-user-avatar, .msg-bot-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .msg-bot-avatar {
+            border: 1.5px solid #7c3aed;
+        }
+        .msg-bot-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .msg-user-avatar {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 1.5px solid #38bdf8;
+        }
+
+        /* Message Bubbles */
+        .msg-bubble-box {
+            padding: 11px 16px;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.55;
+            word-break: break-word;
+            position: relative;
+        }
+        .msg-row.bot .msg-bubble-box {
+            background: var(--vt-bot-bubble-bg);
+            border: 1px solid var(--vt-bot-bubble-border);
+            color: var(--vt-bot-bubble-text);
+            border-top-left-radius: 4px;
+            box-shadow: var(--vt-bot-bubble-shadow);
+        }
+        .msg-row.user .msg-bubble-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            border: none;
+            color: #ffffff;
+            border-top-right-radius: 4px;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+        }
+
+        /* Embedded Spiral Galaxy in Welcome Box */
+        .msg-galaxy-bg {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 72px;
+            height: auto;
+            opacity: 0.18;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: galaxyRotate 25s linear infinite;
+        }
+        @keyframes galaxyRotate {
+            from { transform: translateY(-50%) rotate(0deg); }
+            to { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        .msg-time-lbl {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .msg-row.user .msg-time-lbl {
+            justify-content: flex-end;
+            color: #7c3aed;
+        }
+
+        /* Markdown in Messages */
+        .msg-bubble-box p { margin: 0 0 8px; }
+        .msg-bubble-box p:last-child { margin-bottom: 0; }
+        .msg-bubble-box strong {
+            color: #ffffff !important;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.45);
+        }
+        body.adm-light-mode .msg-bubble-box strong {
+            color: #6d28d9 !important;
+            text-shadow: none;
+        }
+        .msg-bubble-box em { color: #0284c7; font-style: italic; }
+        .msg-bubble-box code {
+            background: var(--vt-session-bg);
+            color: var(--vt-purple);
+            padding: 1.5px 5.5px;
+            border-radius: 4px;
+            font-size: 11.5px;
+            font-family: 'Consolas', 'Fira Code', monospace;
+            border: 1px solid var(--vt-card-border);
+        }
+        .msg-bubble-box pre {
+            background: var(--vt-deep);
+            border: 1px solid var(--vt-card-border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            overflow-x: auto;
+            margin: 8px 0;
+            position: relative;
+        }
+        .msg-bubble-box pre code {
+            background: transparent;
+            border: none;
+            padding: 0;
+            color: #f8fafc;
+            display: block;
+            line-height: 1.5;
+        }
+        .code-copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .code-copy-btn:hover {
+            background: #7c3aed;
+            color: #ffffff;
+        }
+
+        /* Typing Indicator */
+        .typing-wave {
+            background: var(--vt-bot-bubble-bg);
+            border: 1px solid var(--vt-bot-bubble-border);
+            border-radius: 14px;
+            padding: 10px 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--vt-bot-bubble-shadow);
+        }
+        .typing-wave .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--vt-purple);
+            animation: dotWave 1.4s infinite;
+        }
+        .typing-wave .dot:nth-child(2) { animation-delay: 0.2s; background: var(--vt-cyan); }
+        .typing-wave .dot:nth-child(3) { animation-delay: 0.4s; background: var(--vt-pink); }
+        @keyframes dotWave {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+            30% { transform: translateY(-5px); opacity: 1; }
+        }
+
+        /* Chat Input Footer */
+        .chat-bottom-deck {
+            padding: 8px 16px 12px;
+            background: var(--vt-input-deck-bg);
+            border-top: 1px solid var(--vt-input-deck-border);
+            position: relative;
+            z-index: 50;
+        }
+
+        /* Main Input Box */
+        .chat-input-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--vt-input-pill-bg);
+            border: 1.5px solid var(--vt-input-pill-border);
+            border-radius: 14px;
+            padding: 4px 12px;
+            box-shadow: var(--vt-input-pill-shadow);
+            transition: all 0.2s;
+        }
+        .chat-input-pill:focus-within {
+            background: var(--vt-input-pill-focus-bg, var(--vt-input-pill-bg));
+            border-color: var(--vt-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+        }
+        .chat-input-plus {
+            color: #64748b;
+            font-size: 15px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .chat-input-plus:hover {
+            color: #7c3aed;
+        }
+        .chat-input-textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--vt-input-text);
+            font-family: var(--font-main);
+            font-size: 13px;
+            resize: none;
+            max-height: 90px;
+            line-height: 1.45;
+            padding: 4px 0;
+        }
+        .chat-input-textarea::placeholder {
+            color: var(--vt-input-placeholder);
+        }
+
+        .chat-tool-icon {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 3px;
+            transition: color 0.15s;
+        }
+        .chat-tool-icon:hover { color: #7c3aed; }
+        .chat-tool-icon.active { color: #ef4444; animation: dotWave 0.8s infinite; }
+
+        .chat-submit-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            border: none;
+            color: #ffffff;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(124, 58, 237, 0.35);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+        .chat-submit-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.5);
+        }
+        .chat-submit-btn:disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Bottom Quick Suggestion Pills Bar */
+        .bottom-pills-bar {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .bottom-pills-bar::-webkit-scrollbar { height: 3px; }
+        .bottom-pills-bar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .action-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--vt-action-chip-bg);
+            border: 1px solid var(--vt-action-chip-border);
+            color: var(--vt-action-chip-color);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.18s;
+            user-select: none;
+        }
+        .action-chip:hover {
+            background: #ede9fe;
+            border-color: #c084fc;
+            color: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        /* Attached image preview */
+        .chat-image-preview-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--vt-bot-bubble-bg);
+            border: 1.5px solid var(--vt-bot-bubble-border);
+            border-radius: 14px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            box-shadow: var(--vt-bot-bubble-shadow);
+            animation: fadeInSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .preview-thumb-wrap {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1.5px solid #0284c7;
+            background: #f8fafc;
+        }
+        .preview-thumb-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .preview-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .preview-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .preview-sub {
+            font-size: 11px;
+            color: #0284c7;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .preview-tag {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #0284c7;
+        }
+        .btn-remove-preview-img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .btn-remove-preview-img:hover {
+            background: #ef4444;
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        /* Drag & Drop Feedback */
+        .chat-bottom-deck.drag-over {
+            background: #f5f3ff !important;
+            border-top: 1.5px dashed #7c3aed !important;
+        }
+        .chat-input-pill.drag-over {
+            border-color: #7c3aed !important;
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.25) !important;
+        }
+
+        /* Message Bubble Attached Image */
+        .msg-attached-img-wrap {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            max-width: 320px;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
+        }
+        .msg-attached-img-wrap:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        .msg-attached-img {
+            display: block;
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+        }
+        .msg-img-overlay-zoom {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.85;
+            transition: all 0.2s;
+        }
+        .msg-attached-img-wrap:hover .msg-img-overlay-zoom {
+            opacity: 1;
+            background: #7c3aed;
+        }
+
+        /* Lightbox */
+        .studio-img-lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .studio-img-lightbox.active {
+            display: flex;
+        }
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 14px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+        .lightbox-close-btn {
+            position: absolute;
+            top: -16px;
+            right: -16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+        }
+        .lightbox-close-btn:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            transform: scale(1.1);
+        }
+
+        /* Toast */
+        .vt-toast {
+            position: fixed;
+            top: 75px;
+            right: 24px;
+            background: #ffffff;
+            border: 1.5px solid #7c3aed;
+            border-radius: 14px;
+            color: #0f172a;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 18px;
+            z-index: 999999;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 0 15px rgba(124, 58, 237, 0.15);
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .vt-toast.show { opacity: 1; transform: translateY(0); }
+
+        /* Voice Call Button */
+        .keria-voice-call-btn {
+            position: relative;
+            z-index: 10 !important;
+            margin-top: 7px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%);
+            border: none;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(124, 58, 237, 0.25);
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .keria-voice-call-btn:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #6d28d9 100%);
+            transform: scale(1.05);
+            box-shadow: 0 5px 14px rgba(124, 58, 237, 0.35);
+        }
+        .keria-voice-call-btn .live-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 6px #10b981;
+            animation: liveDotPulse 1.4s ease-in-out infinite;
+        }
+        @keyframes liveDotPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+        }
+
+        .voice-live-deck-btn {
+            color: #0284c7 !important;
+            background: #e0f2fe !important;
+            border: 1px solid #bae6fd !important;
+            border-radius: 6px;
+        }
+        .voice-live-deck-btn:hover {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(2, 132, 199, 0.4) !important;
+        }
+
+        .msg-speak-btn {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+        .msg-speak-btn:hover {
+            color: #7c3aed;
+            background: #ede9fe;
+            border-color: #ddd6fe;
+        }
+        .msg-speak-btn.speaking {
+            color: #10b981;
+            border-color: #10b981;
+            animation: pulseSpeaking 1s infinite alternate;
+        }
+        @keyframes pulseSpeaking {
+            from { opacity: 0.7; }
+            to { opacity: 1; }
+        }
+
+        /* Voice Call Modal */
+        .cosmic-voice-modal-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .cosmic-voice-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            animation: fadeInVoice 0.3s ease;
+        }
+        @keyframes fadeInVoice {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .cosmic-voice-card {
+            position: relative;
+            width: 520px;
+            max-width: 95vw;
+            background: var(--vt-voice-card-bg);
+            border: 1.5px solid var(--vt-voice-card-border);
+            border-radius: 20px;
+            box-shadow: var(--vt-voice-card-shadow);
+            padding: 22px 20px 18px;
+            z-index: 100002;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            animation: cosmicVoicePopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes popUpVoice {
+            from { transform: scale(0.92) translateY(18px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .voice-modal-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 5;
+        }
+        .voice-modal-close-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: #fca5a5;
+            transform: rotate(90deg);
+        }
+
+        .voice-call-top-bar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding: 0 4px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .voice-gender-pill-wrap,
+        .voice-persona-pill-wrap {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2px 3px;
+            gap: 2px;
+        }
+        .vpersona-tab-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .vpersona-tab-btn:hover { color: #0f172a; }
+        .vpersona-tab-btn.active {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+        .vpersona-tab-btn.active.anime {
+            background: linear-gradient(135deg, #d946ef, #f43f5e);
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(244, 63, 94, 0.6);
+        }
+        .vgender-tab-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .vgender-tab-btn:hover { color: #0f172a; }
+        .vgender-tab-btn.active {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
+        }
+        .vgender-tab-btn.active.male {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+        .voice-live-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #0284c7;
+            background: #e0f2fe;
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #bae6fd;
+        }
+        .voice-live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+            animation: liveDotPulse 1.2s infinite;
+        }
+        .voice-model-tag {
+            font-size: 11px;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .voice-central-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 8px 0 16px;
+            position: relative;
+            width: 100%;
+        }
+        .voice-orb-container {
+            width: 130px;
+            height: 130px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .voice-ripple-ring {
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            pointer-events: none;
+            opacity: 0;
+        }
+        .voice-ripple-ring.ring-1 {
+            animation: rippleVoice 2.4s ease-out infinite;
+        }
+        .voice-ripple-ring.ring-2 {
+            animation: rippleVoice 2.4s ease-out 0.8s infinite;
+            border-color: rgba(168, 85, 247, 0.4);
+        }
+        .voice-ripple-ring.ring-3 {
+            animation: rippleVoice 2.4s ease-out 1.6s infinite;
+            border-color: rgba(244, 114, 182, 0.4);
+        }
+        @keyframes rippleVoice {
+            0% { transform: scale(0.7); opacity: 0.8; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+        .voice-mascot-avatar-wrap {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            border: 3px solid #7c3aed;
+            box-shadow: 0 0 25px rgba(124, 58, 237, 0.25);
+            overflow: hidden;
+            position: relative;
+            z-index: 3;
+            background: #ffffff;
+            transition: all 0.3s;
+        }
+        .voice-mascot-avatar-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .voice-state-speaking .voice-mascot-avatar-wrap {
+            border-color: #ec4899;
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+            animation: mascotSpeakingBob 1.2s ease-in-out infinite alternate;
+        }
+        .voice-state-listening .voice-mascot-avatar-wrap {
+            border-color: #0284c7;
+            box-shadow: 0 0 25px rgba(2, 132, 199, 0.35);
+            animation: mascotListeningPulse 1.6s ease-in-out infinite;
+        }
+        .voice-state-thinking .voice-mascot-avatar-wrap {
+            border-color: #7c3aed;
+            box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+            animation: mascotThinkingSpin 3s linear infinite;
+        }
+        @keyframes mascotSpeakingBob {
+            from { transform: scale(1); }
+            to { transform: scale(1.08); }
+        }
+        @keyframes mascotListeningPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        @keyframes mascotThinkingSpin {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .voice-audio-bars {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            height: 28px;
+            margin-top: 14px;
+        }
+        .vbar {
+            width: 4px;
+            height: 6px;
+            background: #0284c7;
+            border-radius: 4px;
+            transition: height 0.15s ease, background 0.3s;
+        }
+        .voice-state-speaking .vbar {
+            background: linear-gradient(180deg, #ec4899, #7c3aed);
+            animation: barBounce 0.8s ease-in-out infinite alternate;
+        }
+        .voice-state-listening .vbar {
+            background: linear-gradient(180deg, #0284c7, #10b981);
+            animation: barListen 1.2s ease-in-out infinite alternate;
+        }
+        .bar-1 { animation-delay: 0.1s !important; }
+        .bar-2 { animation-delay: 0.25s !important; }
+        .bar-3 { animation-delay: 0.4s !important; }
+        .bar-4 { animation-delay: 0.15s !important; }
+        .bar-5 { animation-delay: 0.35s !important; }
+        .bar-6 { animation-delay: 0.2s !important; }
+        .bar-7 { animation-delay: 0.45s !important; }
+        @keyframes barBounce {
+            0% { height: 6px; }
+            100% { height: 26px; }
+        }
+        @keyframes barListen {
+            0% { height: 4px; }
+            100% { height: 16px; }
+        }
+
+        .voice-state-pill {
+            margin-top: 12px;
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            transition: all 0.3s;
+        }
+        .voice-state-listening .voice-state-pill {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #059669;
+        }
+        .voice-state-speaking .voice-state-pill {
+            background: #fdf2f8;
+            border-color: #fbcfe8;
+            color: #db2777;
+        }
+        .voice-state-thinking .voice-state-pill {
+            background: #f5f3ff;
+            border-color: #ddd6fe;
+            color: #7c3aed;
+        }
+
+        .voice-transcript-box {
+            width: 100%;
+            background: var(--vt-voice-transcript-bg);
+            border: 1px solid var(--vt-voice-transcript-border);
+            border-radius: 12px;
+            padding: 10px 12px;
+            min-height: 60px;
+            max-height: 90px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .voice-bubble-user {
+            background: #e0f2fe;
+            border-left: 3px solid #0284c7;
+            padding: 6px 10px;
+            border-radius: 8px;
+            color: #0369a1;
+        }
+        .voice-bubble-bot {
+            background: #f5f3ff;
+            border-left: 3px solid #7c3aed;
+            padding: 6px 10px;
+            border-radius: 8px;
+            color: #5b21b6;
+        }
+        .vspeaker-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #64748b;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .voice-quick-input-row {
+            width: 100%;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .voice-quick-input-row input {
+            flex: 1;
+            background: var(--vt-voice-quick-bg);
+            border: 1px solid var(--vt-voice-quick-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: var(--vt-input-text);
+            font-size: 11.5px;
+            font-family: var(--font-main);
+            outline: none;
+        }
+        .voice-quick-input-row input:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+        }
+        .voice-quick-send-btn {
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            border: none;
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 0 14px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: transform 0.2s;
+        }
+        .voice-quick-send-btn:hover {
+            transform: scale(1.06);
+        }
+
+        .voice-controls-footer {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .voice-ctl-btn {
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #cbd5e1;
+            background: #f1f5f9;
+            color: #0f172a;
+            transition: all 0.2s;
+        }
+        .voice-ctl-btn:hover {
+            background: #e2e8f0;
+            transform: scale(1.04);
+        }
+        .voice-ctl-interrupt {
+            background: #fef9c3;
+            border-color: #fde047;
+            color: #854d0e;
+        }
+        .voice-ctl-interrupt:hover {
+            background: #fef08a;
+        }
+        .voice-ctl-end {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            border-color: #ef4444;
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+        }
+        .voice-ctl-end:hover {
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+        }
+
+        .keria-card-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            margin-top: 3px;
+            position: relative;
+            z-index: 10 !important;
+        }
+        .keria-card-actions-row .keria-voice-call-btn {
+            margin-top: 0 !important;
+            padding: 4px 10px;
+            font-size: 11px;
+            flex: 1;
+            justify-content: center;
+            border-radius: 18px;
+        }
+    </style>
+</head>
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
+
+    <!-- Include Navigation & Layout Admin -->
+    <?php include __DIR__ . '/../includes/admin_nav.php'; ?>
+
+    <!-- Fixed Toast -->
+    <div class="vt-toast" id="vtToast"></div>
+
+    <!-- =========================================================================
+         ★ COSMIC LIVE VOICE CALL MODAL (ĐÀM THOẠI TRỰC TIẾP CÙNG KERIA AI) ★
+         ========================================================================= -->
+    <div id="cosmicVoiceModal" class="cosmic-voice-modal-wrap" style="display: none;">
+        <div class="cosmic-voice-backdrop" onclick="closeCosmicVoiceCall()"></div>
+        <div class="cosmic-voice-card">
+            <!-- Close button -->
+            <button type="button" class="voice-modal-close-btn" onclick="closeCosmicVoiceCall()" title="Đóng cuộc đàm thoại">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Top Header Status -->
+            <div class="voice-call-top-bar">
+                <div class="voice-live-badge">
+                    <span class="voice-live-dot"></span>
+                    <span id="voiceCallLiveTitle">VŨ TRỤ AI LIVE VOICE</span>
+                </div>
+
+                <!-- Mascot Switcher Pill: Robot / Anime -->
+                <div class="voice-persona-pill-wrap" title="Chọn hình tượng Trợ lý Vũ Trụ AI">
+                    <button type="button" class="vpersona-tab-btn active" id="vPersonaRobotBtn" onclick="setAssistantPersona('robot')" title="Hình tượng Robot Vũ Trụ">
+                        <i class="fa-solid fa-robot"></i> <span>Robot</span>
+                    </button>
+                    <button type="button" class="vpersona-tab-btn" id="vPersonaAnimeBtn" onclick="setAssistantPersona('anime')" title="Hình tượng Anime Vũ Trụ (Hikari)">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Anime</span>
+                    </button>
+                </div>
+
+                <!-- Gender Switcher Pill: Nữ / Nam -->
+                <div class="voice-gender-pill-wrap" title="Chọn giọng đọc Vũ Trụ AI">
+                    <button type="button" class="vgender-tab-btn active" id="vGenderFemaleBtn" onclick="setVoiceGender('female')" title="Giọng Nữ (Vũ Trụ AI - Tươi sáng, truyền cảm)">
+                        <i class="fa-solid fa-venus"></i> <span>Giọng Nữ</span>
+                    </button>
+                    <button type="button" class="vgender-tab-btn" id="vGenderMaleBtn" onclick="setVoiceGender('male')" title="Giọng Nam (Vũ Trụ AI - Trầm ấm, chững chạc)">
+                        <i class="fa-solid fa-mars"></i> <span>Giọng Nam</span>
+                    </button>
+                </div>
+
+                <div class="voice-model-tag" id="voiceCallModelTag">Vũ Trụ AI Studio</div>
+            </div>
+
+            <!-- Central Mascot & Visualizer Orb -->
+            <div class="voice-central-stage">
+                <div class="voice-orb-container" id="voiceOrbContainer">
+                    <div class="voice-ripple-ring ring-1"></div>
+                    <div class="voice-ripple-ring ring-2"></div>
+                    <div class="voice-ripple-ring ring-3"></div>
+                    <div class="voice-mascot-avatar-wrap">
+                        <img src="/tkb/assets/ai/vutru_keria_assistant.png" alt="Trợ lý Vũ Trụ AI" id="voiceCallMascotImg" onerror="this.src='../assets/ai/vutru_keria_assistant.png'">
+                    </div>
+                </div>
+
+                <!-- Audio Waveform Visualizer (7 animated bouncing bars) -->
+                <div class="voice-audio-bars" id="voiceAudioBars">
+                    <span class="vbar bar-1"></span>
+                    <span class="vbar bar-2"></span>
+                    <span class="vbar bar-3"></span>
+                    <span class="vbar bar-4"></span>
+                    <span class="vbar bar-5"></span>
+                    <span class="vbar bar-6"></span>
+                    <span class="vbar bar-7"></span>
+                </div>
+
+                <!-- State Pill -->
+                <div class="voice-state-pill" id="voiceStatePill">
+                    <i class="fa-solid fa-microphone"></i>
+                    <span id="voiceStateText">Đang lắng nghe Keria nói...</span>
+                </div>
+            </div>
+
+            <!-- Live Dialogue & Transcript Stream -->
+            <div class="voice-transcript-box" id="voiceTranscriptBox">
+                <div class="voice-bubble-user" id="voiceUserBubble" style="display: none;">
+                    <span class="vspeaker-label"><i class="fa-solid fa-user"></i> Keria:</span>
+                    <p id="voiceUserText">...</p>
+                </div>
+                <div class="voice-bubble-bot" id="voiceBotBubble">
+                    <span class="vspeaker-label"><i class="fa-solid fa-robot"></i> Vũ Trụ AI:</span>
+                    <p id="voiceBotText">"Xin chào Keria! Tôi là Vũ Trụ AI, trợ lý của bạn. Hãy nói điều gì đó, tôi đang lắng nghe bạn đây!"</p>
+                </div>
+            </div>
+
+            <!-- Quick Manual Input in case user wants to type while in call -->
+            <div class="voice-quick-input-row">
+                <input type="text" id="voiceQuickInput" placeholder="Hoặc gõ tin nhắn gửi đến Vũ Trụ AI rồi nhấn Enter..." onkeydown="if(event.key==='Enter') sendVoiceQuickInput()">
+                <button type="button" class="voice-quick-send-btn" onclick="sendVoiceQuickInput()" title="Gửi">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <!-- Controls Footer -->
+            <div class="voice-controls-footer">
+                <button type="button" class="voice-ctl-btn" id="voiceMicToggleBtn" onclick="toggleVoiceCallMic()" title="Bật / Tắt Microphone">
+                    <i class="fa-solid fa-microphone"></i>
+                    <span id="voiceMicToggleLbl">Đang nghe</span>
+                </button>
+                <button type="button" class="voice-ctl-btn voice-ctl-interrupt" id="voiceInterruptBtn" onclick="interruptKeriaSpeech()" title="Ngắt lời Vũ Trụ AI khi đang nói">
+                    <i class="fa-solid fa-hand"></i>
+                    <span>Ngắt lời</span>
+                </button>
+                <button type="button" class="voice-ctl-btn voice-ctl-end" onclick="closeCosmicVoiceCall()" title="Kết thúc cuộc trò chuyện">
+                    <i class="fa-solid fa-phone-slash"></i>
+                    <span>Kết thúc</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Ambient Starfield Canvas -->
+        <canvas id="vutruCanvas"></canvas>
+
+        <div class="vutru-wrap">
+
+            <!-- =================================================================
+                 ★ 1. TOP HEADER ROW: [HI KERIA SQUARE BOX] + [VŨ TRỤ AI BANNER] ★
+                 ================================================================= -->
+            <div class="vt-top-header-row">
+                <!-- LEFT: SQUARE GREETING CARD: HI KERIA WITH WAVING ROBOT -->
+                <div class="vt-keria-square-card">
+                    <!-- Outer Background Image (Ảnh ngoài) -->
+                    <img id="keriaCardBgImg" class="keria-card-bg-layer" src="/tkb/assets/ai/vutru_card_bg.jpg" alt="Ảnh ngoài" onerror="this.src='../assets/ai/vutru_card_bg.jpg'">
+                    <div class="keria-card-bg-overlay"></div>
+
+                    <!-- Button to change Outer Image (Ảnh ngoài) -->
+                    <button type="button" class="keria-bg-change-btn" onclick="triggerChangeKeriaCardBg(event)" title="Nhấp để thêm/thay đổi ảnh ngoài (Shift+Click để đặt lại mặc định)">
+                        <i class="fa-solid fa-camera"></i> <span>Ảnh ngoài</span>
+                    </button>
+
+                    <div class="keria-robot-img-wrap" onclick="triggerChangeRobotAvatar(event)" title="Nhấp vào ảnh đại diện để thay đổi (Shift+Click để khôi phục Trợ lý AI Keria)">
+                        <img id="keriaRobotImg" src="/tkb/assets/ai/vutru_keria_assistant.png" alt="Trợ lý AI Keria" onerror="this.src='../assets/ai/vutru_keria_assistant.png'">
+                        <div class="robot-camera-badge" title="Đổi ảnh đại diện">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div class="robot-change-hover-overlay">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>Đổi ảnh</span>
+                        </div>
+                    </div>
+                    <div class="keria-greeting-title">
+                        HI KERIA <span class="wave-hand">👋</span>
+                    </div>
+                    <!-- Mascot Switcher Pill: Robot / Anime -->
+                    <div class="keria-persona-toggle" title="Chọn hình tượng Trợ lý Vũ Trụ AI">
+                        <button type="button" class="kpersona-btn active" id="kPersonaRobotBtn" onclick="setAssistantPersona('robot')" title="Trợ lý Robot Vũ Trụ">
+                            <i class="fa-solid fa-robot"></i> <span>Robot</span>
+                        </button>
+                        <button type="button" class="kpersona-btn" id="kPersonaAnimeBtn" onclick="setAssistantPersona('anime')" title="Trợ lý Anime Vũ Trụ (Hikari)">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Anime</span>
+                        </button>
+                    </div>
+                    <div class="keria-card-actions-row">
+                        <button type="button" class="keria-voice-call-btn" onclick="openCosmicVoiceCall(event)" title="Trò chuyện thoại trực tiếp cùng Keria (như nói chuyện với AI ngoài đời)">
+                            <i class="fa-solid fa-microphone-lines"></i>
+                            <span>Nói chuyện</span>
+                            <span class="live-pulse-dot"></span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Hidden file input for changing Robot avatar (Ảnh trong) -->
+                <input type="file" id="changeRobotAvatarInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="handleChangeRobotAvatar(this)">
+
+                <!-- Hidden file input for changing Outer Card Background (Ảnh ngoài) -->
+                <input type="file" id="changeKeriaCardBgInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="handleChangeKeriaCardBg(this)">
+
+                <!-- RIGHT: HERO BANNER (CLICK TO CHANGE BANNER) -->
+                <div class="vt-hero-banner" onclick="triggerChangeHeroBanner(event)" title="Nhấp vào ảnh để thay banner">
+                    <img id="vtHeroBannerImg" src="/tkb/assets/ai/vutru_hero_banner.jpg" alt="VŨ TRỤ AI - Chat, Học, Sáng Tạo Không Giới Hạn" class="vt-hero-img">
+                    <div class="hero-banner-change-btn" title="Thay ảnh bìa banner">
+                        <i class="fa-solid fa-camera"></i> <span>Thay ảnh bìa</span>
+                    </div>
+                </div>
+                <!-- Hidden file input for changing Hero banner -->
+                <input type="file" id="changeHeroBannerInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="handleChangeHeroBanner(this)">
+            </div>
+
+
+            <!-- =================================================================
+                 ★ 2. MAIN CHAT TERMINAL ★
+                 ================================================================= -->
+            <div class="vt-main-grid">
+
+                <div class="vt-card vt-chat-terminal">
+
+                    <!-- ★ 1. LEFT COMPACT CHAT HISTORY SIDEBAR ★ -->
+                    <aside class="vt-history-sidebar" id="vtHistoryDrawer">
+
+                        <div class="history-side-header">
+                            <div class="history-side-title">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <span>Lịch sử chat</span>
+                                <span class="history-count-badge" id="historyBadge">0</span>
+                            </div>
+                            <div class="history-side-tools">
+                                <button type="button" class="side-icon-btn danger" onclick="clearAllStudioHistory()" title="Xoá tất cả lịch sử">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                                <button type="button" class="side-icon-btn" onclick="toggleStudioHistory(false)" title="Thu gọn lịch sử">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- New Chat Button in Sidebar -->
+                        <div class="history-side-btn-wrap">
+                            <button type="button" class="btn-side-new-chat" onclick="startNewStudioChat()">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Đoạn chat mới</span>
+                            </button>
+                        </div>
+
+                        <!-- Search Bar in Sidebar -->
+                        <div class="history-side-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="historySearchInput" placeholder="Tìm kiếm đoạn chat..." oninput="filterHistoryList(this.value)">
+                        </div>
+
+                        <!-- Sessions List -->
+                        <div class="history-side-list" id="vtHistoryList">
+                            <!-- Rendered dynamically by JavaScript -->
+                        </div>
+                    </aside>
+
+                    <!-- Mobile Backdrop -->
+                    <div class="vt-history-backdrop" id="vtHistoryBackdrop" onclick="toggleStudioHistory(false)"></div>
+
+                    <!-- ★ 2. RIGHT MAIN CHAT TERMINAL AREA ★ -->
+                    <div class="vt-chat-main-area">
+
+                        <!-- Header -->
+                        <div class="chat-top-header">
+                            <div class="chat-header-left">
+                                <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" onclick="toggleStudioHistory()" title="Ẩn/Hiện Lịch sử chat">
+                                    <i class="fa-solid fa-bars-staggered"></i>
+                                </button>
+                                <div class="chat-robot-avatar">
+                                    <img src="/tkb/assets/ai/vutru_robot_circle.png" alt="Vũ Trụ AI Robot">
+                                </div>
+                                <div class="chat-header-name">
+                                    <h2>VŨ TRỤ AI ASSISTANT</h2>
+                                    <div class="chat-online-badge">Galaxy Engine Online</div>
+                                </div>
+                            </div>
+
+                            <!-- Header Right Controls -->
+                            <div class="chat-header-right">
+                                <!-- Antigravity Model Picker Trigger & Dropdown -->
+                                <div class="vt-model-picker-container" id="vtModelPickerContainer">
+                                    <button type="button" class="vt-antigravity-trigger" id="vtModelTrigger" onclick="toggleAgDropdown(event)" title="Chọn Mô Hình AI & Thinking Budget">
+                                        <span class="ag-trig-lbl"><i class="fa-solid fa-microchip"></i> Model</span>
+                                        <span class="ag-trig-name" id="agCurModelName">GLM 4.7 Flash Free</span>
+                                        <span class="ag-trig-effort" id="agCurEffort">High</span>
+                                        <span class="ag-trig-fast" id="agCurFast">Fast</span>
+                                        <i class="fa-solid fa-chevron-down ag-trig-chevron"></i>
+                                    </button>
+
+                                    <!-- Antigravity Popup Dropdown -->
+                                    <div class="vt-antigravity-dropdown" id="vtAntigravityDropdown" onclick="event.stopPropagation()">
+                                        <div class="ag-dropdown-header">
+                                            <span class="ag-hdr-title">Model</span>
+                                            <div class="ag-hdr-search">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                                <input type="text" placeholder="Tìm model..." oninput="filterAntigravityModels(this.value)" id="agModelSearch">
+                                            </div>
+                                        </div>
+
+                                        <!-- Category Filter Tabs Wrapper (Draggable & Scrollable) -->
+                                        <div class="ag-tabs-wrapper">
+                                            <button type="button" class="ag-tabs-scroll-btn left" onclick="scrollAgTabs(-90)" title="Cuộn sang trái">
+                                                <i class="fa-solid fa-chevron-left"></i>
+                                            </button>
+                                            <div class="ag-category-tabs" id="agCategoryTabs">
+                                                <button type="button" class="ag-tab-btn active" onclick="setAntigravityCategory('all', this)">Tất cả</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('gemini', this)">Gemini</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('claude', this)">Claude</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('openai', this)">OpenAI</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('deepseek', this)">DeepSeek</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('cosmic', this)">Kira & GLM</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('qwen', this)">Qwen</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('mistral', this)">Mistral</button>
+                                                <button type="button" class="ag-tab-btn" onclick="setAntigravityCategory('minimax', this)">MiniMax</button>
+                                            </div>
+                                            <button type="button" class="ag-tabs-scroll-btn right" onclick="scrollAgTabs(90)" title="Cuộn sang phải">
+                                                <i class="fa-solid fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Scrollable Models List -->
+                                        <div class="ag-model-list" id="agModelList">
+                                            <!-- Dynamically rendered by JavaScript -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Hidden select for background compatibility -->
+                                    <select class="model-select-el" id="studioModelSelect" style="display:none;" onchange="onStudioModelChange(this.value)">
+                                        <option value="glm-4.7-flash-free" selected>GLM 4.7 Flash Free</option>
+                                    </select>
+                                </div>
+
+
+                                <!-- New Chat Button -->
+                                <button type="button" class="btn-chat-action btn-new-chat" onclick="startNewStudioChat()" title="Tạo cuộc hội thoại mới">
+                                    <i class="fa-solid fa-plus"></i> <span>Chat mới</span>
+                                </button>
+
+                                <!-- History Toggle Button -->
+                                <button type="button" class="btn-chat-action btn-history-toggle" id="btnToggleHistory" onclick="toggleStudioHistory()" title="Xem lịch sử các cuộc hội thoại">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Lịch sử</span>
+                                    <span class="history-count-badge" id="historyBadgeTop">0</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chat Stream Deck -->
+                        <div class="chat-stream-deck" id="studioStream">
+                            <!-- Welcome Message with Spiral Galaxy -->
+                            <div class="msg-row bot" id="studioWelcomeRow">
+                                <div class="msg-bot-avatar">
+                                    <img src="/tkb/assets/ai/vutru_robot_circle.png" alt="Vũ Trụ AI Robot">
+                                </div>
+                                <div>
+                                    <div class="msg-bubble-box" style="padding:12px 18px; padding-right:90px; min-height:auto;">
+                                        <!-- Embedded Spiral Galaxy Artwork -->
+                                        <img src="/tkb/assets/ai/vutru_galaxy_spin.png" alt="Spiral Galaxy" class="msg-galaxy-bg" style="width:72px;">
+
+                                        Xin chào Quản trị viên <strong><?= htmlspecialchars($admin_name) ?></strong>!<br>
+                                        Tôi là <strong>Vũ Trụ AI</strong> — sẵn sàng giải đáp, hỗ trợ lập trình, phân tích dữ liệu và sáng tạo cùng bạn. Hãy đặt câu hỏi ngay nhé! 🚀
+                                    </div>
+                                    <div class="msg-time-lbl"><i class="fa-solid fa-bolt" style="color:var(--vt-green);"></i> Sẵn sàng hỗ trợ</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Typing Indicator -->
+                        <div id="studioTypingRow" style="display:none; padding:0 22px 10px;">
+                            <div style="display:flex; gap:12px; align-items:center;">
+                                <div class="msg-bot-avatar" style="width:32px; height:32px;">
+                                    <img src="/tkb/assets/ai/vutru_robot_circle.png" alt="Vũ Trụ AI Robot">
+                                </div>
+                                <div class="typing-wave">
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <span style="font-size:12px; font-weight:600; color:var(--vt-sub); margin-left:4px;">Vũ Trụ AI đang suy nghĩ...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Deck -->
+                        <div class="chat-bottom-deck">
+                            <!-- Hidden Image File Input -->
+                            <input type="file" id="studioImageInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="handleStudioImageFile(this)">
+
+                            <!-- Attached Image Preview Bar -->
+                            <div id="studioImgPreviewBar" class="chat-image-preview-bar" style="display:none;">
+                                <div class="preview-thumb-wrap">
+                                    <img id="studioPreviewImg" src="" alt="Xem trước">
+                                </div>
+                                <div class="preview-info">
+                                    <span class="preview-name" id="studioPreviewName">anh_dinh_kem.png</span>
+                                    <div class="preview-sub">
+                                        <span class="preview-tag"><i class="fa-solid fa-eye"></i> Vision AI</span>
+                                        <span id="studioPreviewSize">0 KB</span>
+                                        <span style="color:#94a3b8;font-size:11px;">• Sẵn sàng gửi để AI phân tích</span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-remove-preview-img" onclick="removeStudioAttachedImage()" title="Xoá ảnh này">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <!-- Input Pill -->
+                            <div class="chat-input-pill">
+                                <i class="fa-solid fa-plus chat-input-plus" title="Đính kèm ảnh từ máy tính (hoặc kéo thả, dán Ctrl+V)" onclick="triggerStudioImageUpload()"></i>
+                                <textarea class="chat-input-textarea" id="studioInput" placeholder="Nhập câu hỏi của bạn... (Hỗ trợ kéo thả hoặc Ctrl+V để dán ảnh)" rows="1"
+                                    onkeydown="handleStudioKey(event)"
+                                    oninput="autoResizeStudioInput(this)"></textarea>
+                                
+                                <button type="button" class="chat-tool-icon" id="studioAttachImgBtn" onclick="triggerStudioImageUpload()" title="Tải ảnh lên (Ctrl+V để dán ảnh)">
+                                    <i class="fa-regular fa-image"></i>
+                                </button>
+                                <button type="button" class="chat-tool-icon" onclick="submitStudioPrompt('Viết đoạn mã PHP kết nối và truy vấn CSDL')" title="Viết code">
+                                    <i class="fa-solid fa-code"></i>
+                                </button>
+                                <button type="button" class="chat-tool-icon voice-live-deck-btn" onclick="openCosmicVoiceCall()" title="Nói chuyện trực tiếp với Keria (Voice Live Call)">
+                                    <i class="fa-solid fa-phone-volume"></i>
+                                </button>
+                                <button type="button" class="chat-tool-icon" id="studioVoiceBtn" onclick="toggleStudioVoice()" title="Nhập giọng nói vào ô chat">
+                                    <i class="fa-solid fa-microphone"></i>
+                                </button>
+                                <button type="button" class="chat-submit-btn" id="studioSendBtn" onclick="sendStudioMessage()" title="Gửi (Enter)">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+
+                            <!-- Bottom Chips Bar -->
+                            <div class="bottom-pills-bar">
+                                <div class="action-chip" onclick="submitStudioPrompt('Giải đáp các thắc mắc về quy chế đào tạo và lịch thi học kỳ')">
+                                    <i class="fa-solid fa-robot" style="color:var(--vt-purple);"></i>
+                                    <span>Giải đáp thắc mắc</span>
+                                </div>
+                                <div class="action-chip" onclick="submitStudioPrompt('Hỗ trợ phương pháp học tập và ôn thi hiệu quả')">
+                                    <i class="fa-solid fa-graduation-cap" style="color:var(--vt-cyan);"></i>
+                                    <span>Hỗ trợ học tập</span>
+                                </div>
+                                <div class="action-chip" onclick="submitStudioPrompt('Viết code hàm PHP kiểm tra đăng nhập và phân quyền admin')">
+                                    <i class="fa-solid fa-code" style="color:var(--vt-green);"></i>
+                                    <span>Viết code</span>
+                                </div>
+                                <div class="action-chip" onclick="submitStudioPrompt('Mô tả prompt chi tiết để tạo hình ảnh phi thuyền không gian AI')">
+                                    <i class="fa-regular fa-image" style="color:var(--vt-pink);"></i>
+                                    <span>Tạo hình ảnh</span>
+                                </div>
+                                <div class="action-chip" onclick="submitStudioPrompt('Gợi ý ý tưởng phát triển ứng dụng thời khóa biểu thông minh')">
+                                    <i class="fa-solid fa-lightbulb" style="color:#fbbf24;"></i>
+                                    <span>Lên ý tưởng</span>
+                                </div>
+                                <div class="action-chip" onclick="toggleStudioHistory()" title="Xem lịch sử đoạn chat">
+                                    <i class="fa-solid fa-clock-rotate-left" style="color:var(--vt-purple);"></i>
+                                    <span>Lịch sử chat</span>
+                                </div>
+                                <div class="action-chip" onclick="exportStudioChat()" title="Xuất lịch sử chat">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- End .vt-chat-main-area -->
+
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Character Engine Modules (Living AI Companion) -->
+    <script src="/tkb/assets/character/character.config.js?v=<?= time() ?>"></script>
+    <script src="/tkb/assets/character/engine/CharacterState.js?v=<?= time() ?>"></script>
+    <script src="/tkb/assets/character/engine/EmotionManager.js?v=<?= time() ?>"></script>
+    <script src="/tkb/assets/character/engine/AnimationManager.js?v=<?= time() ?>"></script>
+    <script src="/tkb/assets/character/engine/LipSyncManager.js?v=<?= time() ?>"></script>
+    <script src="/tkb/assets/character/engine/CharacterRenderer.js?v=<?= time() ?>"></script>
+    <script src="/tkb/assets/character/engine/CharacterEngine.js?v=<?= time() ?>"></script>
+
+    <!-- =====================================================================
+         ★ JAVASCRIPT ENGINE ★
+         ===================================================================== -->
+    <script>
+    (function() {
+        let studioModel = 'glm-4.7-flash-free';
+        let studioEffort = 'High';
+        const SESSIONS_STORAGE_KEY = 'vt_cosmic_chat_sessions_v2';
+        let chatSessions = [];
+        let activeSessionId = null;
+        let welcomeTemplateHtml = '';
+
+        // Antigravity Models Catalog (Grouped & Clean - 27 Models)
+        /* === Provider SVG Logo Map === */
+        const AG_PROVIDER_ICONS = {
+            cosmic: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#a855f7" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="#c084fc"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"/><path d="M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8" stroke="#7c3aed" stroke-width="1" stroke-linecap="round"/></svg>`,
+            gemini: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 14.5 7.5 17.5 10.5C20.5 13.5 22 16 22 16C22 16 16.5 14.5 13.5 17.5C10.5 20.5 12 22 12 22C12 22 9.5 16.5 6.5 13.5C3.5 10.5 2 8 2 8C2 8 7.5 9.5 10.5 6.5C13.5 3.5 12 2 12 2Z" fill="url(#gemini_g)"/><defs><linearGradient id="gemini_g" x1="2" y1="2" x2="22" y2="22"><stop stop-color="#4285F4"/><stop offset="0.3" stop-color="#9B72CB"/><stop offset="0.6" stop-color="#D96570"/><stop offset="1" stop-color="#F4B400"/></linearGradient></defs></svg>`,
+            claude: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M16.98 7.35L13.87 16.89H11.28L8.44 8.73L5.6 16.89H3L7.05 4.65H9.85L12.58 12.54L15.58 4.65H18.15L16.98 7.35Z" fill="#D97757"/><path d="M18.72 16.89H16.2L19.98 4.65H22.5L18.72 16.89Z" fill="#D97757"/></svg>`,
+            openai: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22.28 9.37a5.93 5.93 0 00-.52-4.93 6.07 6.07 0 00-6.55-2.89A6.05 6.05 0 0010.68.1a6.07 6.07 0 00-5.8 4.16 5.96 5.96 0 00-4 2.88 6.07 6.07 0 00.74 7.11 5.93 5.93 0 00.52 4.93 6.07 6.07 0 006.55 2.89A6.05 6.05 0 0013.32 23.9a6.07 6.07 0 005.8-4.16 5.96 5.96 0 004-2.88 6.07 6.07 0 00-.74-7.11zm-9 12.84a4.5 4.5 0 01-2.88-1.04l.14-.08 4.8-2.77a.78.78 0 00.39-.68v-6.76l2.03 1.17a.07.07 0 01.04.06v5.61a4.54 4.54 0 01-4.52 4.49zm-9.72-4.12a4.5 4.5 0 01-.54-3.03l.14.09 4.8 2.77a.78.78 0 00.78 0l5.86-3.39v2.34a.07.07 0 01-.03.06l-4.85 2.8a4.54 4.54 0 01-6.16-1.64zM2.34 7.89A4.5 4.5 0 014.7 5.9v5.69a.78.78 0 00.39.68l5.86 3.38-2.03 1.17a.07.07 0 01-.07 0L3.99 13.97a4.54 4.54 0 01-1.65-6.08zm16.68 3.88l-5.86-3.38 2.03-1.17a.07.07 0 01.07 0l4.86 2.8a4.54 4.54 0 01-.7 8.19v-5.76a.78.78 0 00-.4-.68zm2.02-3.04l-.14-.09-4.8-2.77a.78.78 0 00-.78 0l-5.86 3.39V6.92a.07.07 0 01.03-.06l4.85-2.8a4.54 4.54 0 016.7 4.67zM8.68 13.34l-2.03-1.17a.07.07 0 01-.04-.06V6.5a4.54 4.54 0 017.4-3.53l-.14.08-4.8 2.77a.78.78 0 00-.39.68v6.76zm1.1-2.37l2.61-1.51 2.61 1.51v3.01l-2.61 1.51-2.61-1.51v-3.01z" fill="#10a37f"/></svg>`,
+            deepseek: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4D6BFE"/><path d="M8 12.5C8 10 10 8.5 12 8.5C14 8.5 15.5 9.5 15.5 11.5C15.5 13 14.5 14 13 14.5L13 16" stroke="white" stroke-width="1.8" stroke-linecap="round"/><circle cx="13" cy="18" r="1" fill="white"/></svg>`,
+            qwen: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" fill="#6235E8"/><path d="M7 12.5L10.5 16L17 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+            mistral: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="1" y="2" width="5" height="5" fill="#F7D046"/><rect x="9.5" y="2" width="5" height="5" fill="#F7D046"/><rect x="18" y="2" width="5" height="5" fill="#F7D046"/><rect x="1" y="9.5" width="5" height="5" fill="#F2A73B"/><rect x="9.5" y="9.5" width="5" height="5" fill="#EE792F"/><rect x="18" y="9.5" width="5" height="5" fill="#F2A73B"/><rect x="1" y="17" width="5" height="5" fill="#EE792F"/><rect x="9.5" y="17" width="5" height="5" fill="#EB5829"/><rect x="18" y="17" width="5" height="5" fill="#EE792F"/></svg>`,
+            minimax: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="4" fill="#1a1a2e"/><path d="M6 16V10l3 4 3-4v6" stroke="#00d4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 16V10l3 4 3-4v6" stroke="#00d4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        };
+
+        const AG_MODELS_DATA = [
+            {
+                category: 'cosmic',
+                catIcon: 'cosmic',
+                catName: 'Kira Cosmic & GLM (Bản quyền trường)',
+                models: [
+                    { id: 'glm-4.7-flash-free', name: 'GLM 4.7 Flash Free', effort: 'High', fast: true, desc: 'Mô hình siêu tốc độ, miễn phí, tiếng Việt tự nhiên (Mặc định)', hasEffort: true },
+                    { id: 'kira-3.5-pro', name: 'Kira 3.5 Pro', effort: 'High', fast: false, desc: 'Bản quyền trường, suy luận logic chuyên sâu', hasEffort: true },
+                    { id: 'kira-3.5-flash', name: 'Kira 3.5 Flash', effort: 'Medium', fast: true, desc: 'Đa nhiệm, phản hồi chớp nhoáng', hasEffort: true },
+                    { id: 'kira-mini-1.0', name: 'Kira Mini 1.0', effort: 'Low', fast: true, desc: 'Tối ưu cho câu hỏi ngắn và tra cứu nhanh', hasEffort: true }
+                ]
+            },
+            {
+                category: 'gemini',
+                catIcon: 'gemini',
+                catName: 'Google Gemini',
+                models: [
+                    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', effort: 'High', fast: true, desc: 'Đa phương thức thế hệ mới của Google, cực nhanh & chuẩn', hasEffort: true },
+                    { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro', effort: 'High', fast: false, desc: 'Tư duy phức tạp, phân tích khoa học và logic đa bước', hasEffort: true },
+                    { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', effort: 'Medium', fast: true, desc: 'Ngữ cảnh lớn, xử lý tài liệu học tập tốc độ cao', hasEffort: true }
+                ]
+            },
+            {
+                category: 'claude',
+                catIcon: 'claude',
+                catName: 'Anthropic Claude',
+                models: [
+                    { id: 'claude-3.7-sonnet', name: 'Claude 3.7 Sonnet', effort: 'Thinking', fast: false, desc: 'Tư duy phản biện và khả năng lập luận vượt trội', hasEffort: false },
+                    { id: 'claude-3.5-sonnet', name: 'Claude 3.5 Sonnet', effort: 'Thinking', fast: false, desc: 'Chuẩn mực code, phân tích ngữ nghĩa và dịch thuật mượt mà', hasEffort: false },
+                    { id: 'claude-3.5-haiku', name: 'Claude 3.5 Haiku', effort: 'Medium', fast: true, desc: 'Tốc độ phản hồi tức thì, ngắn gọn và súc tích', hasEffort: true }
+                ]
+            },
+            {
+                category: 'openai',
+                catIcon: 'openai',
+                catName: 'OpenAI & xAI Flagship',
+                models: [
+                    { id: 'gpt-4o', name: 'GPT-4o (Omni)', effort: 'High', fast: true, desc: 'Mô hình toàn cầu hàng đầu từ OpenAI', hasEffort: true },
+                    { id: 'gpt-4o-mini', name: 'GPT-4o Mini', effort: 'Low', fast: true, desc: 'Siêu nhẹ, phản hồi chớp mắt', hasEffort: true },
+                    { id: 'o1-preview', name: 'OpenAI o1 (Thinking)', effort: 'Thinking', fast: false, desc: 'Suy luận logic từng bước chuyên sâu cho toán và khoa học', hasEffort: false },
+                    { id: 'grok-4.5', name: 'Grok 4.5 Cosmic', effort: 'High', fast: false, desc: 'Sáng tạo không giới hạn, tư duy mở', hasEffort: true }
+                ]
+            },
+            {
+                category: 'deepseek',
+                catIcon: 'deepseek',
+                catName: 'DeepSeek Series',
+                models: [
+                    { id: 'deepseek/deepseek-v4-pro', name: 'DeepSeek V4 Pro', effort: 'High', fast: false, desc: 'Chuyên gia logic, giải thuật và toán học chuyên sâu', hasEffort: true },
+                    { id: 'deepseek/deepseek-v4-flash', name: 'DeepSeek V4 Flash', effort: 'Medium', fast: true, desc: 'Xử lý tốc độ cao, tối ưu phân tích nhanh', hasEffort: true },
+                    { id: 'deepseek/deepseek-v3.2', name: 'DeepSeek V3.2', effort: 'Medium', fast: false, desc: 'Cân bằng ngữ cảnh và năng lực tổng quát', hasEffort: true },
+                    { id: 'deepseek/deepseek-chat-v3.1', name: 'DeepSeek Chat V3.1', effort: 'Low', fast: true, desc: 'Đối thoại tự nhiên, giải bài tập học thuật', hasEffort: true }
+                ]
+            },
+            {
+                category: 'qwen',
+                catIcon: 'qwen',
+                catName: 'Alibaba Qwen Series',
+                models: [
+                    { id: 'qwen/qwen3.8-max', name: 'Qwen 3.8 Max', effort: 'High', fast: false, desc: 'Siêu ngữ cảnh 1M token cho tài liệu dung lượng lớn', hasEffort: true },
+                    { id: 'qwen/qwen3.7-max', name: 'Qwen 3.7 Max', effort: 'High', fast: false, desc: 'Thông minh vượt trội, xử lý dữ liệu phức tạp', hasEffort: true },
+                    { id: 'qwen/qwen3.7-flash', name: 'Qwen 3.7 Flash', effort: 'Medium', fast: true, desc: 'Phản hồi chớp nhoáng, tiết kiệm tài nguyên', hasEffort: true },
+                    { id: 'qwen/qwen3-coder-plus', name: 'Qwen 3 Coder Plus', effort: 'High', fast: true, desc: 'Chuyên gia lập trình PHP, JavaScript, SQL', hasEffort: true },
+                    { id: 'qwen/qwen3.5-flash', name: 'Qwen 3.5 Flash', effort: 'Low', fast: true, desc: 'Nhẹ nhàng, trả lời ngắn gọn', hasEffort: true }
+                ]
+            },
+            {
+                category: 'mistral',
+                catIcon: 'mistral',
+                catName: 'Mistral & Codestral',
+                models: [
+                    { id: 'mistralai/codestral-2508', name: 'Codestral 2508', effort: 'High', fast: true, desc: 'Tối ưu cho viết mã và bắt lỗi cú pháp PHP/SQL', hasEffort: true },
+                    { id: 'mistralai/mistral-large-2512', name: 'Mistral Large 2512', effort: 'High', fast: false, desc: 'Phân tích tài liệu lớn và lý luận logic', hasEffort: true },
+                    { id: 'mistralai/ministral-14b', name: 'Ministral 14B', effort: 'Medium', fast: true, desc: 'Trợ lý học thuật gọn nhẹ, chính xác', hasEffort: true }
+                ]
+            },
+            {
+                category: 'minimax',
+                catIcon: 'minimax',
+                catName: 'MiniMax & Tencent',
+                models: [
+                    { id: 'minimax/minimax-m2.7-highspeed', name: 'MiniMax M2.7 Highspeed', effort: 'High', fast: true, desc: '1M Token Context, phân tích tài liệu siêu tốc', hasEffort: true },
+                    { id: 'minimax/minimax-m2.5', name: 'MiniMax M2.5', effort: 'Medium', fast: false, desc: 'Phân tích đa chiều, tóm tắt tài liệu', hasEffort: true },
+                    { id: 'minimax/minimax-m2.1-highspeed', name: 'MiniMax M2.1 Highspeed', effort: 'Medium', fast: true, desc: 'Siêu mượt, phản hồi nhanh chóng', hasEffort: true },
+                    { id: 'tencent/hy3', name: 'Tencent Hy3', effort: 'Low', fast: true, desc: 'Trợ lý Agent thông minh, tìm kiếm thông tin', hasEffort: true }
+                ]
+            }
+        ];
+
+        let currentAgCat = 'all';
+        let currentAgSearch = '';
+
+        function escapeAgHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function findAgModel(id) {
+            for (let c of AG_MODELS_DATA) {
+                for (let m of c.models) {
+                    if (m.id === id) return m;
+                }
+            }
+            return null;
+        }
+
+        function updateAgTriggerUI(name, effort, fast) {
+            const nameEl = document.getElementById('agCurModelName');
+            const effortEl = document.getElementById('agCurEffort');
+            const fastEl = document.getElementById('agCurFast');
+            if (nameEl) nameEl.textContent = name;
+            if (effortEl) effortEl.textContent = effort || 'Medium';
+            if (fastEl) {
+                if (fast) {
+                    fastEl.style.display = 'inline-block';
+                    fastEl.textContent = 'Fast';
+                } else {
+                    fastEl.style.display = 'none';
+                }
+            }
+        }
+
+        // Render Antigravity Model List
+        window.renderAgModelList = function(searchQuery = '', activeCat = 'all') {
+            const listEl = document.getElementById('agModelList');
+            if (!listEl) return;
+
+            const q = (searchQuery || '').trim().toLowerCase();
+            let html = '';
+            let totalFound = 0;
+
+            AG_MODELS_DATA.forEach(cat => {
+                if (activeCat !== 'all' && cat.category !== activeCat) return;
+
+                const filtered = cat.models.filter(m => {
+                    if (!q) return true;
+                    return m.name.toLowerCase().includes(q) || 
+                           m.id.toLowerCase().includes(q) || 
+                           (m.desc && m.desc.toLowerCase().includes(q));
+                });
+
+                if (filtered.length === 0) return;
+                totalFound += filtered.length;
+
+                const svgIcon = AG_PROVIDER_ICONS[cat.catIcon] || '';
+                html += `<div class="ag-group-label">${svgIcon} ${cat.catName}</div>`;
+
+                filtered.forEach(m => {
+                    const isSelected = (m.id === studioModel);
+                    const currentEffort = isSelected ? studioEffort : m.effort;
+
+                    html += `
+                    <div class="ag-model-item ${isSelected ? 'selected' : ''}" 
+                         onmouseenter="positionAgSubmenu(this)"
+                         onclick="onAgModelRowClick(event, '${m.id}', '${escapeAgHtml(m.name)}', '${m.effort}', ${m.fast})">
+                        <div class="ag-item-left">
+                            <span class="ag-item-dot"></span>
+                            <span class="ag-item-name" title="${escapeAgHtml(m.name)}">${m.name}</span>
+                        </div>
+                        <div class="ag-item-right">
+                            <span class="ag-item-effort">${currentEffort}</span>
+                            ${m.fast ? `<span class="ag-item-fast-badge">Fast</span>` : ''}
+                            <span class="ag-item-info" title="${escapeAgHtml(m.desc)}" onclick="event.stopPropagation()">ⓘ</span>
+                            ${m.hasEffort ? `
+                            <span class="ag-item-arrow">›</span>
+                            <div class="ag-effort-submenu" onclick="event.stopPropagation()">
+                                <button type="button" class="ag-sub-btn ${(isSelected && studioEffort === 'Low') ? 'selected' : ''}" 
+                                        onclick="selectAgModel('${m.id}', 'Low', '${escapeAgHtml(m.name)}', ${m.fast})">Low</button>
+                                <button type="button" class="ag-sub-btn ${(isSelected && studioEffort === 'Medium') ? 'selected' : ''}" 
+                                        onclick="selectAgModel('${m.id}', 'Medium', '${escapeAgHtml(m.name)}', ${m.fast})">Medium</button>
+                                <button type="button" class="ag-sub-btn ${(isSelected && studioEffort === 'High') ? 'selected' : ''}" 
+                                        onclick="selectAgModel('${m.id}', 'High', '${escapeAgHtml(m.name)}', ${m.fast})">High</button>
+                            </div>` : ''}
+                        </div>
+                    </div>`;
+                });
+            });
+
+            if (totalFound === 0) {
+                html = `<div style="padding: 24px 12px; text-align: center; color: #71717a; font-size: 12px;">Không tìm thấy model phù hợp</div>`;
+            }
+
+            listEl.innerHTML = html;
+        };
+
+        window.setAntigravityCategory = function(cat, btn) {
+            currentAgCat = cat;
+            document.querySelectorAll('.ag-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) {
+                btn.classList.add('active');
+                try {
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } catch(e) {}
+            }
+            renderAgModelList(currentAgSearch, currentAgCat);
+        };
+
+        window.scrollAgTabs = function(delta) {
+            const tabs = document.getElementById('agCategoryTabs');
+            if (tabs) {
+                tabs.scrollBy({ left: delta, behavior: 'smooth' });
+            }
+        };
+
+        function initDraggableTabs() {
+            const tabsContainer = document.getElementById('agCategoryTabs');
+            if (!tabsContainer) return;
+
+            let isDown = false;
+            let startX = 0;
+            let scrollLeft = 0;
+            let hasDragged = false;
+
+            tabsContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                hasDragged = false;
+                tabsContainer.classList.add('grabbing');
+                startX = e.pageX - tabsContainer.offsetLeft;
+                scrollLeft = tabsContainer.scrollLeft;
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDown) {
+                    isDown = false;
+                    tabsContainer.classList.remove('grabbing');
+                }
+            });
+
+            tabsContainer.addEventListener('mouseleave', () => {
+                if (isDown) {
+                    isDown = false;
+                    tabsContainer.classList.remove('grabbing');
+                }
+            });
+
+            tabsContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - tabsContainer.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                if (Math.abs(walk) > 4) {
+                    hasDragged = true;
+                }
+                tabsContainer.scrollLeft = scrollLeft - walk;
+            });
+
+            // Wheel horizontal scroll
+            tabsContainer.addEventListener('wheel', (e) => {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    tabsContainer.scrollLeft += e.deltaY;
+                }
+            }, { passive: false });
+
+            // Prevent tab button click if user was dragging
+            tabsContainer.querySelectorAll('.ag-tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (hasDragged) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                    }
+                }, true);
+            });
+        }
+
+        window.filterAntigravityModels = function(query) {
+            currentAgSearch = query;
+            renderAgModelList(currentAgSearch, currentAgCat);
+        };
+
+        window.toggleAgDropdown = function(e) {
+            if (e) e.stopPropagation();
+            const dd = document.getElementById('vtAntigravityDropdown');
+            const trig = document.getElementById('vtModelTrigger');
+            if (!dd || !trig) return;
+
+            const isOpen = dd.classList.contains('open');
+            if (isOpen) {
+                closeAgDropdown();
+            } else {
+                dd.classList.add('open');
+                trig.classList.add('active');
+
+                // Absolute safeguard: ensure left edge NEVER goes into the sidebar
+                const trigRect = trig.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                const ddWidth = 380;
+
+                const sidebar = document.querySelector('.vt-history-sidebar:not(.collapsed)');
+                const sidebarRight = (sidebar && sidebar.offsetWidth > 0) ? sidebar.getBoundingClientRect().right : 0;
+                const minLeftAllowed = sidebarRight + 8; // Screen coordinate threshold
+
+                // Default: align left with trigger
+                dd.style.right = 'auto';
+                dd.style.left = '0px';
+
+                // Check if right edge exceeds viewport
+                if (trigRect.left + ddWidth > viewportWidth - 14) {
+                    const neededShift = (trigRect.left + ddWidth) - (viewportWidth - 14);
+                    // Shift left, but clamp so left edge stays to the right of the sidebar
+                    const maxSafeShift = Math.max(0, trigRect.left - minLeftAllowed);
+                    const actualShift = Math.min(neededShift, maxSafeShift);
+                    dd.style.left = (-actualShift) + 'px';
+
+                    // Constrain max-width if viewport space between sidebar and window edge is tight
+                    const availableSpace = viewportWidth - minLeftAllowed - 16;
+                    dd.style.maxWidth = Math.max(280, Math.min(380, availableSpace)) + 'px';
+                } else {
+                    dd.style.left = '0px';
+                    dd.style.maxWidth = '380px';
+                }
+
+                // Dynamic height adjustment to fit neatly within available screen space
+                const spaceBelow = window.innerHeight - trigRect.bottom - 16;
+                const maxDdHeight = Math.max(260, Math.min(520, spaceBelow));
+                dd.style.maxHeight = maxDdHeight + 'px';
+
+                renderAgModelList(currentAgSearch, currentAgCat);
+
+                const listEl = document.getElementById('agModelList');
+                if (listEl) {
+                    listEl.style.maxHeight = Math.max(160, maxDdHeight - 96) + 'px';
+                }
+
+                const searchInput = document.getElementById('agModelSearch');
+                if (searchInput) {
+                    setTimeout(() => searchInput.focus(), 100);
+                }
+            }
+        };
+
+        window.positionAgSubmenu = function(el) {
+            const sub = el.querySelector('.ag-effort-submenu');
+            if (!sub) return;
+            const rect = el.getBoundingClientRect();
+            // Horizontal positioning
+            if (rect.right + 180 > window.innerWidth) {
+                sub.style.left = 'auto';
+                sub.style.right = 'calc(100% + 8px)';
+            } else {
+                sub.style.left = 'calc(100% + 8px)';
+                sub.style.right = 'auto';
+            }
+            // Vertical positioning: prevent spilling past bottom of screen
+            if (rect.top + 130 > window.innerHeight) {
+                sub.style.top = 'auto';
+                sub.style.bottom = '0px';
+            } else {
+                sub.style.top = '0px';
+                sub.style.bottom = 'auto';
+            }
+        };
+
+        window.closeAgDropdown = function() {
+            const dd = document.getElementById('vtAntigravityDropdown');
+            const trig = document.getElementById('vtModelTrigger');
+            if (dd) dd.classList.remove('open');
+            if (trig) trig.classList.remove('active');
+        };
+
+        window.onAgModelRowClick = function(e, id, name, defaultEffort, fast) {
+            if (e && e.target && e.target.closest('.ag-effort-submenu')) return;
+            selectAgModel(id, defaultEffort || 'High', name, fast);
+        };
+
+        window.selectAgModel = function(id, effort, name, fast) {
+            studioModel = id;
+            studioEffort = effort || 'Medium';
+
+            updateAgTriggerUI(name, studioEffort, fast);
+
+            // Update hidden select if exists
+            const sel = document.getElementById('studioModelSelect');
+            if (sel) {
+                let opt = sel.querySelector(`option[value="${id}"]`);
+                if (!opt) {
+                    opt = document.createElement('option');
+                    opt.value = id;
+                    opt.text = name;
+                    sel.appendChild(opt);
+                }
+                sel.value = id;
+            }
+
+            try {
+                localStorage.setItem('vt_studio_model', id);
+                localStorage.setItem('vt_studio_effort', studioEffort);
+            } catch(e) {}
+
+            showStToast(`⚡ Đã kích hoạt Model: <b>${name}</b> <span style="color:#38bdf8;font-size:11px;">(${studioEffort})</span>`);
+
+            if (activeSessionId) {
+                const s = chatSessions.find(item => item.id === activeSessionId);
+                if (s) {
+                    s.model = id;
+                    saveSessions();
+                }
+            }
+
+            closeAgDropdown();
+            renderAgModelList(currentAgSearch, currentAgCat);
+        };
+
+        document.addEventListener('click', function(e) {
+            const container = document.getElementById('vtModelPickerContainer');
+            if (container && !container.contains(e.target)) {
+                closeAgDropdown();
+            }
+        });
+
+        // Toast
+        window.showStToast = function(msg) {
+            const t = document.getElementById('vtToast');
+            if (!t) return;
+            t.innerHTML = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2400);
+        };
+
+        // Model selector fallback
+        window.onStudioModelChange = function(m) {
+            studioModel = m;
+            const found = findAgModel(m);
+            if (found) {
+                updateAgTriggerUI(found.name, studioEffort, found.fast);
+            }
+            if (activeSessionId) {
+                const s = chatSessions.find(item => item.id === activeSessionId);
+                if (s) {
+                    s.model = m;
+                    saveSessions();
+                }
+            }
+        };
+
+        // =====================================================================
+        // ★ CHAT SESSIONS & HISTORY ENGINE ★
+        // =====================================================================
+        function loadSessions() {
+            try {
+                const raw = localStorage.getItem(SESSIONS_STORAGE_KEY);
+                chatSessions = raw ? JSON.parse(raw) : [];
+                if (!Array.isArray(chatSessions)) chatSessions = [];
+                // Sort by latest updated
+                chatSessions.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            } catch (e) {
+                chatSessions = [];
+            }
+        }
+
+        function saveSessions() {
+            try {
+                localStorage.setItem(SESSIONS_STORAGE_KEY, JSON.stringify(chatSessions));
+            } catch (e) {}
+        }
+
+        function updateHistoryBadge() {
+            const badge = document.getElementById('historyBadge');
+            if (badge) badge.innerText = chatSessions.length;
+            const badgeTop = document.getElementById('historyBadgeTop');
+            if (badgeTop) badgeTop.innerText = chatSessions.length;
+        }
+
+        function formatSessionTime(timestamp) {
+            if (!timestamp) return '';
+            const d = new Date(timestamp);
+            const now = new Date();
+            const isToday = d.toDateString() === now.toDateString();
+            const hours = String(d.getHours()).padStart(2, '0');
+            const mins = String(d.getMinutes()).padStart(2, '0');
+            if (isToday) {
+                return `${hours}:${mins}`;
+            }
+            const yesterday = new Date();
+            yesterday.setDate(now.getDate() - 1);
+            if (d.toDateString() === yesterday.toDateString()) {
+                return `Hôm qua ${hours}:${mins}`;
+            }
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            return `${day}/${month} ${hours}:${mins}`;
+        }
+
+        window.renderHistorySessionsList = function(filterText = '') {
+            const listEl = document.getElementById('vtHistoryList');
+            if (!listEl) return;
+
+            let filtered = chatSessions;
+            if (filterText) {
+                const ft = filterText.toLowerCase();
+                filtered = chatSessions.filter(s => 
+                    (s.title && s.title.toLowerCase().includes(ft)) || 
+                    (s.model && s.model.toLowerCase().includes(ft))
+                );
+            }
+
+            if (!filtered.length) {
+                listEl.innerHTML = `
+                    <div class="drawer-empty-state">
+                        <i class="fa-solid fa-comments"></i>
+                        <h4>${filterText ? 'Không tìm thấy' : 'Chưa có đoạn chat'}</h4>
+                        <p>${filterText ? 'Thử tìm từ khóa khác' : 'Các đoạn chat sẽ tự động lưu ở đây.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(s => {
+                const isActive = s.id === activeSessionId ? ' active' : '';
+                const msgCount = (s.messages && s.messages.length) || 0;
+                const timeStr = formatSessionTime(s.updatedAt || s.createdAt || Date.now());
+                const modelShort = (s.model || 'glm-4.7').split('/')[1] || s.model || 'cosmic';
+                const safeTitle = (s.title || 'Cuộc hội thoại').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                return `
+                    <div class="session-item${isActive}" onclick="openStudioSession('${s.id}')">
+                        <div class="session-item-header">
+                            <div class="session-title" title="${safeTitle}">${safeTitle}</div>
+                            <button type="button" class="session-del-btn" onclick="deleteStudioSession('${s.id}', event)" title="Xoá đoạn chat này">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                        <div class="session-meta">
+                            <div class="session-meta-left">
+                                <span class="session-badge"><i class="fa-solid fa-bolt"></i> ${modelShort}</span>
+                                <span class="session-msg-count">${msgCount} tin</span>
+                            </div>
+                            <span class="session-time">${timeStr}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.toggleStudioHistory = function(force) {
+            const sidebar = document.getElementById('vtHistoryDrawer');
+            const backdrop = document.getElementById('vtHistoryBackdrop');
+            if (!sidebar) return;
+
+            const isMobile = window.innerWidth <= 860;
+
+            if (isMobile) {
+                const isOpen = sidebar.classList.contains('mobile-open');
+                const nextState = (typeof force === 'boolean') ? force : !isOpen;
+                if (nextState) {
+                    sidebar.classList.add('mobile-open');
+                    if (backdrop) backdrop.classList.add('open');
+                    const searchInp = document.getElementById('historySearchInput');
+                    if (searchInp) setTimeout(() => searchInp.focus(), 150);
+                    renderHistorySessionsList();
+                } else {
+                    sidebar.classList.remove('mobile-open');
+                    if (backdrop) backdrop.classList.remove('open');
+                }
+            } else {
+                const isCollapsed = sidebar.classList.contains('collapsed');
+                const shouldCollapse = (typeof force === 'boolean') ? !force : !isCollapsed;
+                if (shouldCollapse) {
+                    sidebar.classList.add('collapsed');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    const searchInp = document.getElementById('historySearchInput');
+                    if (searchInp) setTimeout(() => searchInp.focus(), 150);
+                    renderHistorySessionsList();
+                }
+            }
+        };
+
+        window.filterHistoryList = function(q) {
+            renderHistorySessionsList(q.trim());
+        };
+
+        window.toggleTopBanner = function(forceState) {
+            const row = document.querySelector('.vt-top-header-row');
+            const icon = document.getElementById('iconToggleBanner');
+            const lbl = document.getElementById('lblToggleBanner');
+            if (!row) return;
+
+            const isCurrentlyCollapsed = row.classList.contains('collapsed');
+            const shouldCollapse = (typeof forceState === 'boolean') ? forceState : !isCurrentlyCollapsed;
+
+            if (shouldCollapse) {
+                row.classList.add('collapsed');
+                if (icon) icon.className = 'fa-solid fa-expand';
+                if (lbl) lbl.textContent = 'Mở banner';
+                try { localStorage.setItem('vt_banner_collapsed', '1'); } catch(e) {}
+            } else {
+                row.classList.remove('collapsed');
+                if (icon) icon.className = 'fa-solid fa-compress';
+                if (lbl) lbl.textContent = 'Gọn lại';
+                try { localStorage.setItem('vt_banner_collapsed', '0'); } catch(e) {}
+            }
+        };
+
+        window.startNewStudioChat = function(skipToast = false) {
+            activeSessionId = null;
+            const stream = document.getElementById('studioStream');
+            if (stream && welcomeTemplateHtml) {
+                stream.innerHTML = welcomeTemplateHtml;
+            }
+            // Clear server conversation context
+            fetch('/tkb/api/admin_ai_api.php?action=clear', { method: 'POST' }).catch(() => {});
+
+            if (window.innerWidth <= 860) {
+                toggleStudioHistory(false);
+            }
+            renderHistorySessionsList();
+            if (!skipToast) showStToast('✨ Đã bắt đầu cuộc trò chuyện mới!');
+            const inp = document.getElementById('studioInput');
+            if (inp) inp.focus();
+        };
+
+        window.openStudioSession = function(sid) {
+            const sess = chatSessions.find(s => s.id === sid);
+            if (!sess) return;
+
+            activeSessionId = sid;
+            const stream = document.getElementById('studioStream');
+            if (!stream) return;
+
+            stream.innerHTML = '';
+
+            // Update model selector if specified
+            if (sess.model) {
+                studioModel = sess.model;
+                const found = findAgModel(sess.model);
+                if (found) {
+                    updateAgTriggerUI(found.name, found.effort, found.fast);
+                } else {
+                    updateAgTriggerUI(sess.model, 'High', false);
+                }
+                const sel = document.getElementById('studioModelSelect');
+                if (sel) sel.value = sess.model;
+            }
+
+            // Render all historical messages
+            if (Array.isArray(sess.messages) && sess.messages.length > 0) {
+                sess.messages.forEach(m => {
+                    appendStudioMsg(m.role, m.text, m.time, m.model || sess.model, m.image || null);
+                });
+            } else if (welcomeTemplateHtml) {
+                stream.innerHTML = welcomeTemplateHtml;
+            }
+
+            if (window.innerWidth <= 860) {
+                toggleStudioHistory(false);
+            }
+            renderHistorySessionsList();
+            showStToast('📂 Đã mở: ' + (sess.title.length > 25 ? sess.title.slice(0, 25) + '...' : sess.title));
+            scrollStudioBottom();
+        };
+
+        window.deleteStudioSession = function(sid, ev) {
+            if (ev) ev.stopPropagation();
+            if (!confirm('Bạn có chắc chắn muốn xoá đoạn hội thoại này khỏi lịch sử?')) return;
+
+            chatSessions = chatSessions.filter(s => s.id !== sid);
+            saveSessions();
+            updateHistoryBadge();
+
+            if (activeSessionId === sid) {
+                startNewStudioChat(true);
+            } else {
+                renderHistorySessionsList();
+            }
+            showStToast('🗑️ Đã xoá đoạn chat!');
+        };
+
+        window.clearAllStudioHistory = function() {
+            if (!chatSessions.length) {
+                showStToast('Lịch sử hiện đang trống');
+                return;
+            }
+            if (!confirm('Bạn có chắc muốn xoá TOÀN BỘ lịch sử đoạn chat? Hành động này không thể hoàn tác.')) return;
+
+            chatSessions = [];
+            saveSessions();
+            updateHistoryBadge();
+            startNewStudioChat(true);
+            showStToast('🗑️ Đã xoá toàn bộ lịch sử!');
+        };
+
+        // Auto-resize textarea
+        window.autoResizeStudioInput = function(tx) {
+            tx.style.height = 'auto';
+            tx.style.height = Math.min(tx.scrollHeight, 100) + 'px';
+        };
+
+        window.handleStudioKey = function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendStudioMessage();
+            }
+        };
+
+        window.submitStudioPrompt = function(text) {
+            const inp = document.getElementById('studioInput');
+            if (inp) {
+                inp.value = text;
+                sendStudioMessage();
+            }
+        };
+
+        function scrollStudioBottom() {
+            const s = document.getElementById('studioStream');
+            if (s) s.scrollTop = s.scrollHeight;
+        }
+
+        // Markdown Formatter
+        function formatStMarkdown(text) {
+            if (!text) return '';
+            let e = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            e = e.replace(/```([a-zA-Z0-9_\-\+]*)\n([\s\S]*?)```/g, function(m, lang, code) {
+                const cid = 'cblock_' + Math.random().toString(36).substr(2, 8);
+                return `<pre><span style="font-size:11px;font-weight:700;color:var(--vt-cyan);display:block;margin-bottom:6px;"><i class="fa-solid fa-code"></i> ${lang ? lang.toUpperCase() : 'CODE'}</span><button class="code-copy-btn" onclick="copyStCode('${cid}')"><i class="fa-regular fa-copy"></i> Sao chép</button><code id="${cid}">${code.trim()}</code></pre>`;
+            });
+            e = e.replace(/`([^`]+)`/g, '<code>$1</code>');
+            e = e.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            e = e.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            e = e.replace(/(?:^|\n)[•\-*]\s+([^\n]+)/g, '<br><span style="color:var(--vt-purple);">◆</span> $1');
+            e = e.replace(/(?:^|\n)###\s+([^\n]+)/g, '<h4 style="color:var(--vt-cyan);margin:8px 0 4px;font-size:14px;">$1</h4>');
+            e = e.replace(/(?:^|\n)##\s+([^\n]+)/g, '<h3 style="color:var(--vt-purple);margin:10px 0 6px;font-size:16px;">$1</h3>');
+            e = e.replace(/(?:^|\n)#\s+([^\n]+)/g, '<h2 style="color:var(--vt-text);margin:12px 0 8px;font-size:18px;">$1</h2>');
+            e = e.replace(/\n\n/g, '<br><br>');
+            e = e.replace(/\n/g, '<br>');
+            return e;
+        }
+
+        window.copyStCode = function(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.innerText || el.textContent)
+                .then(() => showStToast('★ Đã sao chép mã!'))
+                .catch(() => showStToast('✖ Lỗi sao chép'));
+        };
+
+        function appendStudioMsg(role, text, time, modelTag, attachedImg) {
+            const stream = document.getElementById('studioStream');
+            if (!stream) return;
+            const t = time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const tag = modelTag || studioModel;
+            const row = document.createElement('div');
+            row.className = 'msg-row ' + (role === 'user' ? 'user' : 'bot');
+            const fmt = formatStMarkdown(text);
+
+            if (role === 'user') {
+                const imgHtml = attachedImg ? `
+                    <div class="msg-attached-img-wrap" onclick="openStudioImgLightbox('${attachedImg}')" title="Bấm để xem ảnh phóng to">
+                        <img src="${attachedImg}" alt="Ảnh đính kèm" class="msg-attached-img">
+                        <div class="msg-img-overlay-zoom"><i class="fa-solid fa-expand"></i> Phóng to</div>
+                    </div>
+                ` : '';
+                row.innerHTML = `
+                    <div class="msg-user-avatar">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div>
+                        <div class="msg-bubble-box">
+                            ${imgHtml}
+                            ${fmt ? `<div>${fmt}</div>` : ''}
+                        </div>
+                        <div class="msg-time-lbl"><span>${t}</span> <i class="fa-solid fa-check" style="color:var(--vt-cyan);"></i></div>
+                    </div>
+                `;
+            } else {
+                row.innerHTML = `
+                    <div class="msg-bot-avatar">
+                        <img src="${getPersonaAvatarUrl('circle')}" alt="Vũ Trụ AI" onerror="this.src='/tkb/assets/ai/vutru_robot_circle.png'">
+                    </div>
+                    <div>
+                        <div class="msg-bubble-box">${fmt}</div>
+                        <div class="msg-time-lbl">
+                            <i class="fa-solid fa-bolt" style="color:var(--vt-green);"></i> ${t} // ${tag}
+                            <button type="button" class="msg-speak-btn" onclick="speakStudioText(this, decodeURIComponent('${encodeURIComponent(text)}'))" title="Nghe Keria đọc">
+                                <i class="fa-solid fa-volume-high"></i> <span>Đọc</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            stream.appendChild(row);
+            scrollStudioBottom();
+        }
+
+        // =====================================================================
+        // ★ IMAGE ATTACHMENT & VISION AI CLIENT LOGIC ★
+        // =====================================================================
+        let currentAttachedImageBase64 = null;
+
+        window.triggerStudioImageUpload = function() {
+            const inp = document.getElementById('studioImageInput');
+            if (inp) {
+                inp.value = '';
+                inp.click();
+            }
+        };
+
+        window.handleStudioImageFile = function(input) {
+            if (!input.files || !input.files[0]) return;
+            processStudioImageFile(input.files[0]);
+        };
+
+        window.removeStudioAttachedImage = function() {
+            currentAttachedImageBase64 = null;
+            const bar = document.getElementById('studioImgPreviewBar');
+            const input = document.getElementById('studioImageInput');
+            if (bar) bar.style.display = 'none';
+            if (input) input.value = '';
+        };
+
+        function processStudioImageFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showStToast('✖ Vui lòng chọn tệp định dạng hình ảnh!');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const rawData = e.target.result;
+                compressImageBase64(rawData, 1600, 0.88, function(optimizedData) {
+                    currentAttachedImageBase64 = optimizedData;
+                    const bar = document.getElementById('studioImgPreviewBar');
+                    const img = document.getElementById('studioPreviewImg');
+                    const nameEl = document.getElementById('studioPreviewName');
+                    const sizeEl = document.getElementById('studioPreviewSize');
+
+                    if (img) img.src = optimizedData;
+                    if (nameEl) nameEl.textContent = file.name || 'anh_dinh_kem.png';
+                    if (sizeEl) {
+                        const kb = Math.round(optimizedData.length * 0.75 / 1024);
+                        sizeEl.textContent = kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+                    }
+                    if (bar) bar.style.display = 'flex';
+                    showStToast('📷 Đã đính kèm ảnh thành công!');
+                    const tx = document.getElementById('studioInput');
+                    if (tx) tx.focus();
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function compressImageBase64(dataUrl, maxDim, quality, callback) {
+            const img = new Image();
+            img.onload = function() {
+                let w = img.width;
+                let h = img.height;
+                if (w > maxDim || h > maxDim) {
+                    if (w > h) {
+                        h = Math.round((h * maxDim) / w);
+                        w = maxDim;
+                    } else {
+                        w = Math.round((w * maxDim) / h);
+                        h = maxDim;
+                    }
+                }
+                const cv = document.createElement('canvas');
+                cv.width = w;
+                cv.height = h;
+                const ctx = cv.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                const mime = dataUrl.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
+                callback(cv.toDataURL(mime, quality));
+            };
+            img.onerror = function() {
+                callback(dataUrl);
+            };
+            img.src = dataUrl;
+        }
+
+        // Lightbox Zoom Modal Controls
+        window.openStudioImgLightbox = function(src) {
+            const box = document.getElementById('studioImgLightbox');
+            const img = document.getElementById('lightboxImg');
+            if (box && img) {
+                img.src = src;
+                box.classList.add('active');
+            }
+        };
+
+        window.closeStudioImgLightbox = function(e) {
+            if (e && e.target && e.target.id === 'lightboxImg') return;
+            const box = document.getElementById('studioImgLightbox');
+            if (box) box.classList.remove('active');
+        };
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeStudioImgLightbox();
+        });
+
+        // Clipboard Paste Support (Ctrl+V)
+        document.addEventListener('paste', function(e) {
+            const items = (e.clipboardData || window.clipboardData)?.items;
+            if (!items) return;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const file = items[i].getAsFile();
+                    if (file) {
+                        processStudioImageFile(file);
+                        showStToast('📋 Đã dán ảnh từ clipboard!');
+                        break;
+                    }
+                }
+            }
+        });
+
+        // Send Message & Auto-Save to History
+        window.sendStudioMessage = async function() {
+            const inp = document.getElementById('studioInput');
+            const btn = document.getElementById('studioSendBtn');
+            const typing = document.getElementById('studioTypingRow');
+            if (!inp || !btn) return;
+
+            let val = inp.value.trim();
+            const sentImg = currentAttachedImageBase64;
+
+            if (!val && !sentImg) return;
+
+            if (!val && sentImg) {
+                val = "Hãy quan sát và phân tích chi tiết hình ảnh này giúp tôi.";
+            }
+
+            // Clear input and attached preview
+            removeStudioAttachedImage();
+            inp.value = '';
+            autoResizeStudioInput(inp);
+            inp.disabled = true;
+            btn.disabled = true;
+
+            const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Initialize or retrieve active session
+            if (!activeSessionId) {
+                activeSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                const titleStr = (sentImg ? '📷 ' : '') + val.replace(/\s+/g, ' ').trim();
+                const sessionTitle = titleStr.length > 36 ? titleStr.slice(0, 36) + '...' : titleStr;
+                const newSess = {
+                    id: activeSessionId,
+                    title: sessionTitle || 'Cuộc trò chuyện mới',
+                    model: studioModel,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                    messages: []
+                };
+                chatSessions.unshift(newSess);
+            }
+
+            let currSess = chatSessions.find(s => s.id === activeSessionId);
+            if (!currSess) {
+                currSess = {
+                    id: activeSessionId,
+                    title: (sentImg ? '📷 ' : '') + val.slice(0, 35),
+                    model: studioModel,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                    messages: []
+                };
+                chatSessions.unshift(currSess);
+            }
+
+            // Append to session memory
+            currSess.messages.push({ role: 'user', text: val, time: userTime, image: sentImg });
+            currSess.updatedAt = Date.now();
+            currSess.model = studioModel;
+            saveSessions();
+            updateHistoryBadge();
+
+            appendStudioMsg('user', val, userTime, null, sentImg);
+            if (typing) typing.style.display = 'block';
+            scrollStudioBottom();
+
+            try {
+                const res = await fetch('/tkb/api/admin_ai_api.php?action=send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: val, model: studioModel, image: sentImg, persona: currentAssistantPersona })
+                });
+                const data = await res.json();
+                if (typing) typing.style.display = 'none';
+
+                const botTime = data.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                if (data.success && data.reply) {
+                    appendStudioMsg('assistant', data.reply, botTime, studioModel);
+                    currSess.messages.push({ role: 'assistant', text: data.reply, time: botTime, model: studioModel });
+                } else {
+                    const errMsg = '⚠ ' + (data.error || 'Không thể kết nối Vũ Trụ AI Gateway');
+                    appendStudioMsg('assistant', errMsg, botTime, studioModel);
+                    currSess.messages.push({ role: 'assistant', text: errMsg, time: botTime, model: studioModel });
+                }
+                currSess.updatedAt = Date.now();
+                saveSessions();
+                updateHistoryBadge();
+            } catch (err) {
+                if (typing) typing.style.display = 'none';
+                const netErrMsg = '✖ Máy chủ không phản hồi, vui lòng thử lại.';
+                const errTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                appendStudioMsg('assistant', netErrMsg, errTime, studioModel);
+                if (currSess) {
+                    currSess.messages.push({ role: 'assistant', text: netErrMsg, time: errTime, model: studioModel });
+                    currSess.updatedAt = Date.now();
+                    saveSessions();
+                }
+            } finally {
+                inp.disabled = false;
+                btn.disabled = false;
+                inp.focus();
+                scrollStudioBottom();
+            }
+        };
+
+        // Export Chat
+        window.exportStudioChat = function() {
+            const stream = document.getElementById('studioStream');
+            if (!stream) return;
+            const activeSess = activeSessionId ? chatSessions.find(s => s.id === activeSessionId) : null;
+            const sessTitle = activeSess ? activeSess.title : 'Cuộc trò chuyện';
+
+            let content = "=== VŨ TRỤ AI - CHAT LOG ===\n";
+            content += "Chủ đề: " + sessTitle + "\n";
+            content += "Thời điểm: " + new Date().toLocaleString() + "\n";
+            content += "Mô hình: " + studioModel + "\n";
+            content += "Trường Cao đẳng Việt - Hàn Cà Mau\n\n";
+
+            stream.querySelectorAll('.msg-row').forEach(r => {
+                const isUser = r.classList.contains('user');
+                const sender = isUser ? "QUẢN TRỊ VIÊN" : "VŨ TRỤ AI";
+                const bubble = r.querySelector('.msg-bubble-box');
+                const text = bubble ? (bubble.innerText || bubble.textContent) : '';
+                content += `[${sender}]:\n${text}\n\n---\n\n`;
+            });
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `vutru_ai_${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showStToast('★ Đã xuất nhật ký chat');
+        };
+
+        // Speech Recognition
+        let isListening = false;
+        window.toggleStudioVoice = function() {
+            const vBtn = document.getElementById('studioVoiceBtn');
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) { showStToast('Trình duyệt không hỗ trợ microphone'); return; }
+
+            if (!window.stRecognizer) {
+                window.stRecognizer = new SR();
+                window.stRecognizer.lang = 'vi-VN';
+                window.stRecognizer.onresult = function(ev) {
+                    const t = ev.results[0][0].transcript;
+                    const inp = document.getElementById('studioInput');
+                    if (inp) {
+                        inp.value = (inp.value ? inp.value + ' ' : '') + t;
+                        autoResizeStudioInput(inp);
+                    }
+                    showStToast('★ Thu âm: "' + t + '"');
+                };
+                window.stRecognizer.onend = function() { isListening = false; if (vBtn) vBtn.classList.remove('active'); };
+                window.stRecognizer.onerror = function() { isListening = false; if (vBtn) vBtn.classList.remove('active'); };
+            }
+
+            if (!isListening) {
+                try {
+                    window.stRecognizer.start();
+                    isListening = true;
+                    if (vBtn) vBtn.classList.add('active');
+                    showStToast('★ Đang lắng nghe...');
+                } catch(e) {}
+            } else {
+                window.stRecognizer.stop();
+                isListening = false;
+                if (vBtn) vBtn.classList.remove('active');
+            }
+        };
+
+        // =====================================================================
+        // ★ LIVE VOICE CONVERSATION (NÓI CHUYỆN TRỰC TIẾP CÙNG KERIA AI) ★
+        // =====================================================================
+        let voiceCallActive = false;
+        let voiceCallState = 'idle'; // 'idle' | 'listening' | 'thinking' | 'speaking'
+        let voiceCallRecognition = null;
+        let voiceCallMicEnabled = true;
+        let voiceLastUserTranscript = '';
+
+        function cleanTextForSpeech(raw) {
+            if (!raw) return '';
+            let text = raw;
+            // Remove code blocks
+            text = text.replace(/```[\s\S]*?```/g, ' [Đoạn mã lập trình đã được lưu vào khung chat] ');
+            // Remove inline code
+            text = text.replace(/`([^`]+)`/g, '$1');
+            // Remove markdown images and links
+            text = text.replace(/!\[.*?\]\(.*?\)/g, '');
+            text = text.replace(/\[([^\]]+)\]\(.*?\)/g, '$1');
+            // Remove headers, bold, italics, bullets, blockquotes
+            text = text.replace(/^#{1,6}\s+/gm, '');
+            text = text.replace(/(\*\*|__)(.*?)\1/g, '$2');
+            text = text.replace(/(\*|_)(.*?)\1/g, '$2');
+            text = text.replace(/^\s*[-*+]\s+/gm, '');
+            text = text.replace(/^\s*>\s+/gm, '');
+            text = text.replace(/\|.*?\|/g, ''); // tables
+            text = text.replace(/\n+/g, '. ');
+            text = text.replace(/\s+/g, ' ').trim();
+            // Keep speech concise for audio call
+            if (text.length > 380) {
+                text = text.slice(0, 380) + '... Nội dung chi tiết đã được Keria gửi đầy đủ vào khung chat nhé!';
+            }
+            return text;
+        }
+
+        let currentVoiceGender = localStorage.getItem('vt_ai_voice_gender') || 'female';
+        let currentAssistantPersona = localStorage.getItem('vt_assistant_persona') || 'robot'; // 'robot' | 'anime'
+
+        function getPersonaAvatarUrl(style = 'normal') {
+            const customUserAvatar = localStorage.getItem('vt_custom_robot_avatar_user');
+            if (currentAssistantPersona === 'anime') {
+                return (style === 'circle')
+                    ? '/tkb/assets/ai/vutru_anime_circle.png'
+                    : '/tkb/assets/ai/vutru_anime_assistant.png';
+            } else {
+                if (customUserAvatar) return customUserAvatar;
+                return (style === 'circle')
+                    ? '/tkb/assets/ai/vutru_robot_circle.png'
+                    : '/tkb/assets/ai/vutru_keria_assistant.png';
+            }
+        }
+
+        window.setAssistantPersona = function(persona, skipSpeak = false) {
+            currentAssistantPersona = (persona === 'anime') ? 'anime' : 'robot';
+            try {
+                localStorage.setItem('vt_assistant_persona', currentAssistantPersona);
+            } catch(e) {}
+
+            updateAssistantPersonaUI();
+
+            const isAnime = (currentAssistantPersona === 'anime');
+            const toastMsg = isAnime 
+                ? '🌸 Đã kích hoạt Trợ lý Vũ Trụ Anime (Hikari)!' 
+                : '🤖 Đã chọn Trợ lý Robot Vũ Trụ!';
+            showStToast(toastMsg);
+
+            // If in Voice Call, update speaker text & avatar
+            if (voiceCallActive) {
+                const mascotImg = document.getElementById('voiceCallMascotImg');
+                if (mascotImg) mascotImg.src = getPersonaAvatarUrl('normal');
+
+                const title = document.getElementById('voiceCallLiveTitle');
+                if (title) {
+                    title.textContent = isAnime 
+                        ? '🌸 VŨ TRỤ AI ANIME LIVE' 
+                        : ((currentVoiceGender === 'male') ? 'VŨ TRỤ AI (GIỌNG NAM)' : 'VŨ TRỤ AI (GIỌNG NỮ)');
+                }
+
+                // Auto-tune voice to female for anime assistant
+                if (isAnime && currentVoiceGender !== 'female') {
+                    setVoiceGender('female');
+                }
+
+                const sampleText = isAnime
+                    ? 'Keria ơi! Em là trợ lý Anime Vũ Trụ AI đây! Rất vui được trò chuyện cùng Keria nha~ (◕‿◕)✨'
+                    : ((currentVoiceGender === 'male')
+                        ? 'Xin chào Keria! Tôi là Robot Vũ Trụ AI. Hãy nói điều gì đó!'
+                        : 'Xin chào Keria! Em là Robot Vũ Trụ AI. Hãy nói điều gì đó!');
+
+                const bText = document.getElementById('voiceBotText');
+                if (bText) bText.textContent = '"' + sampleText + '"';
+
+                if (!skipSpeak && voiceCallState !== 'thinking') {
+                    setVoiceCallState('speaking');
+                    speakVoiceReply(sampleText, function() {
+                        if (voiceCallActive && voiceCallMicEnabled) {
+                            startVoiceCallListening();
+                        }
+                    });
+                }
+            }
+        };
+
+        function updateAssistantPersonaUI() {
+            const isAnime = (currentAssistantPersona === 'anime');
+
+            // Square card persona buttons
+            const kRobotBtn = document.getElementById('kPersonaRobotBtn');
+            const kAnimeBtn = document.getElementById('kPersonaAnimeBtn');
+            if (kRobotBtn && kAnimeBtn) {
+                if (isAnime) {
+                    kAnimeBtn.classList.add('active', 'anime');
+                    kRobotBtn.classList.remove('active');
+                } else {
+                    kRobotBtn.classList.add('active');
+                    kAnimeBtn.classList.remove('active', 'anime');
+                }
+            }
+
+            // Voice call modal persona buttons
+            const vRobotBtn = document.getElementById('vPersonaRobotBtn');
+            const vAnimeBtn = document.getElementById('vPersonaAnimeBtn');
+            if (vRobotBtn && vAnimeBtn) {
+                if (isAnime) {
+                    vAnimeBtn.classList.add('active', 'anime');
+                    vRobotBtn.classList.remove('active');
+                } else {
+                    vRobotBtn.classList.add('active');
+                    vAnimeBtn.classList.remove('active', 'anime');
+                }
+            }
+
+            // Update Greeting card avatar
+            const keriaImg = document.getElementById('keriaRobotImg');
+            if (keriaImg) {
+                keriaImg.src = getPersonaAvatarUrl('normal');
+            }
+
+            // Update Voice call avatar
+            const voiceMascotImg = document.getElementById('voiceCallMascotImg');
+            if (voiceMascotImg) {
+                voiceMascotImg.src = getPersonaAvatarUrl('normal');
+            }
+
+            // Update Chat header avatar
+            const chatAvatarImg = document.querySelector('.chat-robot-avatar img');
+            if (chatAvatarImg) {
+                chatAvatarImg.src = getPersonaAvatarUrl('circle');
+            }
+
+            const chatHeaderName = document.querySelector('.chat-header-name h2');
+            if (chatHeaderName) {
+                chatHeaderName.innerHTML = isAnime
+                    ? 'VŨ TRỤ AI ASSISTANT <span style="font-size:11px; vertical-align:middle; background:linear-gradient(135deg, #d946ef, #f43f5e); color:#fff; padding:2px 8px; border-radius:12px; margin-left:6px; font-weight:700; box-shadow:0 0 8px rgba(244,63,94,0.5);">🌸 Anime Mode</span>'
+                    : 'VŨ TRỤ AI ASSISTANT';
+            }
+
+            // Update all existing bot avatars in chat stream if not user-customized
+            if (!localStorage.getItem('vt_custom_robot_avatar_user')) {
+                document.querySelectorAll('.msg-bot-avatar img').forEach(img => {
+                    img.src = getPersonaAvatarUrl('circle');
+                });
+            }
+        }
+
+        function getVietnameseVoiceByGender(gender) {
+            if (!window.speechSynthesis) return null;
+            const voices = window.speechSynthesis.getVoices();
+            const viVoices = voices.filter(v => v.lang === 'vi-VN' || v.lang.startsWith('vi'));
+            if (viVoices.length === 0) return null;
+
+            if (gender === 'male') {
+                const male = viVoices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('namminh') || n.includes('nam') || n.includes('male') || n.includes('man') || n.includes('boy');
+                });
+                if (male) return male;
+                if (viVoices.length > 1) {
+                    const nonHoaimy = viVoices.find(v => !v.name.toLowerCase().includes('hoaimy'));
+                    if (nonHoaimy) return nonHoaimy;
+                }
+                return viVoices[0];
+            } else {
+                const female = viVoices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('hoaimy') || n.includes('nu') || n.includes('female') || n.includes('woman') || n.includes('girl') || n.includes('linh') || n.includes('mai');
+                });
+                if (female) return female;
+                return viVoices[0];
+            }
+        }
+
+        window.setVoiceGender = function(gender) {
+            currentVoiceGender = (gender === 'male') ? 'male' : 'female';
+            try {
+                localStorage.setItem('vt_ai_voice_gender', currentVoiceGender);
+            } catch(e) {}
+
+            updateVoiceGenderUI();
+
+            const isAnime = (currentAssistantPersona === 'anime');
+            const title = document.getElementById('voiceCallLiveTitle');
+            if (title) {
+                title.textContent = isAnime
+                    ? '🌸 VŨ TRỤ AI ANIME LIVE'
+                    : ((currentVoiceGender === 'male') ? 'VŨ TRỤ AI (GIỌNG NAM)' : 'VŨ TRỤ AI (GIỌNG NỮ)');
+            }
+
+            if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+
+            const testSample = isAnime
+                ? 'Keria ơi! Em là trợ lý Anime Vũ Trụ AI đây! Em đang lắng nghe Keria nè~ ✨'
+                : ((currentVoiceGender === 'male')
+                    ? 'Xin chào Keria! Tôi là Vũ Trụ AI, giọng nam. Rất vui được đồng hành cùng bạn!'
+                    : 'Xin chào Keria! Em là Vũ Trụ AI, giọng nữ. Rất vui được đồng hành cùng bạn!');
+
+            showStToast('✔ Đã chọn: ' + ((currentVoiceGender === 'male') ? 'Giọng Nam (Vũ Trụ AI)' : 'Giọng Nữ (Vũ Trụ AI)'));
+
+            if (voiceCallActive && voiceCallState !== 'thinking') {
+                setVoiceCallState('speaking');
+                const bText = document.getElementById('voiceBotText');
+                if (bText) bText.textContent = '"' + testSample + '"';
+                speakVoiceReply(testSample, function() {
+                    if (voiceCallActive && voiceCallMicEnabled) {
+                        startVoiceCallListening();
+                    }
+                });
+            }
+        };
+
+        function updateVoiceGenderUI() {
+            const fBtn = document.getElementById('vGenderFemaleBtn');
+            const mBtn = document.getElementById('vGenderMaleBtn');
+            if (!fBtn || !mBtn) return;
+
+            if (currentVoiceGender === 'male') {
+                mBtn.classList.add('active', 'male');
+                fBtn.classList.remove('active');
+            } else {
+                fBtn.classList.add('active');
+                mBtn.classList.remove('active', 'male');
+            }
+        }
+
+        if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = function() {
+                getVietnameseVoiceByGender('female');
+                getVietnameseVoiceByGender('male');
+            };
+        }
+
+        window.openCosmicVoiceCall = function(e) {
+            if (e) e.stopPropagation();
+            const modal = document.getElementById('cosmicVoiceModal');
+            if (!modal) return;
+            modal.style.display = 'flex';
+            voiceCallActive = true;
+            voiceCallMicEnabled = true;
+
+            updateAssistantPersonaUI();
+            updateVoiceGenderUI();
+
+            const isAnime = (currentAssistantPersona === 'anime');
+            const title = document.getElementById('voiceCallLiveTitle');
+            if (title) {
+                title.textContent = isAnime
+                    ? '🌸 VŨ TRỤ AI ANIME LIVE'
+                    : ((currentVoiceGender === 'male') ? 'VŨ TRỤ AI (GIỌNG NAM)' : 'VŨ TRỤ AI (GIỌNG NỮ)');
+            }
+
+            const tag = document.getElementById('voiceCallModelTag');
+            if (tag) tag.textContent = 'Mô hình: ' + (studioModel || 'Vũ Trụ AI');
+
+            const mascotImg = document.getElementById('voiceCallMascotImg');
+            if (mascotImg) {
+                mascotImg.src = getPersonaAvatarUrl('normal');
+            }
+
+            setVoiceCallState('speaking');
+            const introMsg = isAnime
+                ? 'Keria ơi! Em là trợ lý Anime Vũ Trụ AI đây! Rất vui được gặp Keria nha~ (◕‿◕)✨ Hãy nói chuyện cùng em nhé!'
+                : ((currentVoiceGender === 'male')
+                    ? 'Xin chào Keria! Tôi là Vũ Trụ AI. Tôi đang lắng nghe bạn đây, hãy nói điều gì đó nhé!'
+                    : 'Xin chào Keria! Em là Vũ Trụ AI. Em đang lắng nghe bạn đây, hãy nói điều gì đó nhé!');
+
+            const bText = document.getElementById('voiceBotText');
+            if (bText) bText.textContent = '"' + introMsg + '"';
+
+            speakVoiceReply(introMsg, function() {
+                if (voiceCallActive && voiceCallMicEnabled) {
+                    startVoiceCallListening();
+                }
+            });
+        };
+
+        window.closeCosmicVoiceCall = function() {
+            voiceCallActive = false;
+            stopAnySpeakingAudio();
+            if (voiceCallRecognition) {
+                try { voiceCallRecognition.stop(); } catch(err) {}
+            }
+            const modal = document.getElementById('cosmicVoiceModal');
+            if (modal) modal.style.display = 'none';
+            setVoiceCallState('idle');
+            showStToast('Đã kết thúc cuộc trò chuyện cùng Vũ Trụ AI');
+        };
+
+        function setVoiceCallState(state) {
+            voiceCallState = state;
+            const card = document.querySelector('.cosmic-voice-card');
+            const txt = document.getElementById('voiceStateText');
+            if (!card || !txt) return;
+
+            card.classList.remove('voice-state-listening', 'voice-state-speaking', 'voice-state-thinking');
+
+            if (state === 'listening') {
+                card.classList.add('voice-state-listening');
+                txt.innerHTML = '<i class="fa-solid fa-microphone"></i> Đang lắng nghe Keria nói...';
+            } else if (state === 'speaking') {
+                card.classList.add('voice-state-speaking');
+                txt.innerHTML = '<i class="fa-solid fa-volume-high"></i> Vũ Trụ AI đang trả lời...';
+            } else if (state === 'thinking') {
+                card.classList.add('voice-state-thinking');
+                txt.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Vũ Trụ AI đang suy nghĩ...';
+            } else {
+                txt.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> Tạm dừng';
+            }
+        }
+
+        function startVoiceCallListening() {
+            if (!voiceCallActive || !voiceCallMicEnabled) return;
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) {
+                showStToast('Trình duyệt không hỗ trợ Web Speech Recognition');
+                setVoiceCallState('idle');
+                return;
+            }
+
+            if (voiceCallRecognition) {
+                try { voiceCallRecognition.abort(); } catch(e) {}
+            }
+
+            voiceCallRecognition = new SR();
+            voiceCallRecognition.lang = 'vi-VN';
+            voiceCallRecognition.interimResults = true;
+            voiceCallRecognition.continuous = false;
+
+            voiceCallRecognition.onstart = function() {
+                if (voiceCallActive) setVoiceCallState('listening');
+            };
+
+            voiceCallRecognition.onresult = function(ev) {
+                let interim = '';
+                let finalTranscript = '';
+                for (let i = ev.resultIndex; i < ev.results.length; ++i) {
+                    if (ev.results[i].isFinal) {
+                        finalTranscript += ev.results[i][0].transcript;
+                    } else {
+                        interim += ev.results[i][0].transcript;
+                    }
+                }
+                const spokenText = (finalTranscript || interim).trim();
+                if (spokenText) {
+                    const uBubble = document.getElementById('voiceUserBubble');
+                    const uText = document.getElementById('voiceUserText');
+                    if (uBubble) uBubble.style.display = 'block';
+                    if (uText) uText.textContent = spokenText;
+                    voiceLastUserTranscript = spokenText;
+                }
+            };
+
+            voiceCallRecognition.onerror = function(ev) {
+                if (ev.error === 'not-allowed') {
+                    showStToast('✖ Vui lòng cho phép quyền Microphone trong trình duyệt');
+                    setVoiceCallState('idle');
+                } else if (ev.error === 'no-speech') {
+                    if (voiceCallActive && voiceCallMicEnabled && voiceCallState === 'listening') {
+                        setTimeout(() => {
+                            if (voiceCallActive && voiceCallState === 'listening') startVoiceCallListening();
+                        }, 400);
+                    }
+                }
+            };
+
+            voiceCallRecognition.onend = function() {
+                if (!voiceCallActive) return;
+                if (voiceLastUserTranscript) {
+                    const textToSend = voiceLastUserTranscript;
+                    voiceLastUserTranscript = '';
+                    handleVoiceUserFinishedSpeaking(textToSend);
+                } else if (voiceCallMicEnabled && voiceCallState === 'listening') {
+                    setTimeout(() => {
+                        if (voiceCallActive && voiceCallState === 'listening') startVoiceCallListening();
+                    }, 400);
+                }
+            };
+
+            try {
+                voiceCallRecognition.start();
+            } catch(err) {
+                console.warn('Voice recognition error:', err);
+            }
+        }
+
+        async function handleVoiceUserFinishedSpeaking(userText) {
+            if (!userText || !voiceCallActive) return;
+            setVoiceCallState('thinking');
+
+            const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            appendStudioMsg('user', userText, userTime, null, null);
+            if (activeSessionId) {
+                let currSess = chatSessions.find(s => s.id === activeSessionId);
+                if (currSess) {
+                    currSess.messages.push({ role: 'user', text: userText, time: userTime });
+                    currSess.updatedAt = Date.now();
+                    saveSessions();
+                }
+            }
+
+            try {
+                const res = await fetch('/tkb/api/admin_ai_api.php?action=send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userText, model: studioModel, persona: currentAssistantPersona })
+                });
+                const data = await res.json();
+                const botReply = (data.success && data.reply) ? data.reply : (data.error || 'Vũ Trụ AI đã lắng nghe, nhưng chưa nhận được phản hồi từ gateway.');
+                const botTime = data.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                appendStudioMsg('assistant', botReply, botTime, studioModel);
+                if (activeSessionId) {
+                    let currSess = chatSessions.find(s => s.id === activeSessionId);
+                    if (currSess) {
+                        currSess.messages.push({ role: 'assistant', text: botReply, time: botTime, model: studioModel });
+                        currSess.updatedAt = Date.now();
+                        saveSessions();
+                    }
+                }
+
+                if (!voiceCallActive) return;
+
+                const bText = document.getElementById('voiceBotText');
+                if (bText) bText.textContent = '"' + botReply + '"';
+
+                setVoiceCallState('speaking');
+                const speechContent = cleanTextForSpeech(botReply);
+                speakVoiceReply(speechContent, function() {
+                    if (voiceCallActive && voiceCallMicEnabled) {
+                        setTimeout(() => {
+                            if (voiceCallActive) startVoiceCallListening();
+                        }, 500);
+                    }
+                });
+            } catch(e) {
+                if (voiceCallActive) {
+                    setVoiceCallState('idle');
+                    showStToast('Lỗi kết nối khi trò chuyện cùng Vũ Trụ AI');
+                }
+            }
+        }
+
+        let currentVoiceAudio = null;
+
+        function stopAnySpeakingAudio() {
+            if (currentVoiceAudio) {
+                try {
+                    currentVoiceAudio.pause();
+                    currentVoiceAudio.currentTime = 0;
+                } catch(e) {}
+                currentVoiceAudio = null;
+            }
+            if (window.speechSynthesis) {
+                try { window.speechSynthesis.cancel(); } catch(e) {}
+            }
+            document.querySelectorAll('.msg-speak-btn').forEach(b => b.classList.remove('speaking'));
+        }
+
+        function speakVoiceReply(text, onComplete) {
+            stopAnySpeakingAudio();
+            const clean = cleanTextForSpeech(text);
+            if (!clean) {
+                if (onComplete) onComplete();
+                return;
+            }
+
+            if (currentVoiceGender === 'female') {
+                // GIỌNG NỮ VIỆT NAM THỰC THỤ TỪ GOOGLE NEURAL TTS
+                const audioUrl = '/tkb/api/admin_ai_api.php?action=tts&gender=female&text=' + encodeURIComponent(clean);
+                const audio = new Audio(audioUrl);
+                currentVoiceAudio = audio;
+
+                audio.onended = function() {
+                    currentVoiceAudio = null;
+                    if (onComplete) onComplete();
+                };
+                audio.onerror = function() {
+                    currentVoiceAudio = null;
+                    speakWithSynthesisFallback(clean, 'female', onComplete);
+                };
+                audio.play().catch(() => {
+                    currentVoiceAudio = null;
+                    speakWithSynthesisFallback(clean, 'female', onComplete);
+                });
+            } else {
+                // GIỌNG NAM VIỆT NAM (MALE VOICE SYNTHESIS TRẦM ẤM)
+                speakWithSynthesisFallback(clean, 'male', onComplete);
+            }
+        }
+
+        function speakWithSynthesisFallback(clean, gender, onComplete) {
+            if (!window.speechSynthesis) {
+                if (onComplete) onComplete();
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(clean);
+            u.lang = 'vi-VN';
+
+            if (gender === 'male') {
+                u.rate = 0.96;
+                u.pitch = 0.78; // Giọng nam trầm ấm, chững chạc
+            } else {
+                u.rate = 1.05;
+                u.pitch = 1.25; // Giọng nữ cao thanh
+            }
+
+            const viVoice = getVietnameseVoiceByGender(gender);
+            if (viVoice) u.voice = viVoice;
+
+            u.onend = function() {
+                if (onComplete) onComplete();
+            };
+            u.onerror = function() {
+                if (onComplete) onComplete();
+            };
+            window.speechSynthesis.speak(u);
+        }
+
+        window.interruptKeriaSpeech = function() {
+            stopAnySpeakingAudio();
+            showStToast('Đã ngắt lời AI');
+            if (voiceCallActive && voiceCallMicEnabled) {
+                setTimeout(() => {
+                    startVoiceCallListening();
+                }, 200);
+            }
+        };
+
+        window.toggleVoiceCallMic = function() {
+            voiceCallMicEnabled = !voiceCallMicEnabled;
+            const btn = document.getElementById('voiceMicToggleBtn');
+            const lbl = document.getElementById('voiceMicToggleLbl');
+            if (voiceCallMicEnabled) {
+                if (lbl) lbl.textContent = 'Đang nghe';
+                if (btn) btn.style.background = 'rgba(16, 185, 129, 0.25)';
+                startVoiceCallListening();
+                showStToast('✔ Microphone đã bật');
+            } else {
+                if (lbl) lbl.textContent = 'Đã tắt mic';
+                if (btn) btn.style.background = 'rgba(239, 68, 68, 0.25)';
+                if (voiceCallRecognition) {
+                    try { voiceCallRecognition.stop(); } catch(e) {}
+                }
+                setVoiceCallState('idle');
+                showStToast('Mic đã tắt');
+            }
+        };
+
+        window.sendVoiceQuickInput = function() {
+            const inp = document.getElementById('voiceQuickInput');
+            if (!inp) return;
+            const text = inp.value.trim();
+            if (!text) return;
+            inp.value = '';
+
+            const uBubble = document.getElementById('voiceUserBubble');
+            const uText = document.getElementById('voiceUserText');
+            if (uBubble) uBubble.style.display = 'block';
+            if (uText) uText.textContent = text;
+
+            if (voiceCallRecognition) {
+                try { voiceCallRecognition.stop(); } catch(e) {}
+            }
+            stopAnySpeakingAudio();
+            handleVoiceUserFinishedSpeaking(text);
+        };
+
+        // In-chat Speak text
+        window.speakStudioText = function(btn, text) {
+            if (currentVoiceAudio || (window.speechSynthesis && window.speechSynthesis.speaking)) {
+                stopAnySpeakingAudio();
+                return;
+            }
+            const clean = cleanTextForSpeech(text);
+            if (!clean) return;
+
+            if (btn) btn.classList.add('speaking');
+            const onDone = function() {
+                if (btn) btn.classList.remove('speaking');
+            };
+
+            if (currentVoiceGender === 'female') {
+                const audioUrl = '/tkb/api/admin_ai_api.php?action=tts&gender=female&text=' + encodeURIComponent(clean);
+                const audio = new Audio(audioUrl);
+                currentVoiceAudio = audio;
+                audio.onended = function() {
+                    currentVoiceAudio = null;
+                    onDone();
+                };
+                audio.onerror = function() {
+                    currentVoiceAudio = null;
+                    speakWithSynthesisFallback(clean, 'female', onDone);
+                };
+                audio.play().catch(() => {
+                    currentVoiceAudio = null;
+                    speakWithSynthesisFallback(clean, 'female', onDone);
+                });
+            } else {
+                speakWithSynthesisFallback(clean, 'male', onDone);
+            }
+        };
+
+        // Ambient Starfield Canvas
+        function initStars() {
+            const canvas = document.getElementById('vutruCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            function rsz() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            rsz();
+            window.addEventListener('resize', rsz);
+
+            const stars = [];
+            const colors = ['#ffffff', '#c084fc', '#38bdf8', '#f472b6'];
+            for (let i = 0; i < 90; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1.5 + 0.6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: Math.random(),
+                    speed: Math.random() * 0.02 + 0.006,
+                    dir: Math.random() > 0.5 ? 1 : -1
+                });
+            }
+
+            function loop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let s of stars) {
+                    s.alpha += s.speed * s.dir;
+                    if (s.alpha >= 1) { s.alpha = 1; s.dir = -1; }
+                    if (s.alpha <= 0.2) { s.alpha = 0.2; s.dir = 1; }
+
+                    ctx.save();
+                    ctx.globalAlpha = s.alpha;
+                    ctx.fillStyle = s.color;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+                requestAnimationFrame(loop);
+            }
+            requestAnimationFrame(loop);
+        }
+
+        // =====================================================================
+        // ★ CLICK TO CHANGE ROBOT AVATAR & HERO BANNER ★
+        // =====================================================================
+        window.triggerChangeRobotAvatar = function(e) {
+            if (e) e.stopPropagation();
+            if (e && e.shiftKey) {
+                if (confirm('Khôi phục ảnh đại diện Trợ lý AI Keria mặc định?')) {
+                    try {
+                        localStorage.removeItem('vt_custom_robot_avatar');
+                        localStorage.removeItem('vt_custom_robot_avatar_user');
+                    } catch(err) {}
+                    const defaultAvatar = '/tkb/assets/ai/vutru_keria_assistant.png?v=' + Date.now();
+                    const keriaImg = document.getElementById('keriaRobotImg');
+                    if (keriaImg) keriaImg.src = defaultAvatar;
+                    document.querySelectorAll('.chat-robot-avatar img, .msg-bot-avatar img').forEach(img => {
+                        img.src = defaultAvatar;
+                    });
+                    showStToast('✨ Đã khôi phục Trợ lý AI Keria mặc định!');
+                    return;
+                }
+            }
+            const input = document.getElementById('changeRobotAvatarInput');
+            if (input) {
+                input.value = '';
+                input.click();
+            }
+        };
+
+        window.handleChangeRobotAvatar = function(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            if (!file.type.startsWith('image/')) {
+                showStToast('✖ Vui lòng chọn tệp hình ảnh!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const keriaImg = document.getElementById('keriaRobotImg');
+                if (keriaImg) keriaImg.src = dataUrl;
+
+                document.querySelectorAll('.chat-robot-avatar img, .msg-bot-avatar img').forEach(img => {
+                    img.src = dataUrl;
+                });
+
+                try {
+                    localStorage.setItem('vt_custom_robot_avatar_user', dataUrl);
+                } catch(err) {}
+
+                showStToast('✨ Đang lưu ảnh Robot mới...');
+
+                const formData = new FormData();
+                formData.append('avatar', file);
+                formData.append('avatar_base64', dataUrl);
+
+                fetch('/tkb/api/admin_ai_api.php?action=upload_avatar', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) {
+                        showStToast('🎉 Đã cập nhật ảnh Robot thành công!');
+                    } else {
+                        showStToast('✔ Đã áp dụng ảnh Robot vào giao diện!');
+                    }
+                })
+                .catch(() => {
+                    showStToast('✔ Đã áp dụng ảnh Robot vào giao diện!');
+                });
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.triggerChangeHeroBanner = function(e) {
+            if (e) e.stopPropagation();
+            const input = document.getElementById('changeHeroBannerInput');
+            if (input) {
+                input.value = '';
+                input.click();
+            }
+        };
+
+        window.handleChangeHeroBanner = function(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            if (!file.type.startsWith('image/')) {
+                showStToast('✖ Vui lòng chọn tệp hình ảnh!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const bannerImg = document.getElementById('vtHeroBannerImg');
+                if (bannerImg) bannerImg.src = dataUrl;
+
+                try {
+                    localStorage.setItem('vt_custom_hero_banner', dataUrl);
+                } catch(err) {}
+
+                showStToast('⏳ Đang lưu ảnh bìa Banner mới...');
+
+                const formData = new FormData();
+                formData.append('banner', file);
+                formData.append('banner_base64', dataUrl);
+
+                fetch('/tkb/api/admin_ai_api.php?action=upload_banner', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) {
+                        showStToast('🎉 Đã cập nhật ảnh bìa Banner thành công!');
+                    } else {
+                        showStToast('✔ Đã áp dụng ảnh bìa mới!');
+                    }
+                })
+                .catch(() => {
+                    showStToast('✔ Đã áp dụng ảnh bìa mới!');
+                });
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.triggerChangeKeriaCardBg = function(e) {
+            if (e) e.stopPropagation();
+            if (e && e.shiftKey) {
+                if (confirm('Khôi phục ảnh ngoài mặc định (Vũ trụ Trạm không gian)?')) {
+                    try {
+                        localStorage.removeItem('vt_custom_keria_card_bg_user');
+                        localStorage.removeItem('vt_custom_keria_card_bg');
+                    } catch(err) {}
+                    const bgImg = document.getElementById('keriaCardBgImg');
+                    if (bgImg) bgImg.src = '/tkb/assets/ai/vutru_card_bg.jpg?v=' + Date.now();
+                    showStToast('✨ Đã khôi phục ảnh ngoài mặc định!');
+                    return;
+                }
+            }
+            const input = document.getElementById('changeKeriaCardBgInput');
+            if (input) {
+                input.value = '';
+                input.click();
+            }
+        };
+
+        window.handleChangeKeriaCardBg = function(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            if (!file.type.startsWith('image/')) {
+                showStToast('✖ Vui lòng chọn tệp hình ảnh!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const bgImg = document.getElementById('keriaCardBgImg');
+                if (bgImg) {
+                    bgImg.src = dataUrl;
+                    bgImg.style.display = 'block';
+                }
+
+                try {
+                    localStorage.setItem('vt_custom_keria_card_bg_user', dataUrl);
+                } catch(err) {}
+
+                showStToast('⏳ Đang lưu ảnh nền ngoài mới...');
+
+                const formData = new FormData();
+                formData.append('card_bg', file);
+                formData.append('card_bg_base64', dataUrl);
+
+                fetch('/tkb/api/admin_ai_api.php?action=upload_card_bg', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) {
+                        showStToast('🎉 Đã cập nhật ảnh nền ngoài thành công!');
+                    } else {
+                        showStToast('✔ Đã áp dụng ảnh ngoài vào ô vuông!');
+                    }
+                })
+                .catch(() => {
+                    showStToast('✔ Đã áp dụng ảnh ngoài vào ô vuông!');
+                });
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function restoreCustomAvatarsAndBanners() {
+            try {
+                // Xoá key avatar cũ (ảnh người dùng test) để Trợ lý AI Keria hiển thị ngay
+                if (localStorage.getItem('vt_custom_robot_avatar')) {
+                    localStorage.removeItem('vt_custom_robot_avatar');
+                }
+                const savedAvatar = localStorage.getItem('vt_custom_robot_avatar_user');
+                if (savedAvatar) {
+                    const keriaImg = document.getElementById('keriaRobotImg');
+                    if (keriaImg) keriaImg.src = savedAvatar;
+                    document.querySelectorAll('.chat-robot-avatar img, .msg-bot-avatar img').forEach(img => {
+                        img.src = savedAvatar;
+                    });
+                }
+                // Xoá key cũ để ảnh thiết kế mới vutru_card_bg.jpg hiển thị ngay
+                if (localStorage.getItem('vt_custom_keria_card_bg')) {
+                    localStorage.removeItem('vt_custom_keria_card_bg');
+                }
+                const savedCardBg = localStorage.getItem('vt_custom_keria_card_bg_user');
+                if (savedCardBg) {
+                    const bgImg = document.getElementById('keriaCardBgImg');
+                    if (bgImg) {
+                        bgImg.src = savedCardBg;
+                        bgImg.style.display = 'block';
+                    }
+                }
+                const savedBanner = localStorage.getItem('vt_custom_hero_banner');
+                if (savedBanner) {
+                    const bannerImg = document.getElementById('vtHeroBannerImg');
+                    if (bannerImg) bannerImg.src = savedBanner;
+                }
+            } catch(e) {}
+        }
+
+        // Drag and drop image files onto chat bottom deck
+        function initDragAndDrop() {
+            const deck = document.querySelector('.chat-bottom-deck');
+            if (!deck) return;
+            ['dragenter', 'dragover'].forEach(n => {
+                deck.addEventListener(n, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deck.classList.add('drag-over');
+                }, false);
+            });
+            ['dragleave', 'drop'].forEach(n => {
+                deck.addEventListener(n, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deck.classList.remove('drag-over');
+                }, false);
+            });
+            deck.addEventListener('drop', function(e) {
+                const files = e.dataTransfer?.files;
+                if (files && files.length > 0) {
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].type.startsWith('image/')) {
+                            processStudioImageFile(files[i]);
+                            break;
+                        }
+                    }
+                }
+            }, false);
+        }
+
+        function initApp() {
+            restoreCustomAvatarsAndBanners();
+            updateAssistantPersonaUI();
+            const stream = document.getElementById('studioStream');
+            if (stream) {
+                welcomeTemplateHtml = stream.innerHTML;
+            }
+            loadSessions();
+            updateHistoryBadge();
+            renderHistorySessionsList();
+            initStars();
+            initDragAndDrop();
+
+            // Restore saved Antigravity model preference
+            try {
+                const savedM = localStorage.getItem('vt_studio_model');
+                const savedEff = localStorage.getItem('vt_studio_effort');
+                if (savedM) {
+                    studioModel = savedM;
+                    if (savedEff) studioEffort = savedEff;
+                    const found = findAgModel(savedM);
+                    if (found) {
+                        updateAgTriggerUI(found.name, studioEffort, found.fast);
+                    }
+                }
+            } catch(e) {}
+            renderAgModelList();
+            initDraggableTabs();
+
+            // Ensure top banner is always visible
+            try {
+                localStorage.removeItem('vt_banner_collapsed');
+                const row = document.querySelector('.vt-top-header-row');
+                if (row) row.classList.remove('collapsed');
+            } catch(e) {}
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+
+    })();
+    </script>
+
+    <!-- Image Lightbox Zoom Modal -->
+    <div id="studioImgLightbox" class="studio-img-lightbox" onclick="closeStudioImgLightbox(event)">
+        <div class="lightbox-content">
+            <button type="button" class="lightbox-close-btn" onclick="closeStudioImgLightbox()" title="Đóng (Esc)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="lightboxImg" src="" alt="Ảnh phóng to">
+        </div>
+    </div>
+</body>
+</html>
+

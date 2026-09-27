@@ -353,9 +353,9 @@ require_once __DIR__ . '/includes/public_header.php';
     font-size: 17px;
     flex-shrink: 0;
 }
-.fi-indigo { background: rgba(217,27,67,0.1); color: var(--red-main); border: 1px solid rgba(217,27,67,0.2); }
-.fi-violet { background: rgba(217,27,67,0.07); color: var(--red-dark); border: 1px solid rgba(217,27,67,0.15); }
-.fi-teal   { background: rgba(217,27,67,0.05); color: var(--red-light); border: 1px solid rgba(217,27,67,0.12); }
+.fi-indigo { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #0284c7; border: 1.5px solid #7dd3fc; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15); }
+.fi-violet { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); color: #9333ea; border: 1.5px solid #d8b4fe; box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15); }
+.fi-teal   { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669; border: 1.5px solid #a7f3d0; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15); }
 
 .lp-feature-text strong { display: block; font-size: 14px; font-weight: 700; color: var(--ink); }
 .lp-feature-text span { font-size: 12px; color: var(--ink-soft); }
@@ -805,18 +805,20 @@ require_once __DIR__ . '/includes/public_header.php';
             </div>
 
             <!-- Ở DƯỚI HÌNH VUÔNG LED 7 MÀU VỚI CHỮ DEVELOPER KERIA -->
-            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
-                <div class="square-led-avatar" style="width: 54px; height: 54px; border-radius: 14px;">
-                    <img src="/tkb/assets/img/avatar_khanh.png" alt="Logo Lê Nhựt Khánh" style="border-radius: 11px;">
+            <div style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 24px;">
+                <div class="square-led-avatar" style="width: 56px; height: 56px; border-radius: 14px; cursor: pointer; flex-shrink: 0;" title="Nhấn để phóng to ảnh SmartEdu AI" onclick="openSmartEduModal()">
+                    <img src="/tkb/assets/img/avatar_khanh.png?v=<?= file_exists(__DIR__ . '/assets/img/avatar_khanh.png') ? filemtime(__DIR__ . '/assets/img/avatar_khanh.png') : time() ?>" alt="SmartEdu AI - Lê Nhựt Khánh" style="border-radius: 11px;">
                 </div>
                 <div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
                         <span class="top-led-dot" style="width:7px;height:7px;"></span>
                         <img src="https://flagcdn.com/w40/vn.png" alt="Cờ Việt Nam" style="height: 13px; width: 19px; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.25); object-fit: cover; flex-shrink: 0;">
-                        <span class="top-led-text" style="font-size: 13.5px; letter-spacing: 0.5px;">DEVELOPER BY LÊ NHỰT KHÁNH</span>
+                        <span class="top-led-text" style="font-size: 13.5px; letter-spacing: 0.5px;">SMARTEDU AI</span>
                     </div>
-                    <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 11px; color: #d91b43; letter-spacing: 0.8px; text-transform: uppercase; margin-top: 3px; display: flex; align-items: center; gap: 5px;">
-                        <i class="fab fa-tiktok" style="font-size: 10px; color: #7000ff;"></i> tiktok: keria mê code / zalo: 0373690565
+                    <div style="font-family: 'Outfit', sans-serif; font-size: 11px; line-height: 1.55; color: #475569;">
+                        <div><strong style="color: #0f172a;">Lê Nhựt Khánh:</strong> Xây Dựng &amp; Phát Triển Hệ Thống</div>
+                        <div><strong style="color: #0f172a;">Ngô Ngọc Chi:</strong> Thuyết Trình &amp; Điều Phối Dự Án</div>
+                        <div><strong style="color: #0f172a;">Bùi Minh Trí:</strong> Thiết Kế Dự Án, Biên Tập Nội Dung</div>
                     </div>
                 </div>
             </div>
@@ -832,21 +834,30 @@ require_once __DIR__ . '/includes/public_header.php';
 
                 <div class="lp-features">
                     <div class="lp-feature">
-                        <div class="lp-feature-icon fi-indigo"><i class="fas fa-code"></i></div>
+                        <div class="lp-feature-icon fi-indigo"><i class="fa-solid fa-code"></i></div>
                         <div class="lp-feature-text">
                             <strong>Trình Biên Dịch VS Code IDE</strong>
                             <span>Thực hành lập trình Python, C, C++, Java, PHP trực tiếp</span>
                         </div>
                     </div>
                     <div class="lp-feature">
-                        <div class="lp-feature-icon fi-violet"><i class="fas fa-face-viewfinder"></i></div>
+                        <div class="lp-feature-icon fi-violet">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+                                <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+                                <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+                                <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                                <circle cx="12" cy="10" r="3.2"/>
+                                <path d="M7 18a5 5 0 0 1 10 0"/>
+                            </svg>
+                        </div>
                         <div class="lp-feature-text">
                             <strong>Xác Thực Khuôn Mặt AI</strong>
                             <span>Đăng nhập thông minh, bảo mật tài khoản cao</span>
                         </div>
                     </div>
                     <div class="lp-feature">
-                        <div class="lp-feature-icon fi-teal"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="lp-feature-icon fi-teal"><i class="fa-solid fa-graduation-cap"></i></div>
                         <div class="lp-feature-text">
                             <strong>Quản Lý Điểm & Tiến Độ</strong>
                             <span>Theo dõi kết quả học tập và rèn luyện tự động</span>
@@ -951,7 +962,7 @@ require_once __DIR__ . '/includes/public_header.php';
 <!-- Modal Nhận diện khuôn mặt -->
 <div class="modal-overlay" id="faceModal">
     <div class="modal-box">
-        <h3 class="modal-title"><i class="fa-solid fa-face-viewfinder"></i> Nhận Diện Khuôn Mặt</h3>
+        <h3 class="modal-title"><i class="fa-solid fa-camera"></i> Nhận Diện Khuôn Mặt</h3>
         <p class="modal-sub">Hướng thẳng mặt vào camera và giữ yên</p>
         <div class="video-container">
             <video id="faceVideo" autoplay muted playsinline></video>
@@ -1207,6 +1218,23 @@ async function verifyFace(descriptor) {
         setTimeout(startFaceDetection, 2000);
     }
 }
+
+function openSmartEduModal() {
+    var m = document.getElementById('smartEduModal');
+    if (m) { m.style.display = 'flex'; }
+}
+function closeSmartEduModal() {
+    var m = document.getElementById('smartEduModal');
+    if (m) { m.style.display = 'none'; }
+}
 </script>
+
+<!-- SMARTEDU AI MODAL LIGHTBOX -->
+<div id="smartEduModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;" onclick="closeSmartEduModal()">
+    <div style="position:relative; max-width:620px; width:100%; background:#0f172a; border-radius:24px; padding:12px; border:2px solid rgba(192,132,252,0.4); box-shadow:0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(112,0,255,0.3);" onclick="event.stopPropagation()">
+        <button type="button" onclick="closeSmartEduModal()" style="position:absolute; top:16px; right:16px; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.15); border:none; color:#fff; font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">✕</button>
+        <img src="/tkb/assets/img/smartedu_banner.jpg" alt="SmartEdu AI Poster" style="width:100%; border-radius:18px; display:block; box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+    </div>
+</div>
 
 <?php require_once __DIR__ . '/includes/public_footer.php'; ?>

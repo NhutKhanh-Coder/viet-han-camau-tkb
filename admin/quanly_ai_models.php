@@ -43,28 +43,72 @@ $enabled_count = $total_models - $disabled_count;
 
     <style>
         :root {
+            /* Default: Dark Lofi Aesthetic */
             --adm-bg: #0c0717;
             --adm-card-bg: #140d27;
             --adm-card-border: rgba(168, 85, 247, 0.18);
-            --adm-card-hover-border: rgba(192, 132, 252, 0.4);
+            --adm-card-hover-border: rgba(192, 132, 252, 0.45);
+            --adm-text-main: #ffffff;
+            --adm-text-muted: #a79bb7;
+            --adm-input-bg: #100922;
+            --adm-input-border: rgba(168, 85, 247, 0.3);
+            --adm-pill-bg: #140d27;
+            --adm-id-bg: rgba(255, 255, 255, 0.06);
+            --adm-id-border: rgba(168, 85, 247, 0.25);
+            --adm-shadow: 0 8px 30px rgba(0,0,0,0.4);
+
             --adm-purple: #a855f7;
             --adm-cyan: #38bdf8;
-            --adm-pink: #f472b6;
+            --adm-pink: #ec4899;
             --adm-green: #34d399;
             --adm-orange: #fb923c;
         }
 
+        body.adm-light-mode {
+            /* Light Mode Theme */
+            --adm-bg: #f8fafc;
+            --adm-card-bg: #ffffff;
+            --adm-card-border: #e2e8f0;
+            --adm-card-hover-border: #cbd5e1;
+            --adm-text-main: #0f172a;
+            --adm-text-muted: #64748b;
+            --adm-input-bg: #f8fafc;
+            --adm-input-border: #e2e8f0;
+            --adm-pill-bg: #ffffff;
+            --adm-id-bg: #f1f5f9;
+            --adm-id-border: #e2e8f0;
+            --adm-shadow: 0 2px 10px rgba(0,0,0,0.03);
+
+            --adm-purple: #7c3aed;
+            --adm-cyan: #0284c7;
+            --adm-pink: #db2777;
+            --adm-green: #10b981;
+            --adm-orange: #f97316;
+        }
+
         body.admin-portal {
             background-color: var(--adm-bg) !important;
-            color: #f3e8ff;
+            color: var(--adm-text-main) !important;
             font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
             display: block !important;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .aim-container {
             max-width: 1400px;
             margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-title {
+            color: var(--adm-text-main) !important;
+            font-weight: 800;
+        }
+        .page-sub {
+            color: var(--adm-text-muted) !important;
+            font-size: 13.5px;
+            margin-top: 4px;
         }
 
         /* Stats Row */
@@ -83,24 +127,25 @@ $enabled_count = $total_models - $disabled_count;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            box-shadow: var(--adm-shadow);
             transition: all 0.25s ease;
         }
         .aim-stat-card:hover {
             transform: translateY(-2px);
             border-color: var(--adm-card-hover-border);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
         .aim-stat-num {
             font-size: 28px;
             font-weight: 800;
-            color: #fff;
+            color: var(--adm-text-main);
             line-height: 1;
             margin-bottom: 4px;
         }
         .aim-stat-label {
             font-size: 12px;
             font-weight: 600;
-            color: #a79bb7;
+            color: var(--adm-text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -126,6 +171,8 @@ $enabled_count = $total_models - $disabled_count;
             align-items: center;
             justify-content: space-between;
             gap: 14px;
+            box-shadow: var(--adm-shadow);
+            transition: all 0.25s ease;
         }
 
         .aim-search-wrap {
@@ -139,25 +186,27 @@ $enabled_count = $total_models - $disabled_count;
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #a79bb7;
+            color: var(--adm-text-muted);
             font-size: 13.5px;
         }
         .aim-search-input {
             width: 100%;
             padding: 10px 14px 10px 38px;
-            background: rgba(168, 85, 247, 0.08);
-            border: 1px solid rgba(168, 85, 247, 0.25);
+            background: var(--adm-input-bg);
+            border: 1.5px solid var(--adm-input-border);
             border-radius: 12px;
-            color: #f3e8ff;
+            color: var(--adm-text-main);
             font-size: 13px;
             outline: none;
             transition: all 0.2s;
             box-sizing: border-box;
         }
         .aim-search-input:focus {
-            border-color: #c084fc;
-            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
-            background: rgba(168, 85, 247, 0.14);
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+        }
+        .aim-search-input::placeholder {
+            color: var(--adm-text-muted);
         }
 
         .aim-quick-btns {
@@ -170,7 +219,7 @@ $enabled_count = $total_models - $disabled_count;
         .aim-btn {
             padding: 8px 14px;
             border-radius: 10px;
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 700;
             border: 1px solid transparent;
             cursor: pointer;
@@ -183,32 +232,53 @@ $enabled_count = $total_models - $disabled_count;
         .aim-btn-danger {
             background: rgba(239, 68, 68, 0.15);
             border-color: rgba(239, 68, 68, 0.35);
-            color: #fca5a5;
+            color: #f87171;
+        }
+        body.adm-light-mode .aim-btn-danger {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #b91c1c;
         }
         .aim-btn-danger:hover {
-            background: rgba(239, 68, 68, 0.28);
-            color: #fff;
+            background: #ef4444;
+            border-color: #dc2626;
+            color: #ffffff;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
         }
         .aim-btn-success {
-            background: rgba(52, 211, 153, 0.15);
-            border-color: rgba(52, 211, 153, 0.35);
-            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #34d399;
+        }
+        body.adm-light-mode .aim-btn-success {
+            background: #dcfce7;
+            border-color: #86efac;
+            color: #15803d;
         }
         .aim-btn-success:hover {
-            background: rgba(52, 211, 153, 0.28);
-            color: #fff;
+            background: #10b981;
+            border-color: #059669;
+            color: #ffffff;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
         }
         .aim-btn-primary {
-            background: rgba(168, 85, 247, 0.2);
-            border-color: rgba(168, 85, 247, 0.4);
-            color: #d8b4fe;
+            background: rgba(124, 58, 237, 0.15);
+            border-color: rgba(124, 58, 237, 0.35);
+            color: #c084fc;
+        }
+        body.adm-light-mode .aim-btn-primary {
+            background: #ede9fe;
+            border-color: #c4b5fd;
+            color: #6d28d9;
         }
         .aim-btn-primary:hover {
-            background: rgba(168, 85, 247, 0.35);
-            color: #fff;
+            background: #7c3aed;
+            border-color: #6d28d9;
+            color: #ffffff;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
         }
 
         /* Filter Tabs */
@@ -222,20 +292,26 @@ $enabled_count = $total_models - $disabled_count;
         .aim-pill {
             padding: 7px 16px;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(168, 85, 247, 0.18);
-            color: #c4b5fd;
-            font-size: 12px;
+            background: var(--adm-pill-bg);
+            border: 1px solid var(--adm-card-border);
+            color: var(--adm-text-muted);
+            font-size: 12.5px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
+            box-shadow: var(--adm-shadow);
         }
-        .aim-pill:hover, .aim-pill.active {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(236, 72, 153, 0.3));
-            border-color: #c084fc;
+        .aim-pill:hover {
+            border-color: var(--adm-card-hover-border);
+            background: var(--adm-input-bg);
+            color: var(--adm-text-main);
+        }
+        .aim-pill.active {
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            border-color: #7c3aed;
             color: #ffffff;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
         }
 
         /* Models Grid */
@@ -256,17 +332,17 @@ $enabled_count = $total_models - $disabled_count;
             transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            box-shadow: var(--adm-shadow);
         }
         .aim-model-card:hover {
             border-color: var(--adm-card-hover-border);
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.2);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.16);
         }
         .aim-model-card.disabled {
-            opacity: 0.7;
-            background: #100a1f;
-            border-color: rgba(239, 68, 68, 0.3);
+            opacity: 0.75;
+            background: var(--adm-input-bg);
+            border-color: rgba(239, 68, 68, 0.4);
         }
 
         .aim-model-top {
@@ -279,19 +355,20 @@ $enabled_count = $total_models - $disabled_count;
         .aim-model-meta h3 {
             font-size: 15px;
             font-weight: 800;
-            color: #ffffff;
-            margin: 0 0 4px;
+            color: var(--adm-text-main);
+            margin: 0 0 6px;
             line-height: 1.25;
         }
         .aim-model-id {
             font-family: 'Consolas', 'Courier New', monospace;
             font-size: 11px;
-            color: #a79bb7;
-            background: rgba(0, 0, 0, 0.35);
-            padding: 2px 7px;
+            font-weight: 600;
+            color: var(--adm-text-muted);
+            background: var(--adm-id-bg);
+            padding: 3px 8px;
             border-radius: 6px;
             display: inline-block;
-            border: 1px solid rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--adm-id-border);
             word-break: break-all;
         }
 
@@ -304,18 +381,27 @@ $enabled_count = $total_models - $disabled_count;
             letter-spacing: 0.5px;
             flex-shrink: 0;
         }
-        .badge-deepseek { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; }
-        .badge-qwen { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.35); color: #c084fc; }
-        .badge-mistral { background: rgba(251, 146, 60, 0.15); border: 1px solid rgba(251, 146, 60, 0.35); color: #fb923c; }
-        .badge-minimax { background: rgba(244, 114, 182, 0.15); border: 1px solid rgba(244, 114, 182, 0.35); color: #f472b6; }
-        .badge-other { background: rgba(148, 163, 184, 0.15); border: 1px solid rgba(148, 163, 184, 0.35); color: #cbd5e1; }
+        .badge-deepseek { background: rgba(2, 132, 199, 0.15); border: 1px solid rgba(2, 132, 199, 0.35); color: #38bdf8; }
+        body.adm-light-mode .badge-deepseek { background: #e0f2fe; border: 1px solid #bae6fd; color: #0284c7; }
+
+        .badge-qwen { background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.35); color: #c084fc; }
+        body.adm-light-mode .badge-qwen { background: #f5f3ff; border: 1px solid #ddd6fe; color: #7c3aed; }
+
+        .badge-mistral { background: rgba(234, 88, 12, 0.15); border: 1px solid rgba(234, 88, 12, 0.35); color: #fb923c; }
+        body.adm-light-mode .badge-mistral { background: #ffedd5; border: 1px solid #fed7aa; color: #c2410c; }
+
+        .badge-minimax { background: rgba(219, 39, 119, 0.15); border: 1px solid rgba(219, 39, 119, 0.35); color: #f472b6; }
+        body.adm-light-mode .badge-minimax { background: #fdf2f8; border: 1px solid #fbcfe8; color: #db2777; }
+
+        .badge-other { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; }
+        body.adm-light-mode .badge-other { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; }
 
         .aim-model-desc {
-            font-size: 12px;
-            color: #c4b5fd;
-            line-height: 1.4;
+            font-size: 12.5px;
+            color: var(--adm-text-muted);
+            line-height: 1.45;
             margin-bottom: 14px;
-            min-height: 34px;
+            min-height: 36px;
         }
 
         .aim-model-bottom {
@@ -323,7 +409,7 @@ $enabled_count = $total_models - $disabled_count;
             align-items: center;
             justify-content: space-between;
             padding-top: 12px;
-            border-top: 1px solid rgba(168, 85, 247, 0.12);
+            border-top: 1px solid var(--adm-card-border);
         }
         .aim-tags-row {
             display: flex;
@@ -331,12 +417,13 @@ $enabled_count = $total_models - $disabled_count;
             gap: 6px;
         }
         .aim-tag {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.06);
-            color: #a79bb7;
+            font-size: 10.5px;
+            font-weight: 600;
+            padding: 3px 7px;
+            border-radius: 6px;
+            background: var(--adm-id-bg);
+            border: 1px solid var(--adm-id-border);
+            color: var(--adm-text-muted);
         }
 
         /* Modern iOS-Style Toggle Switch */
@@ -350,8 +437,8 @@ $enabled_count = $total_models - $disabled_count;
             font-weight: 800;
             letter-spacing: 0.3px;
         }
-        .aim-status-open { color: #34d399; }
-        .aim-status-closed { color: #f87171; }
+        .aim-status-open { color: #059669; }
+        .aim-status-closed { color: #dc2626; }
 
         .aim-switch {
             position: relative;
@@ -369,8 +456,8 @@ $enabled_count = $total_models - $disabled_count;
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #2e1a47;
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background-color: #e2e8f0;
+            border: 1px solid #cbd5e1;
             border-radius: 24px;
             transition: .3s;
         }
@@ -381,19 +468,19 @@ $enabled_count = $total_models - $disabled_count;
             width: 16px;
             left: 3px;
             bottom: 3px;
-            background-color: #f87171;
+            background-color: #94a3b8;
             border-radius: 50%;
             transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
         input:checked + .aim-slider {
-            background-color: #064e3b;
-            border-color: #10b981;
+            background-color: #10b981;
+            border-color: #059669;
         }
         input:checked + .aim-slider:before {
             transform: translateX(20px);
-            background-color: #34d399;
-            box-shadow: 0 0 10px #34d399;
+            background-color: #ffffff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
         }
 
         /* Toast notification */
@@ -402,13 +489,13 @@ $enabled_count = $total_models - $disabled_count;
             bottom: 24px;
             right: 24px;
             padding: 12px 20px;
-            background: #190e33;
-            border: 1px solid rgba(168, 85, 247, 0.4);
+            background: #ffffff;
+            border: 1.5px solid #7c3aed;
             border-radius: 12px;
-            color: #fff;
+            color: #0f172a;
             font-size: 13px;
             font-weight: 700;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
             z-index: 99999;
             display: flex;
             align-items: center;
@@ -428,7 +515,7 @@ $enabled_count = $total_models - $disabled_count;
         }
     </style>
 </head>
-<body class="admin-portal">
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
 
     <?php include __DIR__ . '/../includes/admin_nav.php'; ?>
 
@@ -439,7 +526,7 @@ $enabled_count = $total_models - $disabled_count;
             <div class="page-header" style="margin-bottom: 24px;">
                 <div>
                     <h1 class="page-title" style="display:flex; align-items:center; gap:10px;">
-                        <i class="fa-solid fa-robot" style="color: #a855f7;"></i>
+                        <i class="fa-solid fa-robot" style="color: #7c3aed;"></i>
                         Quản Lý Mô Hình AI Bot Chat (Sinh Viên)
                     </h1>
                     <p class="page-sub">
@@ -460,39 +547,39 @@ $enabled_count = $total_models - $disabled_count;
                         <div class="aim-stat-num" id="statTotal"><?= $total_models ?></div>
                         <div class="aim-stat-label">Tổng số Mô hình AI</div>
                     </div>
-                    <div class="aim-stat-icon" style="background: rgba(168,85,247,0.15); color: #c084fc;">
+                    <div class="aim-stat-icon" style="background: #f5f3ff; color: #7c3aed;">
                         <i class="fa-solid fa-brain"></i>
                     </div>
                 </div>
 
                 <div class="aim-stat-card">
                     <div>
-                        <div class="aim-stat-num" id="statEnabled" style="color:#34d399;"><?= $enabled_count ?></div>
+                        <div class="aim-stat-num" id="statEnabled" style="color:#059669;"><?= $enabled_count ?></div>
                         <div class="aim-stat-label">Mô hình đang mở (Khả dụng)</div>
                     </div>
-                    <div class="aim-stat-icon" style="background: rgba(52,211,153,0.15); color: #34d399;">
+                    <div class="aim-stat-icon" style="background: #ecfdf5; color: #059669;">
                         <i class="fa-solid fa-circle-check"></i>
                     </div>
                 </div>
 
                 <div class="aim-stat-card">
                     <div>
-                        <div class="aim-stat-num" id="statDisabled" style="color:#f87171;"><?= $disabled_count ?></div>
+                        <div class="aim-stat-num" id="statDisabled" style="color:#dc2626;"><?= $disabled_count ?></div>
                         <div class="aim-stat-label">Mô hình đã khóa (Tạm đóng)</div>
                     </div>
-                    <div class="aim-stat-icon" style="background: rgba(239,68,68,0.15); color: #f87171;">
+                    <div class="aim-stat-icon" style="background: #fef2f2; color: #dc2626;">
                         <i class="fa-solid fa-lock"></i>
                     </div>
                 </div>
 
                 <div class="aim-stat-card">
                     <div>
-                        <div class="aim-stat-num" id="statRate" style="color:#38bdf8;">
+                        <div class="aim-stat-num" id="statRate" style="color:#0284c7;">
                             <?= $total_models > 0 ? round(($enabled_count / $total_models) * 100) : 100 ?>%
                         </div>
                         <div class="aim-stat-label">Tỉ lệ sinh viên có thể dùng</div>
                     </div>
-                    <div class="aim-stat-icon" style="background: rgba(56,189,248,0.15); color: #38bdf8;">
+                    <div class="aim-stat-icon" style="background: #f0f9ff; color: #0284c7;">
                         <i class="fa-solid fa-chart-pie"></i>
                     </div>
                 </div>

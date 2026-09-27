@@ -1489,19 +1489,263 @@ $db->close();
             animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
         }
         @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } }
-        @keyframes toastOut { to { transform: translateY(20px); opacity: 0; } }
+        /* ============================================================
+           ★ CHẾ ĐỘ SÁNG (LIGHT MODE) TOÀN DIỆN CHO ADMIN DASHBOARD ★
+           Tất cả các thẻ (Hero, Thống kê, Biểu đồ, Người yêu, Ảnh, Video, Tin tức)
+           chuyển sang màu trắng sứ sang trọng, tương phản cao, chữ sắc nét.
+           ============================================================ */
+        body.adm-light-mode,
+        body.tuyen-theme,
+        html.adm-light-mode body {
+            background-color: #f8fafc !important;
+            background-image: none !important;
+            color: #0f172a !important;
+            --adm-bg: #f8fafc !important;
+            --adm-card-bg: #ffffff !important;
+            --adm-card-border: #e2e8f0 !important;
+            --adm-card-hover-border: #c084fc !important;
+            --adm-text-main: #0f172a !important;
+            --adm-text-sub: #64748b !important;
+        }
+
+        /* 1. Hero Banner & Đồng hồ */
+        body.adm-light-mode .adm-hero-banner,
+        body.tuyen-theme .adm-hero-banner {
+            background: linear-gradient(135deg, #ffffff 0%, #faf8fc 50%, #f5f3ff 100%) !important;
+            border: 1px solid #ede9fe !important;
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08) !important;
+        }
+        body.adm-light-mode .adm-hero-banner::before,
+        body.tuyen-theme .adm-hero-banner::before {
+            display: none !important;
+        }
+        body.adm-light-mode .adm-hero-pill,
+        body.tuyen-theme .adm-hero-pill {
+            background: #ede9fe !important;
+            border-color: #ddd6fe !important;
+            color: #6d28d9 !important;
+        }
+        body.adm-light-mode .adm-hero-title,
+        body.tuyen-theme .adm-hero-title {
+            color: #0f172a !important;
+        }
+        body.adm-light-mode .adm-hero-title span,
+        body.tuyen-theme .adm-hero-title span {
+            color: #7c3aed !important;
+        }
+        body.adm-light-mode .adm-hero-desc,
+        body.tuyen-theme .adm-hero-desc {
+            color: #64748b !important;
+        }
+        body.adm-light-mode .adm-hero-clock-card,
+        body.tuyen-theme .adm-hero-clock-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+        }
+        body.adm-light-mode .adm-clock-time,
+        body.tuyen-theme .adm-clock-time {
+            color: #0f172a !important;
+            text-shadow: none !important;
+        }
+        body.adm-light-mode .adm-clock-day,
+        body.tuyen-theme .adm-clock-day {
+            color: #64748b !important;
+        }
+        body.adm-light-mode .adm-clock-tag,
+        body.tuyen-theme .adm-clock-tag {
+            background: #f5f3ff !important;
+            border: 1px solid #ede9fe !important;
+            color: #7c3aed !important;
+        }
+
+        /* 2. Thẻ thống kê 6 ô KPI (Sinh viên, Giảng viên, Lớp học, Môn học, Tài liệu, Nhật ký) */
+        body.adm-light-mode .adm-stat-box,
+        body.tuyen-theme .adm-stat-box {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+        }
+        body.adm-light-mode .adm-stat-box:hover,
+        body.tuyen-theme .adm-stat-box:hover {
+            border-color: #c084fc !important;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.1) !important;
+            transform: translateY(-2px);
+        }
+        body.adm-light-mode .adm-stat-num,
+        body.tuyen-theme .adm-stat-num {
+            color: #0f172a !important;
+        }
+        body.adm-light-mode .adm-stat-title,
+        body.tuyen-theme .adm-stat-title {
+            color: #1e293b !important;
+        }
+        body.adm-light-mode .adm-stat-subtext,
+        body.tuyen-theme .adm-stat-subtext {
+            color: #64748b !important;
+        }
+
+        /* 3. Thẻ biểu đồ truy cập Spline Chart */
+        body.adm-light-mode .adm-chart-box,
+        body.tuyen-theme .adm-chart-box {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+        }
+        body.adm-light-mode .adm-chart-heading,
+        body.tuyen-theme .adm-chart-heading {
+            color: #0f172a !important;
+        }
+        body.adm-light-mode .adm-chart-pill,
+        body.tuyen-theme .adm-chart-pill {
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            color: #475569 !important;
+        }
+        body.adm-light-mode .adm-chart-val h4,
+        body.tuyen-theme .adm-chart-val h4 {
+            color: #0f172a !important;
+        }
+        body.adm-light-mode .adm-chart-val span,
+        body.tuyen-theme .adm-chart-val span {
+            color: #64748b !important;
+        }
+        body.adm-light-mode .adm-chart-svg text,
+        body.tuyen-theme .adm-chart-svg text {
+            fill: #64748b !important;
+        }
+        body.adm-light-mode .adm-chart-svg line,
+        body.tuyen-theme .adm-chart-svg line {
+            stroke: #e2e8f0 !important;
+        }
+
+        /* 4. Thẻ 3 cột dưới (Lớp học hoạt động, Thông báo mới, Hoạt động gần đây) */
+        body.adm-light-mode .adm-info-card,
+        body.tuyen-theme .adm-info-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+        }
+        body.adm-light-mode .adm-info-header,
+        body.tuyen-theme .adm-info-header {
+            color: #0f172a !important;
+        }
+        body.adm-light-mode .adm-progress-meta,
+        body.tuyen-theme .adm-progress-meta {
+            color: #0f172a !important;
+        }
+        body.adm-light-mode .adm-progress-sub,
+        body.tuyen-theme .adm-progress-sub {
+            color: #64748b !important;
+        }
+        body.adm-light-mode .adm-progress-bar-bg,
+        body.tuyen-theme .adm-progress-bar-bg {
+            background: #f1f5f9 !important;
+        }
+        body.adm-light-mode .adm-notice-item,
+        body.tuyen-theme .adm-notice-item {
+            border-bottom: 1px solid #f1f5f9 !important;
+        }
+        body.adm-light-mode .adm-notice-title,
+        body.tuyen-theme .adm-notice-title {
+            color: #1e293b !important;
+        }
+        body.adm-light-mode .adm-notice-date,
+        body.tuyen-theme .adm-notice-date {
+            color: #64748b !important;
+        }
+        body.adm-light-mode .adm-act-item,
+        body.tuyen-theme .adm-act-item {
+            border-bottom: 1px solid #f1f5f9 !important;
+        }
+        body.adm-light-mode .adm-act-text,
+        body.tuyen-theme .adm-act-text {
+            color: #1e293b !important;
+        }
+        body.adm-light-mode .adm-act-time,
+        body.tuyen-theme .adm-act-time {
+            color: #64748b !important;
+        }
+        body.adm-light-mode .adm-info-link,
+        body.tuyen-theme .adm-info-link {
+            border-top: 1px solid #f1f5f9 !important;
+        }
+
+        /* 5. Cột phải: Góc khoe người yêu, Bộ sưu tập ảnh, Video kỷ niệm */
+        body.adm-light-mode .adm-gf-card,
+        body.tuyen-theme .adm-gf-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+        }
+        body.adm-light-mode .adm-gf-header-title,
+        body.tuyen-theme .adm-gf-header-title {
+            color: #db2777 !important;
+        }
+        body.adm-light-mode .adm-gf-meta h3,
+        body.tuyen-theme .adm-gf-meta h3 {
+            color: #0f172a !important;
+        }
+        body.adm-light-mode .adm-gf-meta-badge,
+        body.tuyen-theme .adm-gf-meta-badge {
+            background: #fdf2f8 !important;
+            color: #db2777 !important;
+            border: 1px solid #fbcfe8 !important;
+        }
+        body.adm-light-mode .adm-gf-message,
+        body.tuyen-theme .adm-gf-message {
+            color: #475569 !important;
+        }
+        body.adm-light-mode .adm-gf-date-pill,
+        body.tuyen-theme .adm-gf-date-pill {
+            background: #fdf2f8 !important;
+            border: 1px solid #fce7f3 !important;
+            color: #db2777 !important;
+        }
+        body.adm-light-mode .adm-gf-edit-btn,
+        body.tuyen-theme .adm-gf-edit-btn {
+            background: #f5f3ff !important;
+            border: 1px solid #ddd6fe !important;
+            color: #7c3aed !important;
+        }
+        body.adm-light-mode .adm-gf-edit-btn:hover,
+        body.tuyen-theme .adm-gf-edit-btn:hover {
+            background: #ede9fe !important;
+            color: #6d28d9 !important;
+        }
+        body.adm-light-mode .adm-gf-add-btn,
+        body.tuyen-theme .adm-gf-add-btn {
+            background: #fdf2f8 !important;
+            border: 1.5px dashed #fbcfe8 !important;
+            color: #db2777 !important;
+        }
+        body.adm-light-mode .adm-gf-add-btn:hover,
+        body.tuyen-theme .adm-gf-add-btn:hover {
+            background: #fce7f3 !important;
+            border-color: #f472b6 !important;
+            color: #be185d !important;
+        }
+        body.adm-light-mode .adm-gf-gallery-thumb,
+        body.tuyen-theme .adm-gf-gallery-thumb {
+            border: 1.5px solid #e2e8f0 !important;
+        }
+        body.adm-light-mode .adm-video-player-box,
+        body.tuyen-theme .adm-video-player-box {
+            border: 1px solid #e2e8f0 !important;
+        }
+        body.adm-light-mode .adm-video-bottom-bar,
+        body.tuyen-theme .adm-video-bottom-bar {
+            background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.8) 100%) !important;
+        }
+        body.adm-light-mode .sakura-petal {
+            opacity: 0.3 !important;
+        }
     </style>
 </head>
-<body class="admin-portal <?= $is_tuyen ? 'tuyen-theme tuyen-portal' : '' ?>">
+<body class="admin-portal <?= $is_tuyen ? 'tuyen-theme tuyen-portal' : '' ?> <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
 
-    <?php if (!$is_tuyen): ?>
-    <!-- Subtle Sakura Blossom Elements -->
-    <div class="sakura-petal" style="width:10px; height:10px; left:5%; animation-duration:9s; animation-delay:0s;"></div>
-    <div class="sakura-petal" style="width:14px; height:14px; left:18%; animation-duration:12s; animation-delay:2s;"></div>
-    <div class="sakura-petal" style="width:8px; height:8px; left:35%; animation-duration:8s; animation-delay:4s;"></div>
-    <div class="sakura-petal" style="width:12px; height:12px; left:60%; animation-duration:11s; animation-delay:1s;"></div>
-    <div class="sakura-petal" style="width:10px; height:10px; left:82%; animation-duration:10s; animation-delay:3s;"></div>
-    <?php endif; ?>
+    <!-- 🌸 Hiệu ứng Hoa Anh Đào Rơi Tự Nhiên (Sakura Falling Canvas Engine) 🌸 -->
+    <script src="/tkb/assets/sakura_fall.js?v=<?= time() ?>" defer></script>
 
     <?php include __DIR__ . '/../includes/admin_nav.php'; ?>
 

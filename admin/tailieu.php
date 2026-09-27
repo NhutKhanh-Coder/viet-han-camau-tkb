@@ -222,9 +222,142 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
     font-size: 12px;
     font-weight: 700;
 }
+.doc-title {
+    font-size: 15.5px;
+    font-weight: 800;
+    color: #f3e8ff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #f3e8ff;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.card-header-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #f3e8ff;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-lbl-custom {
+    font-size: 12px;
+    font-weight: 700;
+    color: #c4b5fd;
+}
+.custom-input {
+    background: #140d27;
+    border: 1px solid rgba(168,85,247,0.3);
+    color: #f3e8ff;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.custom-input:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+.empty-card {
+    background: rgba(26, 17, 48, 0.7);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 16px;
+    padding: 50px 30px;
+    text-align: center;
+}
+.empty-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f3e8ff;
+    margin-bottom: 6px;
+}
+.empty-sub {
+    font-size: 13px;
+    color: #a79bb7;
+}
+
+/* Light Mode Overrides */
+body.adm-light-mode .doc-card,
+body.tuyen-theme .doc-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+}
+body.adm-light-mode .doc-title,
+body.tuyen-theme .doc-title,
+body.adm-light-mode .section-title,
+body.tuyen-theme .section-title,
+body.adm-light-mode .card-header-title,
+body.tuyen-theme .card-header-title {
+    color: #0f172a !important;
+}
+body.adm-light-mode .teacher-tag-badge,
+body.tuyen-theme .teacher-tag-badge {
+    background: #fdf2f8 !important;
+    color: #db2777 !important;
+    border: 1px solid #fbcfe8 !important;
+}
+body.adm-light-mode .form-lbl-custom,
+body.tuyen-theme .form-lbl-custom {
+    color: #334155 !important;
+}
+body.adm-light-mode .custom-input,
+body.tuyen-theme .custom-input {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+body.adm-light-mode .custom-input:focus,
+body.tuyen-theme .custom-input:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12) !important;
+}
+body.adm-light-mode .tab-btn-admin,
+body.tuyen-theme .tab-btn-admin {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+}
+body.adm-light-mode .tab-btn-admin:hover,
+body.tuyen-theme .tab-btn-admin:hover {
+    background: #f5f3ff !important;
+    color: #7c3aed !important;
+    border-color: #ddd6fe !important;
+}
+body.adm-light-mode .tab-btn-admin.active,
+body.tuyen-theme .tab-btn-admin.active {
+    background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
+    border-color: #a855f7 !important;
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3) !important;
+}
+body.adm-light-mode .empty-card,
+body.tuyen-theme .empty-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.04) !important;
+}
+body.adm-light-mode .empty-title,
+body.tuyen-theme .empty-title {
+    color: #0f172a !important;
+}
+body.adm-light-mode .empty-sub,
+body.tuyen-theme .empty-sub {
+    color: #64748b !important;
+}
 </style>
 </head>
-<body class="admin-portal">
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
 <?php include '../includes/admin_nav.php'; ?>
 
 <div class="main-content">
@@ -237,7 +370,7 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
       <p class="page-sub">Xem toàn bộ sách, bài giảng, slide PDF và video YouTube do tất cả Giáo Viên đăng lên</p>
     </div>
     <div style="display:flex; gap:10px;">
-      <a href="/tkb/admin/baitap.php" class="btn btn-ghost" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);">
+      <a href="/tkb/admin/baitap.php" class="btn btn-ghost top-action-btn-blue">
         <i class="fa-solid fa-pen-to-square"></i> Quản Lý Bài Tập GV Đăng
       </a>
     </div>
@@ -261,13 +394,13 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
   </div>
 
   <!-- Filter Toolbar -->
-  <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 18px 20px; margin-bottom: 24px;">
+  <div class="card" style="border-radius: 16px; padding: 18px 20px; margin-bottom: 24px;">
     <form method="GET" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) 100px; gap: 12px; align-items: end;">
       <input type="hidden" name="tab" value="<?= htmlspecialchars($tab) ?>">
 
       <div>
-        <label class="form-label" style="font-size:12px; font-weight:700; color:#c4b5fd;"><i class="fa-solid fa-chalkboard-user"></i> Lọc Theo Giáo Viên:</label>
-        <select name="filter_gv" onchange="this.form.submit()" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 12px; font-size:13px;">
+        <label class="form-label form-lbl-custom"><i class="fa-solid fa-chalkboard-user"></i> Lọc Theo Giáo Viên:</label>
+        <select name="filter_gv" onchange="this.form.submit()" class="form-select custom-input">
           <option value="0">-- Tất cả giáo viên toàn trường --</option>
           <?php foreach ($gvList as $gv): ?>
             <option value="<?= $gv['id'] ?>" <?= ($filter_gv == $gv['id']) ? 'selected' : '' ?>>
@@ -278,8 +411,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
       </div>
 
       <div>
-        <label class="form-label" style="font-size:12px; font-weight:700; color:#c4b5fd;"><i class="fa-solid fa-book"></i> Lọc Theo Môn Học:</label>
-        <select name="filter_mon" onchange="this.form.submit()" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 12px; font-size:13px;">
+        <label class="form-label form-lbl-custom"><i class="fa-solid fa-book"></i> Lọc Theo Môn Học:</label>
+        <select name="filter_mon" onchange="this.form.submit()" class="form-select custom-input">
           <option value="0">-- Tất cả môn học --</option>
           <?php foreach ($monList as $mon): ?>
             <option value="<?= $mon['id'] ?>" <?= ($filter_mon == $mon['id']) ? 'selected' : '' ?>>
@@ -290,8 +423,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
       </div>
 
       <div>
-        <label class="form-label" style="font-size:12px; font-weight:700; color:#c4b5fd;"><i class="fa-solid fa-magnifying-glass"></i> Tìm Kiếm:</label>
-        <input type="text" name="search_q" value="<?= htmlspecialchars($search_q) ?>" placeholder="Tên tài liệu, bài giảng..." class="form-input" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 12px; font-size:13px;">
+        <label class="form-label form-lbl-custom"><i class="fa-solid fa-magnifying-glass"></i> Tìm Kiếm:</label>
+        <input type="text" name="search_q" value="<?= htmlspecialchars($search_q) ?>" placeholder="Tên tài liệu, bài giảng..." class="form-input custom-input">
       </div>
 
       <div>
@@ -306,8 +439,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
     <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; align-items: start;">
       
       <!-- Left: Upload New Document as Admin -->
-      <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 22px;">
-        <div style="font-size: 15px; font-weight: 800; color: #f3e8ff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+      <div class="card" style="border-radius: 16px; padding: 22px;">
+        <div class="card-header-title">
           <i class="fa-solid fa-cloud-arrow-up" style="color: #a855f7;"></i> Tải Lên / Chia Sẻ Tài Liệu (Admin)
         </div>
 
@@ -316,8 +449,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           <input type="hidden" name="tab" value="docs">
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Chọn Môn Học *</label>
-            <select name="mon_hoc_id" class="form-select" required style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Chọn Môn Học *</label>
+            <select name="mon_hoc_id" class="form-select custom-input" required>
               <option value="">-- Chọn môn học --</option>
               <?php foreach ($monList as $mon): ?>
                 <option value="<?= $mon['id'] ?>"><?= htmlspecialchars($mon['ten_mon']) ?></option>
@@ -326,8 +459,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Giáo Viên Sở Hữu / Người Đăng</label>
-            <select name="giang_vien_id" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Giáo Viên Sở Hữu / Người Đăng</label>
+            <select name="giang_vien_id" class="form-select custom-input">
               <option value="0">Ban Quản Trị / Admin</option>
               <?php foreach ($gvList as $gv): ?>
                 <option value="<?= $gv['id'] ?>"><?= htmlspecialchars($gv['ho_ten']) ?> (<?= htmlspecialchars($gv['ma_gv']) ?>)</option>
@@ -336,18 +469,18 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Tên Tài Liệu / Video</label>
-            <input type="text" name="ten_tai_lieu" class="form-input" placeholder="Ví dụ: Slide bài giảng Chương 1 (PDF / YouTube)" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Tên Tài Liệu / Video</label>
+            <input type="text" name="ten_tai_lieu" class="form-input custom-input" placeholder="Ví dụ: Slide bài giảng Chương 1 (PDF / YouTube)">
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Chọn Tệp Từ Máy Tính (PDF, DOCX, PPTX, ZIP...)</label>
-            <input type="file" name="doc_file" class="form-input" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:8px 12px;">
+            <label class="form-label form-lbl-custom">Chọn Tệp Từ Máy Tính (PDF, DOCX, PPTX, ZIP...)</label>
+            <input type="file" name="doc_file" class="form-input custom-input" style="padding:7px 10px;">
           </div>
 
           <div class="form-group" style="margin-bottom:20px;">
-            <label class="form-label">Hoặc Dán Liên Kết Download / Link Video YouTube</label>
-            <input type="text" name="link_download" class="form-input" placeholder="https://youtube.com/watch?v=... hoặc https://drive.google.com/..." style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Hoặc Dán Liên Kết Download / Link Video YouTube</label>
+            <input type="text" name="link_download" class="form-input custom-input" placeholder="https://youtube.com/watch?v=... hoặc https://drive.google.com/...">
           </div>
 
           <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:800; font-size:14px; background:linear-gradient(135deg, #9333ea, #7c3aed); border:none; border-radius:10px;">
@@ -358,25 +491,25 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
 
       <!-- Right: Documents Posted by All Teachers -->
       <div>
-        <div style="font-size: 16px; font-weight: 800; color: #f3e8ff; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-          <span><i class="fa-solid fa-list-check" style="color: #38bdf8;"></i> Danh Sách Tài Liệu Của Giáo Viên (<?= count($documents) ?>)</span>
+        <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+          <span class="section-title"><i class="fa-solid fa-list-check" style="color: #38bdf8;"></i> Danh Sách Tài Liệu Của Giáo Viên (<?= count($documents) ?>)</span>
           <?php if ($filter_gv || $filter_mon || $search_q): ?>
             <a href="?tab=docs" style="font-size:12px; color:#fb7185; text-decoration:none; font-weight:700;"><i class="fa-solid fa-xmark"></i> Xóa lọc</a>
           <?php endif; ?>
         </div>
 
         <?php if (empty($documents)): ?>
-          <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 50px 30px; text-align: center; color: #94a3b8;">
+          <div class="card empty-card">
             <i class="fa-solid fa-folder-open" style="font-size: 42px; color: #a855f7; margin-bottom: 14px;"></i>
-            <div style="font-size: 15px; font-weight: 700; color: #f3e8ff; margin-bottom: 6px;">Chưa có tài liệu nào</div>
-            <div style="font-size: 13px; color: #a79bb7;">Hiện chưa có giáo viên nào đăng tài liệu cho bộ lọc này.</div>
+            <div class="empty-title">Chưa có tài liệu nào</div>
+            <div class="empty-sub">Hiện chưa có giáo viên nào đăng tài liệu cho bộ lọc này.</div>
           </div>
         <?php else: foreach ($documents as $d): 
           $yt_id = getYoutubeIdAdmin($d['link_download']);
         ?>
           <div class="doc-card">
             <div>
-              <div style="font-size: 15.5px; font-weight: 800; color: #f3e8ff; display: flex; align-items: center; gap: 8px;">
+              <div class="doc-title">
                 <?php if ($yt_id): ?>
                   <i class="fa-brands fa-youtube" style="color: #f43f5e; font-size: 18px;"></i>
                 <?php else: ?>
@@ -388,14 +521,14 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
                 <?php endif; ?>
               </div>
 
-              <div style="font-size: 12px; color: #c4b5fd; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <div style="font-size: 12px; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
                 <span class="teacher-tag-badge">
                   <i class="fa-solid fa-chalkboard-user"></i> GV: <?= htmlspecialchars($d['ten_giang_vien']) ?>
                 </span>
-                <span style="color:#38bdf8; font-weight:700; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:6px;">
+                <span style="color:#0284c7; font-weight:700; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:6px;">
                   <i class="fa-solid fa-book"></i> <?= htmlspecialchars($d['ten_mon']) ?>
                 </span>
-                <span style="color:#94a3b8;"><i class="fa-solid fa-calendar-day"></i> <?= date('d/m/Y', strtotime($d['created_at'])) ?></span>
+                <span style="color:#64748b;"><i class="fa-solid fa-calendar-day"></i> <?= date('d/m/Y', strtotime($d['created_at'])) ?></span>
               </div>
             </div>
 
@@ -416,27 +549,27 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
 
   <?php if ($tab === 'lessons'): ?>
     <div>
-      <div style="font-size: 16px; font-weight: 800; color: #f3e8ff; margin-bottom: 16px;">
-        <i class="fa-solid fa-book-open-reader" style="color: #38bdf8;"></i> Danh Sách Bài Giảng Lý Thuyết Do Giáo Viên Đăng (<?= count($lessons) ?>)
+      <div style="margin-bottom: 16px;">
+        <span class="section-title"><i class="fa-solid fa-book-open-reader" style="color: #38bdf8;"></i> Danh Sách Bài Giảng Lý Thuyết Do Giáo Viên Đăng (<?= count($lessons) ?>)</span>
       </div>
 
       <?php if (empty($lessons)): ?>
-        <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 50px 30px; text-align: center; color: #94a3b8;">
+        <div class="card empty-card">
           <i class="fa-solid fa-book-open" style="font-size: 42px; color: #a855f7; margin-bottom: 14px;"></i>
-          <div style="font-size: 15px; font-weight: 700; color: #f3e8ff; margin-bottom: 6px;">Chưa có bài giảng lý thuyết nào</div>
+          <div class="empty-title">Chưa có bài giảng lý thuyết nào</div>
         </div>
       <?php else: foreach ($lessons as $ls): 
         $yt_id = getYoutubeIdAdmin($ls['video_url'] ?? '');
       ?>
-        <div class="card" style="background: rgba(20, 13, 38, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 14px; padding: 20px; margin-bottom: 16px;">
+        <div class="card" style="border-radius: 14px; padding: 20px; margin-bottom: 16px;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
             <div>
-              <div style="font-size: 16px; font-weight: 800; color: #f3e8ff;"><?= htmlspecialchars($ls['tieu_de']) ?></div>
-              <div style="font-size: 12.5px; color: #c4b5fd; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <div class="card-header-title" style="margin-bottom: 6px;"><?= htmlspecialchars($ls['tieu_de']) ?></div>
+              <div style="font-size: 12.5px; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
                 <span class="teacher-tag-badge">
                   <i class="fa-solid fa-chalkboard-user"></i> GV: <?= htmlspecialchars($ls['ten_giang_vien']) ?>
                 </span>
-                <span style="color:#38bdf8; font-weight:700; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:6px;">
+                <span style="color:#0284c7; font-weight:700; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:6px;">
                   <i class="fa-solid fa-book"></i> <?= htmlspecialchars($ls['ten_mon']) ?>
                 </span>
               </div>
@@ -447,7 +580,7 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           </div>
 
           <?php if (!empty($ls['noi_dung'])): ?>
-            <div style="font-size: 13px; color: #d8b4fe; margin-top: 12px; line-height: 1.6; background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px;">
+            <div class="assignment-desc-box" style="margin-top: 12px; line-height: 1.6; padding: 12px 16px; border-radius: 8px;">
               <?= nl2br(htmlspecialchars($ls['noi_dung'])) ?>
             </div>
           <?php endif; ?>

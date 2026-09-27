@@ -483,7 +483,7 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
 .score-none { background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2); }
 </style>
 </head>
-<body class="admin-portal">
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
 <?php include '../includes/admin_nav.php'; ?>
 
 <div class="main-content">

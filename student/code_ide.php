@@ -2,9 +2,14 @@
 require_once '../config.php';
 require_once '../includes/code_access.php';
 
-if (!isLoggedIn()) {
-    header("Location: /tkb/login.php");
-    exit();
+$is_guest = !isLoggedIn();
+if ($is_guest) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $_SESSION['is_guest'] = true;
+    $_SESSION['role'] = 'guest';
+    $_SESSION['ho_ten'] = 'Khách Trải Nghiệm';
 }
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -15,19 +20,33 @@ header("Pragma: no-cache");
 $db = getDB();
 $sv_id = $_SESSION['student_id'] ?? ($_SESSION['user_id'] ?? 0);
 $lop = '';
+$sv = ['ho_ten' => 'Khách Trải Nghiệm', 'lop' => 'Tự Luyện Code', 'mssv' => 'GUEST'];
 if ($sv_id > 0) {
     $stmt = $db->prepare("SELECT * FROM students WHERE id = ?");
     if ($stmt) {
         $stmt->bind_param("i", $sv_id);
         $stmt->execute();
-        $sv = $stmt->get_result()->fetch_assoc();
-        $lop = $sv['lop'] ?? '';
+        $row = $stmt->get_result()->fetch_assoc();
+        if ($row) {
+            $sv = $row;
+            $lop = $sv['lop'] ?? '';
+        }
         $stmt->close();
     }
 }
 
 $now_str = date('Y-m-d H:i:s');
-$code_access = getStudentCodeAccess($db, $sv_id, $lop);
+if ($is_guest) {
+    $code_access = [
+        'allowed' => true,
+        'mode' => 'practice',
+        'active_session' => null,
+        'last_completed_session' => null,
+        'practice_available_at' => null,
+    ];
+} else {
+    $code_access = getStudentCodeAccess($db, $sv_id, $lop);
+}
 $active_session = $code_access['active_session'];
 $last_completed_session = $code_access['last_completed_session'];
 $practice_mode = $code_access['mode'] === 'practice';

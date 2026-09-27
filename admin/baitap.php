@@ -197,6 +197,7 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/tkb/assets/style.css">
 <style>
+/* Base / Dark theme defaults */
 .tab-btn-admin {
     padding: 10px 20px;
     border-radius: 12px;
@@ -222,6 +223,89 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
     border-color: #a855f7;
     box-shadow: 0 4px 15px rgba(147, 51, 234, 0.35);
 }
+
+.kpi-row-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.kpi-box {
+    background: rgba(26, 17, 48, 0.75);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.25s ease;
+}
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.kpi-icon.icon-purple { background: rgba(168,85,247,0.15); color: #c084fc; }
+.kpi-icon.icon-pink   { background: rgba(244,114,182,0.15); color: #f472b6; }
+.kpi-icon.icon-blue   { background: rgba(56,189,248,0.15); color: #38bdf8; }
+.kpi-icon.icon-green  { background: rgba(16,185,129,0.15); color: #34d399; }
+
+.kpi-num {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+}
+.kpi-lbl {
+    font-size: 12.5px;
+    color: #a79bb7;
+    font-weight: 600;
+    margin-top: 3px;
+}
+
+.card-header-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #f3e8ff;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #f3e8ff;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-lbl-custom {
+    font-size: 12px;
+    font-weight: 700;
+    color: #c4b5fd;
+}
+.custom-input {
+    background: #140d27;
+    border: 1px solid rgba(168,85,247,0.3);
+    color: #f3e8ff;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.custom-input:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+
 .assignment-item-card {
     background: rgba(20, 13, 38, 0.7);
     border: 1px solid rgba(168, 85, 247, 0.25);
@@ -234,40 +318,42 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
     border-color: rgba(168, 85, 247, 0.5);
     box-shadow: 0 8px 25px rgba(0,0,0,0.35);
 }
-.score-badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 6px;
+.assignment-title {
+    font-size: 16px;
     font-weight: 800;
+    color: #f3e8ff;
+}
+.assignment-desc-box {
+    font-size: 13px;
+    color: #d8b4fe;
+    margin-top: 12px;
+    line-height: 1.6;
+    background: rgba(0,0,0,0.3);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+.assignment-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
     font-size: 12px;
+    color: #a79bb7;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
-.score-high { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
-.score-mid  { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
-.score-low  { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.35); }
-
-.kpi-row-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-}
-.kpi-box {
-    background: rgba(26, 17, 48, 0.75);
-    border: 1px solid rgba(168, 85, 247, 0.25);
-    border-radius: 14px;
-    padding: 16px 20px;
-    display: flex;
+.deadline-text { color: #fb7185; }
+.graded-status-text { margin-left: 12px; color: #34d399; }
+.download-attach-link {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
     align-items: center;
-    gap: 16px;
-}
-.kpi-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+    gap: 5px;
 }
 .teacher-tag-badge {
     display: inline-flex;
@@ -281,9 +367,483 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
     font-size: 12px;
     font-weight: 700;
 }
+.subject-tag-badge {
+    color: #38bdf8;
+    font-weight: 700;
+    background: rgba(56,189,248,0.12);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(56,189,248,0.25);
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.class-tag-badge {
+    color: #34d399;
+    font-weight: 700;
+    background: rgba(16,185,129,0.12);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(16,185,129,0.25);
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.score-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 12px;
+}
+.score-high { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+.score-mid  { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
+.score-low  { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.35); }
+.score-none { background: rgba(255, 255, 255, 0.06); color: #94a3b8; }
+
+.btn-grade-action {
+    background: #7c3aed;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 7px 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+}
+.btn-grade-action:hover {
+    background: #6d28d9;
+    color: #fff;
+}
+.top-action-btn-purple {
+    background: rgba(168,85,247,0.15);
+    color: #c084fc;
+    border: 1px solid rgba(168,85,247,0.3);
+}
+.top-action-btn-blue {
+    background: rgba(56,189,248,0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56,189,248,0.3);
+}
+
+/* Grade Tab Styles */
+.grade-filter-label {
+    font-weight: 700;
+    color: #f3e8ff;
+    font-size: 13.5px;
+}
+.grade-info-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(168,85,247,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.grade-info-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #f3e8ff;
+}
+.grade-info-meta {
+    font-size: 12.5px;
+    color: #a79bb7;
+    margin-top: 4px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.meta-gv { color: #f472b6; }
+.meta-lop { color: #38bdf8; }
+.meta-mon { color: #c084fc; }
+.meta-deadline { color: #fb7185; }
+.grade-submitted-badge {
+    font-size: 13px;
+    font-weight: 700;
+    color: #34d399;
+    background: rgba(16,185,129,0.15);
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(16,185,129,0.3);
+}
+.student-code {
+    font-family: monospace;
+    font-weight: 700;
+    color: #f3e8ff;
+}
+.student-name {
+    color: #f3e8ff;
+}
+.sub-status-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+}
+.sub-status-badge.submitted {
+    background: rgba(16,185,129,0.2);
+    color: #34d399;
+    border: 1px solid rgba(16,185,129,0.35);
+}
+.sub-status-badge.not-submitted {
+    background: rgba(244,63,94,0.15);
+    color: #fb7185;
+    border: 1px solid rgba(244,63,94,0.3);
+}
+.sub-time {
+    font-size: 10.5px;
+    color: #a79bb7;
+    margin-top: 2px;
+}
+.sub-download-link {
+    color: #38bdf8;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 12px;
+}
+.submission-text-box {
+    font-size: 12px;
+    color: #e9d5ff;
+    background: rgba(0,0,0,0.25);
+    padding: 6px 10px;
+    border-radius: 6px;
+    max-height: 60px;
+    overflow-y: auto;
+}
+.sub-feedback {
+    font-size: 11px;
+    color: #c4b5fd;
+    margin-top: 3px;
+}
+.btn-grade-submit {
+    background: #7c3aed;
+    color: #fff;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-weight: 700;
+    font-size: 11.5px;
+    border: none;
+}
+.modal-box-custom {
+    background: #140d27;
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 18px;
+    color: #f3e8ff;
+}
+.modal-title-custom { color: #38bdf8; }
+.modal-sub-custom { color: #a79bb7; }
+.modal-btn-cancel { color: #a79bb7; }
+
+/* Empty state */
+.empty-card {
+    background: rgba(26, 17, 48, 0.7);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 16px;
+    padding: 50px 30px;
+    text-align: center;
+}
+.empty-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f3e8ff;
+    margin-bottom: 6px;
+}
+.empty-sub {
+    font-size: 13px;
+    color: #a79bb7;
+}
+
+/* ==========================================================
+   BRIGHT / LIGHT MODE ADAPTATION (adm-light-mode & tuyen-theme)
+   ========================================================== */
+body.adm-light-mode .top-action-btn-purple,
+body.tuyen-theme .top-action-btn-purple {
+    background: #f5f3ff !important;
+    color: #7c3aed !important;
+    border: 1px solid #ddd6fe !important;
+}
+body.adm-light-mode .top-action-btn-blue,
+body.tuyen-theme .top-action-btn-blue {
+    background: #eff6ff !important;
+    color: #0284c7 !important;
+    border: 1px solid #bae6fd !important;
+}
+
+body.adm-light-mode .tab-btn-admin,
+body.tuyen-theme .tab-btn-admin {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+}
+body.adm-light-mode .tab-btn-admin:hover,
+body.tuyen-theme .tab-btn-admin:hover {
+    background: #f5f3ff !important;
+    color: #7c3aed !important;
+    border-color: #ddd6fe !important;
+}
+body.adm-light-mode .tab-btn-admin.active,
+body.tuyen-theme .tab-btn-admin.active {
+    background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
+    border-color: #a855f7 !important;
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3) !important;
+}
+
+body.adm-light-mode .kpi-box,
+body.tuyen-theme .kpi-box {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+}
+body.adm-light-mode .kpi-box:hover,
+body.tuyen-theme .kpi-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -4px rgba(124, 58, 237, 0.12) !important;
+    border-color: #ddd6fe !important;
+}
+body.adm-light-mode .kpi-num,
+body.tuyen-theme .kpi-num {
+    color: #0f172a !important;
+}
+body.adm-light-mode .kpi-lbl,
+body.tuyen-theme .kpi-lbl {
+    color: #64748b !important;
+}
+body.adm-light-mode .kpi-icon.icon-purple,
+body.tuyen-theme .kpi-icon.icon-purple {
+    background: #f5f3ff !important;
+    color: #7c3aed !important;
+    border: 1px solid #ede9fe;
+}
+body.adm-light-mode .kpi-icon.icon-pink,
+body.tuyen-theme .kpi-icon.icon-pink {
+    background: #fff1f2 !important;
+    color: #e11d48 !important;
+    border: 1px solid #ffe4e6;
+}
+body.adm-light-mode .kpi-icon.icon-blue,
+body.tuyen-theme .kpi-icon.icon-blue {
+    background: #eff6ff !important;
+    color: #0284c7 !important;
+    border: 1px solid #e0f2fe;
+}
+body.adm-light-mode .kpi-icon.icon-green,
+body.tuyen-theme .kpi-icon.icon-green {
+    background: #f0fdf4 !important;
+    color: #16a34a !important;
+    border: 1px solid #dcfce7;
+}
+
+body.adm-light-mode .card-header-title,
+body.tuyen-theme .card-header-title,
+body.adm-light-mode .section-title,
+body.tuyen-theme .section-title {
+    color: #0f172a !important;
+}
+body.adm-light-mode .form-lbl-custom,
+body.tuyen-theme .form-lbl-custom {
+    color: #334155 !important;
+}
+body.adm-light-mode .custom-input,
+body.tuyen-theme .custom-input {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+body.adm-light-mode .custom-input:focus,
+body.tuyen-theme .custom-input:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12) !important;
+    background: #ffffff !important;
+}
+
+body.adm-light-mode .assignment-item-card,
+body.tuyen-theme .assignment-item-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+}
+body.adm-light-mode .assignment-item-card:hover,
+body.tuyen-theme .assignment-item-card:hover {
+    border-color: #c4b5fd !important;
+    box-shadow: 0 10px 24px -4px rgba(124, 58, 237, 0.1) !important;
+}
+body.adm-light-mode .assignment-title,
+body.tuyen-theme .assignment-title {
+    color: #0f172a !important;
+}
+body.adm-light-mode .assignment-desc-box,
+body.tuyen-theme .assignment-desc-box {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+}
+body.adm-light-mode .assignment-card-footer,
+body.tuyen-theme .assignment-card-footer {
+    border-top: 1px solid #f1f5f9 !important;
+    color: #64748b !important;
+}
+body.adm-light-mode .deadline-text,
+body.tuyen-theme .deadline-text {
+    color: #e11d48 !important;
+}
+body.adm-light-mode .graded-status-text,
+body.tuyen-theme .graded-status-text {
+    color: #16a34a !important;
+}
+body.adm-light-mode .download-attach-link,
+body.tuyen-theme .download-attach-link {
+    color: #0284c7 !important;
+}
+body.adm-light-mode .download-attach-link:hover,
+body.tuyen-theme .download-attach-link:hover {
+    color: #0369a1 !important;
+}
+
+body.adm-light-mode .teacher-tag-badge,
+body.tuyen-theme .teacher-tag-badge {
+    background: #fdf2f8 !important;
+    color: #db2777 !important;
+    border: 1px solid #fbcfe8 !important;
+}
+body.adm-light-mode .subject-tag-badge,
+body.tuyen-theme .subject-tag-badge {
+    background: #eff6ff !important;
+    color: #0284c7 !important;
+    border: 1px solid #bfdbfe !important;
+}
+body.adm-light-mode .class-tag-badge,
+body.tuyen-theme .class-tag-badge {
+    background: #f0fdf4 !important;
+    color: #16a34a !important;
+    border: 1px solid #bbf7d0 !important;
+}
+
+body.adm-light-mode .score-high,
+body.tuyen-theme .score-high {
+    background: #f0fdf4 !important;
+    color: #16a34a !important;
+    border: 1px solid #bbf7d0 !important;
+}
+body.adm-light-mode .score-mid,
+body.tuyen-theme .score-mid {
+    background: #eff6ff !important;
+    color: #0284c7 !important;
+    border: 1px solid #bfdbfe !important;
+}
+body.adm-light-mode .score-low,
+body.tuyen-theme .score-low {
+    background: #fff1f2 !important;
+    color: #e11d48 !important;
+    border: 1px solid #fecdd3 !important;
+}
+body.adm-light-mode .score-none,
+body.tuyen-theme .score-none {
+    background: #f1f5f9 !important;
+    color: #94a3b8 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+body.adm-light-mode .grade-filter-label,
+body.tuyen-theme .grade-filter-label,
+body.adm-light-mode .grade-info-title,
+body.tuyen-theme .grade-info-title {
+    color: #0f172a !important;
+}
+body.adm-light-mode .grade-info-header,
+body.tuyen-theme .grade-info-header {
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+body.adm-light-mode .grade-info-meta,
+body.tuyen-theme .grade-info-meta {
+    color: #64748b !important;
+}
+body.adm-light-mode .meta-gv,
+body.tuyen-theme .meta-gv { color: #db2777 !important; }
+body.adm-light-mode .meta-lop,
+body.tuyen-theme .meta-lop { color: #0284c7 !important; }
+body.adm-light-mode .meta-mon,
+body.tuyen-theme .meta-mon { color: #7c3aed !important; }
+body.adm-light-mode .meta-deadline,
+body.tuyen-theme .meta-deadline { color: #e11d48 !important; }
+
+body.adm-light-mode .grade-submitted-badge,
+body.tuyen-theme .grade-submitted-badge {
+    background: #f0fdf4 !important;
+    color: #16a34a !important;
+    border: 1px solid #bbf7d0 !important;
+}
+body.adm-light-mode .student-code,
+body.tuyen-theme .student-code,
+body.adm-light-mode .student-name,
+body.tuyen-theme .student-name {
+    color: #0f172a !important;
+}
+body.adm-light-mode .sub-time,
+body.tuyen-theme .sub-time,
+body.adm-light-mode .sub-feedback,
+body.tuyen-theme .sub-feedback {
+    color: #64748b !important;
+}
+body.adm-light-mode .sub-download-link,
+body.tuyen-theme .sub-download-link {
+    color: #0284c7 !important;
+}
+body.adm-light-mode .sub-download-link:hover,
+body.tuyen-theme .sub-download-link:hover {
+    color: #0369a1 !important;
+}
+body.adm-light-mode .submission-text-box,
+body.tuyen-theme .submission-text-box {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+}
+
+body.adm-light-mode .modal-box-custom,
+body.tuyen-theme .modal-box-custom {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15) !important;
+    color: #0f172a !important;
+}
+body.adm-light-mode .modal-title-custom,
+body.tuyen-theme .modal-title-custom {
+    color: #0f172a !important;
+}
+body.adm-light-mode .modal-sub-custom,
+body.tuyen-theme .modal-sub-custom,
+body.adm-light-mode .modal-btn-cancel,
+body.tuyen-theme .modal-btn-cancel {
+    color: #64748b !important;
+}
+
+body.adm-light-mode .empty-card,
+body.tuyen-theme .empty-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.04) !important;
+}
+body.adm-light-mode .empty-title,
+body.tuyen-theme .empty-title {
+    color: #0f172a !important;
+}
+body.adm-light-mode .empty-sub,
+body.tuyen-theme .empty-sub {
+    color: #64748b !important;
+}
 </style>
 </head>
-<body class="admin-portal">
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
 <?php include '../includes/admin_nav.php'; ?>
 
 <div class="main-content">
@@ -296,10 +856,10 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
       <p class="page-sub">Theo dõi toàn bộ bài tập, đề kiểm tra do tất cả Giáo Viên đăng lên, kiểm tra tiến độ nộp bài và chấm điểm toàn trường</p>
     </div>
     <div style="display:flex; gap:10px;">
-      <a href="/tkb/admin/tailieu.php" class="btn btn-ghost" style="background:rgba(168,85,247,0.15); color:#c084fc; border:1px solid rgba(168,85,247,0.3);">
+      <a href="/tkb/admin/tailieu.php" class="btn btn-ghost top-action-btn-purple">
         <i class="fa-solid fa-folder-open"></i> Xem Kho Tài Liệu Giáo Viên
       </a>
-      <a href="/tkb/admin/diem.php?tab=baitap" class="btn btn-ghost" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);">
+      <a href="/tkb/admin/diem.php?tab=baitap" class="btn btn-ghost top-action-btn-blue">
         <i class="fa-solid fa-graduation-cap"></i> Bảng Điểm Tổng Hợp
       </a>
     </div>
@@ -315,42 +875,42 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
   <!-- 4 KPI Summary Cards -->
   <div class="kpi-row-grid">
     <div class="kpi-box">
-      <div class="kpi-icon" style="background:rgba(168,85,247,0.15); color:#c084fc;">
+      <div class="kpi-icon icon-purple">
         <i class="fa-solid fa-file-signature"></i>
       </div>
       <div>
-        <div style="font-size:22px; font-weight:800; color:#fff;"><?= $total_all_assignments ?></div>
-        <div style="font-size:12px; color:#a79bb7; font-weight:600;">Tổng Bài Tập GV Đăng</div>
+        <div class="kpi-num"><?= $total_all_assignments ?></div>
+        <div class="kpi-lbl">Tổng Bài Tập GV Đăng</div>
       </div>
     </div>
 
     <div class="kpi-box">
-      <div class="kpi-icon" style="background:rgba(244,114,182,0.15); color:#f472b6;">
+      <div class="kpi-icon icon-pink">
         <i class="fa-solid fa-chalkboard-user"></i>
       </div>
       <div>
-        <div style="font-size:22px; font-weight:800; color:#fff;"><?= $total_teachers_posted ?></div>
-        <div style="font-size:12px; color:#a79bb7; font-weight:600;">Giáo Viên Đã Giao Bài</div>
+        <div class="kpi-num"><?= $total_teachers_posted ?></div>
+        <div class="kpi-lbl">Giáo Viên Đã Giao Bài</div>
       </div>
     </div>
 
     <div class="kpi-box">
-      <div class="kpi-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8;">
+      <div class="kpi-icon icon-blue">
         <i class="fa-solid fa-cloud-arrow-up"></i>
       </div>
       <div>
-        <div style="font-size:22px; font-weight:800; color:#fff;"><?= $total_all_submissions ?></div>
-        <div style="font-size:12px; color:#a79bb7; font-weight:600;">Lượt Nộp Bài Của Sinh Viên</div>
+        <div class="kpi-num"><?= $total_all_submissions ?></div>
+        <div class="kpi-lbl">Lượt Nộp Bài Của Sinh Viên</div>
       </div>
     </div>
 
     <div class="kpi-box">
-      <div class="kpi-icon" style="background:rgba(16,185,129,0.15); color:#34d399;">
+      <div class="kpi-icon icon-green">
         <i class="fa-solid fa-graduation-cap"></i>
       </div>
       <div>
-        <div style="font-size:22px; font-weight:800; color:#fff;"><?= count($assignments) ?></div>
-        <div style="font-size:12px; color:#a79bb7; font-weight:600;">Bài Tập Đang Hiển Thị</div>
+        <div class="kpi-num"><?= count($assignments) ?></div>
+        <div class="kpi-lbl">Bài Tập Đang Hiển Thị</div>
       </div>
     </div>
   </div>
@@ -368,13 +928,13 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
   <?php if ($tab === 'manage'): ?>
     
     <!-- Filter Toolbar for Admin to inspect teacher posts -->
-    <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 18px 20px; margin-bottom: 24px;">
+    <div class="card" style="border-radius: 16px; padding: 18px 20px; margin-bottom: 24px;">
       <form method="GET" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 100px; gap: 12px; align-items: end;">
         <input type="hidden" name="tab" value="manage">
 
         <div>
-          <label class="form-label" style="font-size:12px; font-weight:700; color:#c4b5fd;"><i class="fa-solid fa-chalkboard-user"></i> Lọc Theo Giáo Viên:</label>
-          <select name="filter_gv" onchange="this.form.submit()" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 12px; font-size:13px;">
+          <label class="form-label form-lbl-custom"><i class="fa-solid fa-chalkboard-user"></i> Lọc Theo Giáo Viên:</label>
+          <select name="filter_gv" onchange="this.form.submit()" class="form-select custom-input">
             <option value="0">-- Tất cả giáo viên toàn trường --</option>
             <?php foreach ($gvList as $gv): ?>
               <option value="<?= $gv['id'] ?>" <?= ($filter_gv == $gv['id']) ? 'selected' : '' ?>>
@@ -385,8 +945,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
         </div>
 
         <div>
-          <label class="form-label" style="font-size:12px; font-weight:700; color:#c4b5fd;"><i class="fa-solid fa-book"></i> Lọc Theo Môn Học:</label>
-          <select name="filter_mon" onchange="this.form.submit()" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 12px; font-size:13px;">
+          <label class="form-label form-lbl-custom"><i class="fa-solid fa-book"></i> Lọc Theo Môn Học:</label>
+          <select name="filter_mon" onchange="this.form.submit()" class="form-select custom-input">
             <option value="0">-- Tất cả môn học --</option>
             <?php foreach ($monList as $mon): ?>
               <option value="<?= $mon['id'] ?>" <?= ($filter_mon == $mon['id']) ? 'selected' : '' ?>>
@@ -397,8 +957,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
         </div>
 
         <div>
-          <label class="form-label" style="font-size:12px; font-weight:700; color:#c4b5fd;"><i class="fa-solid fa-users"></i> Lọc Theo Lớp:</label>
-          <select name="filter_lop" onchange="this.form.submit()" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 12px; font-size:13px;">
+          <label class="form-label form-lbl-custom"><i class="fa-solid fa-users"></i> Lọc Theo Lớp:</label>
+          <select name="filter_lop" onchange="this.form.submit()" class="form-select custom-input">
             <option value="">-- Tất cả lớp học --</option>
             <?php foreach ($classes as $c): ?>
               <option value="<?= htmlspecialchars($c['lop']) ?>" <?= ($filter_lop === $c['lop']) ? 'selected' : '' ?>>
@@ -409,8 +969,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
         </div>
 
         <div>
-          <label class="form-label" style="font-size:12px; font-weight:700; color:#c4b5fd;"><i class="fa-solid fa-magnifying-glass"></i> Tìm Kiếm:</label>
-          <input type="text" name="search_q" value="<?= htmlspecialchars($search_q) ?>" placeholder="Tên bài tập, đề bài..." class="form-input" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 12px; font-size:13px;">
+          <label class="form-label form-lbl-custom"><i class="fa-solid fa-magnifying-glass"></i> Tìm Kiếm:</label>
+          <input type="text" name="search_q" value="<?= htmlspecialchars($search_q) ?>" placeholder="Tên bài tập, đề bài..." class="form-input custom-input">
         </div>
 
         <div>
@@ -424,8 +984,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
     <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; align-items: start;">
       
       <!-- Left: Create Form (Admin can assign on behalf of any teacher) -->
-      <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 22px;">
-        <div style="font-size: 15px; font-weight: 800; color: #f3e8ff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+      <div class="card" style="border-radius: 16px; padding: 22px;">
+        <div class="card-header-title">
           <i class="fa-solid fa-folder-plus" style="color: #a855f7;"></i> Tạo &amp; Giao Bài Tập Mới (Quyền Admin)
         </div>
 
@@ -434,8 +994,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           <input type="hidden" name="tab" value="manage">
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Chọn Môn Học *</label>
-            <select name="mon_hoc_id" class="form-select" required style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Chọn Môn Học *</label>
+            <select name="mon_hoc_id" class="form-select custom-input" required>
               <option value="">-- Chọn môn học --</option>
               <?php foreach ($monList as $mon): ?>
                 <option value="<?= $mon['id'] ?>"><?= htmlspecialchars($mon['ten_mon']) ?> (<?= htmlspecialchars($mon['ma_mon']) ?>)</option>
@@ -444,8 +1004,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Chọn Lớp Nhận Bài *</label>
-            <select name="lop" class="form-select" required style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Chọn Lớp Nhận Bài *</label>
+            <select name="lop" class="form-select custom-input" required>
               <option value="">-- Chọn lớp học --</option>
               <?php foreach ($classes as $c): ?>
                 <option value="<?= htmlspecialchars($c['lop']) ?>"><?= htmlspecialchars($c['lop']) ?></option>
@@ -454,8 +1014,8 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Giảng Viên Đăng Bài / Người Phụ Trách</label>
-            <select name="giang_vien_id" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Giảng Viên Đăng Bài / Người Phụ Trách</label>
+            <select name="giang_vien_id" class="form-select custom-input">
               <option value="0">Ban Quản Trị / Admin</option>
               <?php foreach ($gvList as $gv): ?>
                 <option value="<?= $gv['id'] ?>"><?= htmlspecialchars($gv['ho_ten']) ?> (<?= htmlspecialchars($gv['ma_gv']) ?>)</option>
@@ -464,29 +1024,29 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Tiêu Đề Bài Tập *</label>
-            <input type="text" name="tieu_de" class="form-input" placeholder="Ví dụ: Bài tập thực hành 1: Thiết kế giao diện" required style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+            <label class="form-label form-lbl-custom">Tiêu Đề Bài Tập *</label>
+            <input type="text" name="tieu_de" class="form-input custom-input" placeholder="Ví dụ: Bài tập thực hành 1: Thiết kế giao diện" required>
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="form-label">Mô Tả / Đề Bài Chi Tiết</label>
-            <textarea name="mo_ta" class="form-input" rows="4" placeholder="Nhập yêu cầu đề bài, quy chế nộp file..." style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;"></textarea>
+            <label class="form-label form-lbl-custom">Mô Tả / Đề Bài Chi Tiết</label>
+            <textarea name="mo_ta" class="form-input custom-input" rows="4" placeholder="Nhập yêu cầu đề bài, quy chế nộp file..."></textarea>
           </div>
 
           <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
             <div class="form-group">
-              <label class="form-label">Hạn Nộp (Ngày)</label>
-              <input type="date" name="han_nop_date" class="form-input" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+              <label class="form-label form-lbl-custom">Hạn Nộp (Ngày)</label>
+              <input type="date" name="han_nop_date" class="form-input custom-input">
             </div>
             <div class="form-group">
-              <label class="form-label">Giờ Hết Hạn</label>
-              <input type="time" name="han_nop_time" class="form-input" value="23:59" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:10px 14px;">
+              <label class="form-label form-lbl-custom">Giờ Hết Hạn</label>
+              <input type="time" name="han_nop_time" class="form-input custom-input" value="23:59">
             </div>
           </div>
 
           <div class="form-group" style="margin-bottom:20px;">
-            <label class="form-label">Tài Liệu Đính Kèm (PDF, DOCX, ZIP...)</label>
-            <input type="file" name="assign_file" class="form-input" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:8px 12px;">
+            <label class="form-label form-lbl-custom">Tài Liệu Đính Kèm (PDF, DOCX, ZIP...)</label>
+            <input type="file" name="assign_file" class="form-input custom-input" style="padding:7px 10px;">
           </div>
 
           <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:800; font-size:14px; background:linear-gradient(135deg, #9333ea, #7c3aed); border:none; border-radius:10px;">
@@ -497,38 +1057,38 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
 
       <!-- Right: List of Assignments Posted by Teachers (Admin view) -->
       <div>
-        <div style="font-size: 16px; font-weight: 800; color: #f3e8ff; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-          <span><i class="fa-solid fa-list-check" style="color: #38bdf8;"></i> Danh Sách Bài Tập Của Giáo Viên (<?= count($assignments) ?>)</span>
+        <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+          <span class="section-title"><i class="fa-solid fa-list-check" style="color: #38bdf8;"></i> Danh Sách Bài Tập Của Giáo Viên (<?= count($assignments) ?>)</span>
           <?php if ($filter_gv || $filter_mon || $filter_lop || $search_q): ?>
             <a href="?tab=manage" style="font-size:12px; color:#fb7185; text-decoration:none; font-weight:700;"><i class="fa-solid fa-xmark"></i> Xóa bộ lọc</a>
           <?php endif; ?>
         </div>
 
         <?php if (empty($assignments)): ?>
-          <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 50px 30px; text-align: center; color: #94a3b8;">
+          <div class="card empty-card">
             <i class="fa-solid fa-folder-open" style="font-size: 42px; color: #a855f7; margin-bottom: 14px;"></i>
-            <div style="font-size: 15px; font-weight: 700; color: #f3e8ff; margin-bottom: 6px;">Không tìm thấy bài tập nào</div>
-            <div style="font-size: 13px; color: #a79bb7;">Hiện tại chưa có bài tập nào phù hợp với bộ lọc đã chọn. Bạn có thể chọn giao bài tập mới bên trái!</div>
+            <div class="empty-title">Không tìm thấy bài tập nào</div>
+            <div class="empty-sub">Hiện tại chưa có bài tập nào phù hợp với bộ lọc đã chọn. Bạn có thể chọn giao bài tập mới bên trái!</div>
           </div>
         <?php else: foreach ($assignments as $as): ?>
           <div class="assignment-item-card">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
               <div>
-                <div style="font-size: 16px; font-weight: 800; color: #f3e8ff;"><?= htmlspecialchars($as['tieu_de']) ?></div>
-                <div style="font-size: 12.5px; color: #c4b5fd; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <div class="assignment-title"><?= htmlspecialchars($as['tieu_de']) ?></div>
+                <div style="font-size: 12.5px; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
                   <span class="teacher-tag-badge">
                     <i class="fa-solid fa-chalkboard-user"></i> GV: <?= htmlspecialchars($as['ten_giang_vien']) ?>
                   </span>
-                  <span style="color:#38bdf8; font-weight:700; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:6px; border:1px solid rgba(56,189,248,0.25);">
+                  <span class="subject-tag-badge">
                     <i class="fa-solid fa-book"></i> <?= htmlspecialchars($as['ten_mon']) ?>
                   </span>
-                  <span style="color:#34d399; font-weight:700; background:rgba(16,185,129,0.12); padding:3px 8px; border-radius:6px; border:1px solid rgba(16,185,129,0.25);">
+                  <span class="class-tag-badge">
                     <i class="fa-solid fa-users"></i> Lớp <?= htmlspecialchars($as['lop']) ?>
                   </span>
                 </div>
               </div>
               <div style="display:flex; gap:6px; align-items:center;">
-                <a href="?tab=grade&assignment_id=<?= $as['id'] ?>" class="btn btn-sm" style="background:#7c3aed; color:#fff; border-radius:8px; font-weight:700; font-size:12px; padding:7px 14px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                <a href="?tab=grade&assignment_id=<?= $as['id'] ?>" class="btn btn-sm btn-grade-action">
                   <i class="fa-solid fa-graduation-cap"></i> Chấm Điểm (<?= $as['sub_count'] ?>/<?= $as['total_sv'] ?>)
                 </a>
                 <a href="?action=delete&assignment_id=<?= $as['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa bài tập này của giáo viên? Tất cả bài nộp sẽ bị xóa.')" class="btn btn-sm btn-danger" style="border-radius:8px; padding:7px 10px;" title="Xóa bài tập">
@@ -538,18 +1098,18 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
             </div>
 
             <?php if (!empty($as['mo_ta'])): ?>
-              <div style="font-size: 13px; color: #d8b4fe; margin-top: 12px; line-height: 1.6; background: rgba(0,0,0,0.3); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.04);">
+              <div class="assignment-desc-box">
                 <?= nl2br(htmlspecialchars($as['mo_ta'])) ?>
               </div>
             <?php endif; ?>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 12px; color: #a79bb7; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; flex-wrap: wrap; gap: 8px;">
+            <div class="assignment-card-footer">
               <div>
-                <i class="fa-solid fa-clock"></i> Hạn nộp: <strong style="color:#fb7185;"><?= $as['han_nop'] ? date('d/m/Y H:i', strtotime($as['han_nop'])) : 'Không giới hạn' ?></strong>
-                <span style="margin-left: 12px; color:#34d399;"><i class="fa-solid fa-circle-check"></i> Đã chấm: <?= $as['graded_count'] ?>/<?= $as['sub_count'] ?> bài</span>
+                <i class="fa-solid fa-clock"></i> Hạn nộp: <strong class="deadline-text"><?= $as['han_nop'] ? date('d/m/Y H:i', strtotime($as['han_nop'])) : 'Không giới hạn' ?></strong>
+                <span class="graded-status-text"><i class="fa-solid fa-circle-check"></i> Đã chấm: <?= $as['graded_count'] ?>/<?= $as['sub_count'] ?> bài</span>
               </div>
               <?php if (!empty($as['file_path'])): ?>
-                <a href="<?= htmlspecialchars($as['file_path']) ?>" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 700; display:inline-flex; align-items:center; gap:5px;">
+                <a href="<?= htmlspecialchars($as['file_path']) ?>" target="_blank" class="download-attach-link">
                   <i class="fa-solid fa-paperclip"></i> Tải đề bài đính kèm
                 </a>
               <?php endif; ?>
@@ -565,11 +1125,11 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
   <?php if ($tab === 'grade'): ?>
     
     <!-- Select Assignment Dropdown -->
-    <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; padding: 18px 22px; margin-bottom: 24px;">
+    <div class="card" style="border-radius: 16px; padding: 18px 22px; margin-bottom: 24px;">
       <form method="GET" style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
         <input type="hidden" name="tab" value="grade">
-        <label style="font-weight:700; color:#f3e8ff; font-size:13.5px;"><i class="fa-solid fa-filter"></i> Chọn Bài Tập Của Giáo Viên Cần Xem / Chấm:</label>
-        <select name="assignment_id" onchange="this.form.submit()" class="form-select" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); color:#f3e8ff; border-radius:10px; padding:9px 14px; min-width:360px; font-size:13px;">
+        <label class="grade-filter-label"><i class="fa-solid fa-filter"></i> Chọn Bài Tập Của Giáo Viên Cần Xem / Chấm:</label>
+        <select name="assignment_id" onchange="this.form.submit()" class="form-select custom-input" style="min-width:360px;">
           <?php foreach ($assignments as $as): ?>
             <option value="<?= $as['id'] ?>" <?= ($selected_assignment_id == $as['id']) ? 'selected' : '' ?>>
               [Lớp <?= htmlspecialchars($as['lop']) ?>] <?= htmlspecialchars($as['tieu_de']) ?> (GV: <?= htmlspecialchars($as['ten_giang_vien']) ?>)
@@ -580,18 +1140,18 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
     </div>
 
     <?php if ($assignment_info): ?>
-      <div class="card" style="background: rgba(26, 17, 48, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 16px; overflow: hidden;">
-        <div style="padding: 18px 22px; border-bottom: 1px solid rgba(168,85,247,0.2); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
+      <div class="card" style="border-radius: 16px; overflow: hidden;">
+        <div class="grade-info-header">
           <div>
-            <div style="font-size: 17px; font-weight: 800; color: #f3e8ff;"><?= htmlspecialchars($assignment_info['tieu_de']) ?></div>
-            <div style="font-size: 12.5px; color: #a79bb7; margin-top: 4px; display:flex; gap:10px; flex-wrap:wrap;">
-              <span>Giáo viên đăng: <strong style="color:#f472b6;"><?= htmlspecialchars($assignment_info['ten_giang_vien']) ?></strong></span>
-              <span>Lớp: <strong style="color:#38bdf8;"><?= htmlspecialchars($assignment_info['lop']) ?></strong></span>
-              <span>Môn: <strong style="color:#c084fc;"><?= htmlspecialchars($assignment_info['ten_mon']) ?></strong></span>
-              <span>Hạn nộp: <strong style="color:#fb7185;"><?= $assignment_info['han_nop'] ? date('d/m/Y H:i', strtotime($assignment_info['han_nop'])) : 'Không giới hạn' ?></strong></span>
+            <div class="grade-info-title"><?= htmlspecialchars($assignment_info['tieu_de']) ?></div>
+            <div class="grade-info-meta">
+              <span>Giáo viên đăng: <strong class="meta-gv"><?= htmlspecialchars($assignment_info['ten_giang_vien']) ?></strong></span>
+              <span>Lớp: <strong class="meta-lop"><?= htmlspecialchars($assignment_info['lop']) ?></strong></span>
+              <span>Môn: <strong class="meta-mon"><?= htmlspecialchars($assignment_info['ten_mon']) ?></strong></span>
+              <span>Hạn nộp: <strong class="meta-deadline"><?= $assignment_info['han_nop'] ? date('d/m/Y H:i', strtotime($assignment_info['han_nop'])) : 'Không giới hạn' ?></strong></span>
             </div>
           </div>
-          <span style="font-size: 13px; font-weight: 700; color: #34d399; background: rgba(16,185,129,0.15); padding: 7px 16px; border-radius: 20px; border: 1px solid rgba(16,185,129,0.3);">
+          <span class="grade-submitted-badge">
             Đã nộp: <?= count(array_filter($submissions, function($s){ return !empty($s['submission_id']); })) ?> / <?= count($submissions) ?> sinh viên
           </span>
         </div>
@@ -618,16 +1178,16 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
               ?>
                 <tr>
                   <td style="text-align:center; color:#94a3b8; font-weight:600;"><?= $i+1 ?></td>
-                  <td><span style="font-family:monospace; font-weight:700; color:#f3e8ff;"><?= htmlspecialchars($sub['ma_sv']) ?></span></td>
-                  <td><strong style="color:#f3e8ff;"><?= htmlspecialchars($sub['ho_ten']) ?></strong></td>
+                  <td><span class="student-code"><?= htmlspecialchars($sub['ma_sv']) ?></span></td>
+                  <td><strong class="student-name"><?= htmlspecialchars($sub['ho_ten']) ?></strong></td>
                   <td style="text-align:center;">
                     <?php if ($is_submitted): ?>
-                      <span style="padding:3px 8px; border-radius:6px; font-size:11px; font-weight:700; background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.35);">
+                      <span class="sub-status-badge submitted">
                         <i class="fa-solid fa-circle-check"></i> Đã nộp
                       </span>
-                      <div style="font-size:10.5px; color:#a79bb7; margin-top:2px;"><?= date('d/m H:i', strtotime($sub['submitted_at'])) ?></div>
+                      <div class="sub-time"><?= date('d/m H:i', strtotime($sub['submitted_at'])) ?></div>
                     <?php else: ?>
-                      <span style="padding:3px 8px; border-radius:6px; font-size:11px; font-weight:700; background:rgba(244,63,94,0.15); color:#fb7185; border:1px solid rgba(244,63,94,0.3);">
+                      <span class="sub-status-badge not-submitted">
                         <i class="fa-solid fa-circle-xmark"></i> Chưa nộp
                       </span>
                     <?php endif; ?>
@@ -636,32 +1196,32 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
                     <?php if ($is_submitted): ?>
                       <?php if (!empty($sub['file_path'])): ?>
                         <div style="margin-bottom:4px;">
-                          <a href="<?= htmlspecialchars($sub['file_path']) ?>" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none; font-size:12px;">
+                          <a href="<?= htmlspecialchars($sub['file_path']) ?>" target="_blank" class="sub-download-link">
                             <i class="fa-solid fa-download"></i> Tải file bài nộp
                           </a>
                         </div>
                       <?php endif; ?>
                       <?php if (!empty($sub['submission_text'])): ?>
-                        <div style="font-size:12px; color:#e9d5ff; background:rgba(0,0,0,0.25); padding:6px 10px; border-radius:6px; max-height:60px; overflow-y:auto;">
+                        <div class="submission-text-box">
                           <?= nl2br(htmlspecialchars($sub['submission_text'])) ?>
                         </div>
                       <?php endif; ?>
                       <?php if (!empty($sub['feedback'])): ?>
-                        <div style="font-size:11px; color:#c4b5fd; margin-top:3px;"><i class="fa-solid fa-comment-dots"></i> Nhận xét: <?= htmlspecialchars($sub['feedback']) ?></div>
+                        <div class="sub-feedback"><i class="fa-solid fa-comment-dots"></i> Nhận xét: <?= htmlspecialchars($sub['feedback']) ?></div>
                       <?php endif; ?>
                     <?php else: ?>
-                      <span style="color:#64748b; font-size:12px;">-</span>
+                      <span style="color:#94a3b8; font-size:12px;">-</span>
                     <?php endif; ?>
                   </td>
                   <td style="text-align:center;">
                     <?php if ($gr !== null): ?>
                       <span class="score-badge <?= $gr >= 8 ? 'score-high' : ($gr >= 5 ? 'score-mid' : 'score-low') ?>"><?= $gr ?> đ</span>
                     <?php else: ?>
-                      <span class="score-badge" style="background:rgba(255,255,255,0.06); color:#94a3b8;">-</span>
+                      <span class="score-badge score-none">-</span>
                     <?php endif; ?>
                   </td>
                   <td style="text-align:center;">
-                    <button type="button" onclick="openGradeFormModal(<?= $sub['student_id'] ?>, <?= $assignment_info['id'] ?>, '<?= htmlspecialchars(addslashes($sub['ho_ten'])) ?>', <?= $gr !== null ? $gr : "''" ?>, '<?= htmlspecialchars(addslashes($sub['feedback'] ?? '')) ?>')" class="btn btn-sm" style="background:#7c3aed; color:#fff; border-radius:8px; padding:5px 12px; font-weight:700; font-size:11.5px;">
+                    <button type="button" onclick="openGradeFormModal(<?= $sub['student_id'] ?>, <?= $assignment_info['id'] ?>, '<?= htmlspecialchars(addslashes($sub['ho_ten'])) ?>', <?= $gr !== null ? $gr : "''" ?>, '<?= htmlspecialchars(addslashes($sub['feedback'] ?? '')) ?>')" class="btn btn-sm btn-grade-submit">
                       <i class="fa-solid fa-pen"></i> Chấm Điểm
                     </button>
                   </td>
@@ -679,9 +1239,9 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
 
 <!-- MODAL CHẤM ĐIỂM BÀI NỘP ADMIN -->
 <div class="modal-overlay" id="gradeModal">
-  <div class="modal-box" style="background:#140d27; border:1px solid rgba(168,85,247,0.3); border-radius:18px; color:#f3e8ff;">
-    <div class="modal-title" style="color:#38bdf8;"><i class="fa-solid fa-graduation-cap"></i> Chấm Điểm Bài Tập (Admin)</div>
-    <div class="modal-sub" id="gradeModalMeta">Sinh viên: ...</div>
+  <div class="modal-box modal-box-custom">
+    <div class="modal-title modal-title-custom"><i class="fa-solid fa-graduation-cap"></i> Chấm Điểm Bài Tập (Admin)</div>
+    <div class="modal-sub modal-sub-custom" id="gradeModalMeta">Sinh viên: ...</div>
     <form method="POST">
       <input type="hidden" name="action" value="grade">
       <input type="hidden" name="tab" value="grade">
@@ -689,17 +1249,17 @@ if ($msg) [$msgType, $msgText] = explode(':', $msg, 2);
       <input type="hidden" name="student_id" id="gradeStudentId">
 
       <div class="form-group" style="margin-top:16px;">
-        <label class="form-label">Điểm Số (Thang 10) *</label>
-        <input class="form-input" name="grade" id="gradeScoreInput" type="number" step="0.1" min="0" max="10" required placeholder="8.5" style="background:#1f1338; border:1px solid rgba(168,85,247,0.3); color:#fff;">
+        <label class="form-label form-lbl-custom">Điểm Số (Thang 10) *</label>
+        <input class="form-input custom-input" name="grade" id="gradeScoreInput" type="number" step="0.1" min="0" max="10" required placeholder="8.5">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Lời Nhận Xét / Đánh Giá</label>
-        <textarea class="form-input" name="feedback" id="gradeFeedbackInput" rows="3" placeholder="Nhập lời nhận xét cho sinh viên..." style="background:#1f1338; border:1px solid rgba(168,85,247,0.3); color:#fff;"></textarea>
+        <label class="form-label form-lbl-custom">Lời Nhận Xét / Đánh Giá</label>
+        <textarea class="form-input custom-input" name="feedback" id="gradeFeedbackInput" rows="3" placeholder="Nhập lời nhận xét cho sinh viên..."></textarea>
       </div>
 
       <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-        <button type="button" class="btn btn-ghost" onclick="toggleModal('gradeModal')" style="color:#a79bb7;">Hủy</button>
+        <button type="button" class="btn btn-ghost modal-btn-cancel" onclick="toggleModal('gradeModal')">Hủy</button>
         <button type="submit" class="btn btn-primary" style="background:#0284c7; border:none;"><i class="fa-solid fa-floppy-disk"></i> Lưu Điểm Số</button>
       </div>
     </form>

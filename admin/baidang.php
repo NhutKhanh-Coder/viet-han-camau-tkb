@@ -254,7 +254,7 @@ $db->close();
         }
     </style>
 </head>
-<body class="admin-portal">
+<body class="admin-portal <?= (isset($_COOKIE['adm_theme']) && $_COOKIE['adm_theme'] === 'light') ? 'adm-light-mode' : '' ?>">
     <?php include '../includes/admin_nav.php'; ?>
 
     <div class="main-content">

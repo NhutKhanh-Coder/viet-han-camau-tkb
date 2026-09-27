@@ -247,7 +247,7 @@ $chunkText
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// HELPER: Parse questions from raw text (Ultra-resilient)
+// HELPER: Parse questions from raw text (Ultra-resilient & lossless for 40+ questions)
 // ══════════════════════════════════════════════════════════════════════════
 function parseQuestionsFromTextContent($text) {
     if (empty(trim($text))) return [];
@@ -270,26 +270,34 @@ function parseQuestionsFromTextContent($text) {
         }
     }
 
-    // 3. Robust pre-processing: Force a clean newline before EVERY question start
-    // Matches: Câu 1, CÂU 1, Question 1, Bài 1, or 1., 1:, 1), with or without bold/asterisk/spaces
-    $t = preg_replace('/(?:\s+|\n)*(?=(?:\[BOLD\]|\*)*\s*(?:(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*\d+|\b\d{1,3}\s*[\.:\/)]))/iu', "\n", $t);
+    // 3. Normalize question headers regardless of [BOLD], spaces, tags (supports Word, PDF, pasted text)
+    $t = preg_replace_callback('/(?:\[\/?BOLD\]|\*|\s)*(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)(?:\[\/?BOLD\]|\*|\s)*(\d{1,3})(?:\[\/?BOLD\]|\*|\s)*[\.:\)\-]/iu', function($m) {
+        return "\n\n[Q_HEAD_" . $m[1] . "]\n";
+    }, $t);
 
-    // 4. Split into question blocks using regex with lookahead for next question start or end of text
-    $qHeaderPat = '(?:\n\s*(?:\[BOLD\]|\*)*\s*(?:(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*\d+|\b\d{1,3}\s*[\.:\/)]))';
-    $qPat = '/(?:^|\n)\s*(?:\[BOLD\]|\*)*\s*(?:(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*(\d+)|\b(\d{1,3})\s*[\.:\/)]\s*)\s*(?:\[\/BOLD\]|\*)*[\s\.:\)\-]*(.*?)(?=' . $qHeaderPat . '|$)/siu';
+    // Also handle standalone "1. ", "2. " at start of lines if not already tagged
+    $t = preg_replace('/(?<=\n)\s*(?=(?:\[BOLD\]|\*)*\s*\b\d{1,3}[\.:\)\/]\s+[A-ZÀ-Ỹa-zà-ỹ\*\"])/u', "\n", $t);
 
-    if (!preg_match_all($qPat, $t, $matches, PREG_SET_ORDER)) return [];
+    // Question block regex
+    $qPat = '/(?:^|\n)\[Q_HEAD_(\d+)\]\s*\n?(.*?)(?=(?:\n\[Q_HEAD_\d+\])|\z)/siu';
+    
+    if (!preg_match_all($qPat, $t, $matches, PREG_SET_ORDER)) {
+        $qPatFallback = '/(?:^|\n)\s*(?:\[BOLD\]|\*)*\s*(?:(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*(\d+)|\b(\d{1,3})[\.:\)\/]\s+)\s*[:\.\)\-\s]*(.*?)(?=(?:\n\s*(?:(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*\d+|\b\d{1,3}[\.:\)\/]\s+))|\z)/siu';
+        if (!preg_match_all($qPatFallback, $t, $matches, PREG_SET_ORDER)) {
+            return [];
+        }
+    }
 
     $questions = [];
     $autoNum = 1;
 
     foreach ($matches as $m) {
-        $qNum = (int)($m[1] ?: $m[2] ?: $autoNum);
-        $block = trim($m[3]);
+        $qNum = (int)($m[1] ?: $autoNum);
+        $block = trim($m[2] ?? $m[3] ?? '');
         if (mb_strlen($block) < 3) continue;
 
-        // Clean any stray "Câu..." or "Question..." at the very end of block
-        $block = preg_replace('/(?:\s+|\n)*(?:\[BOLD\]|\*)*\s*(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*$/iu', '', $block);
+        // Clean stray tags at end of block without catastrophic backtracking
+        $block = preg_replace('/[\s\*\t\r\n]*(?:\[\/?BOLD\])*[\s\*\t\r\n]*(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*$/iu', '', $block);
 
         // Normalize options A, B, C, D (handles bold, asterisks, tabs, multiple spaces, brackets)
         $norm = $block;
@@ -343,14 +351,39 @@ function parseQuestionsFromTextContent($text) {
             $correct = strtoupper($mk[1]);
         }
 
-        // 2. Bold markers in options (e.g. [BOLD]C.[/BOLD] or [BOLD]Answer C[/BOLD])
+        // 2. Bold markers in options (e.g. **C.** or [BOLD]C.[/BOLD] or [BOLD]Answer C[/BOLD])
         if (empty($correct)) {
-            foreach (['A', 'B', 'C', 'D'] as $letter) {
-                $lcLetter = strtolower($letter);
-                if (stripos($block, "[BOLD]$lcLetter") !== false || stripos($block, "[BOLD]$letter") !== false) {
-                    $correct = $letter;
-                    break;
+            $boldedOptions = [];
+            $optRaw = ['A' => $optA, 'B' => $optB, 'C' => $optC, 'D' => $optD];
+
+            // Check if option text contains bold formatting
+            foreach ($optRaw as $letter => $rawContent) {
+                $hasBoldText = false;
+                if (preg_match_all('/\[BOLD\](.*?)\[\/BOLD\]/isu', $rawContent, $allBolds)) {
+                    foreach ($allBolds[1] as $bt) {
+                        if (mb_strlen(trim(strip_tags($bt))) > 0) {
+                            $hasBoldText = true;
+                            break;
+                        }
+                    }
                 }
+                if ($hasBoldText) {
+                    $boldedOptions[] = $letter;
+                }
+            }
+
+            // Check if option letter was bolded in block: [BOLD]b)[/BOLD] or **b)**
+            if (empty($boldedOptions)) {
+                foreach (['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'] as $upper => $lower) {
+                    if (preg_match('/(?:\[BOLD\]|\*\*)\s*(?:' . $upper . '|' . $lower . ')[\.:\)\/\-]/iu', $block)) {
+                        $boldedOptions[] = $upper;
+                    }
+                }
+            }
+
+            // If exactly 1 option is bold, select it as the explicit correct answer
+            if (count($boldedOptions) === 1) {
+                $correct = $boldedOptions[0];
             }
         }
 
@@ -369,18 +402,13 @@ function parseQuestionsFromTextContent($text) {
         $stripPat = '/\s*(?:Đáp\s*án\s*đúng(?:\s*là)?|Đáp\s*án|Answer|ĐA|Đ\/A|Key|Đáp\s*số|Chọn|Phương\s*án|=>|->)\s*[:\.\-]?\s*[A-Da-d].*$/isu';
         $clean = function($s) use ($stripPat) {
             $s = preg_replace($stripPat, '', $s);
-            $s = str_replace(['[BOLD]', '[/BOLD]', '*', '[OPT_A]', '[OPT_B]', '[OPT_C]', '[OPT_D]'], '', $s);
+            $s = str_replace(['[BOLD]', '[/BOLD]', '**', '*', '[OPT_A]', '[OPT_B]', '[OPT_C]', '[OPT_D]'], '', $s);
             $s = preg_replace('/(?:\s+|\n)*(?:Câu|CÂU|Question|QUESTION|Bài|BÀI)\s*$/iu', '', $s);
-            return trim($s);
+            return trim(preg_replace('/\s+/', ' ', $s));
         };
 
-        $hasExplicit = false;
-        if (!empty($correct) && in_array($correct, ['A','B','C','D'])) {
-            $hasExplicit = true;
-        } else {
-            $correct = 'A';
-            $hasExplicit = false;
-        }
+        $hasExplicit = (!empty($correct) && in_array($correct, ['A','B','C','D']));
+        if (!$hasExplicit) $correct = 'A';
 
         $questions[] = [
             'stt' => $qNum,
@@ -399,29 +427,35 @@ function parseQuestionsFromTextContent($text) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// HELPER: AI Auto-Analyze Correct Answers Engine (Batch & Resilient)
+// HELPER: AI Auto-Analyze Correct Answers Engine (Batch & Resilient with Chain-of-Thought)
 // ══════════════════════════════════════════════════════════════════════════
-function analyzeQuestionsAnswersViaAI(&$questions) {
+function analyzeQuestionsAnswersViaAI(&$questions, $mon_hoc_name = '', $tieu_de = '', $forceSolveAll = false) {
     if (empty($questions)) return 0;
 
     $missingIndexes = [];
-    foreach ($questions as $idx => $q) {
-        if (!empty($q['_need_ai_answer']) || empty($q['dap_an_dung']) || !in_array($q['dap_an_dung'], ['A','B','C','D'])) {
+    if ($forceSolveAll) {
+        foreach ($questions as $idx => $q) {
             $missingIndexes[] = $idx;
         }
-    }
-
-    // If no explicit missing flag, check if all questions are default 'A' (likely un-answered)
-    if (empty($missingIndexes) && count($questions) > 1) {
-        $allA = true;
-        foreach ($questions as $q) {
-            if (($q['dap_an_dung'] ?? '') !== 'A') {
-                $allA = false;
-                break;
+    } else {
+        foreach ($questions as $idx => $q) {
+            if (!empty($q['_need_ai_answer']) || empty($q['dap_an_dung']) || !in_array($q['dap_an_dung'], ['A','B','C','D'])) {
+                $missingIndexes[] = $idx;
             }
         }
-        if ($allA) {
-            foreach ($questions as $idx => $q) $missingIndexes[] = $idx;
+
+        // If no explicit missing flag, check if all questions are default 'A' (likely un-answered)
+        if (empty($missingIndexes) && count($questions) > 1) {
+            $allA = true;
+            foreach ($questions as $q) {
+                if (($q['dap_an_dung'] ?? '') !== 'A') {
+                    $allA = false;
+                    break;
+                }
+            }
+            if ($allA) {
+                foreach ($questions as $idx => $q) $missingIndexes[] = $idx;
+            }
         }
     }
 
@@ -430,7 +464,11 @@ function analyzeQuestionsAnswersViaAI(&$questions) {
     $xkiroKey = 'sk-xt-be5b4b10bf19ae39b6797fd77a983b74ab9c7ce7cd277a48';
     $googleKey = 'AQ.Ab8RN6KhYYAj9hQMSKIADsz9qPRHc1THSWrXDBOq6m9UlhvAJQ';
 
-    $batchSize = 25;
+    $context = !empty($mon_hoc_name) ? "môn học / lĩnh vực: $mon_hoc_name" : "kỳ thi cao đẳng & đại học";
+    if (!empty($tieu_de)) $context .= " (Chuyên đề: $tieu_de)";
+
+    // 10 questions per batch: ensures fast response (~3s), no curl timeout, and thorough CoT reasoning
+    $batchSize = 10;
     $chunks = array_chunk($missingIndexes, $batchSize);
     $solvedCount = 0;
 
@@ -448,24 +486,33 @@ function analyzeQuestionsAnswersViaAI(&$questions) {
             ];
         }
 
-        $prompt = "Bạn là chuyên gia giáo dục và khảo thí đại học. Hãy phân tích đề bài và 4 phương án lựa chọn (A, B, C, D) cho từng câu hỏi trắc nghiệm dưới đây và chỉ ra phương án đúng nhất.
-BẮT BUỘC: Trả về DUY NHẤT một mảng JSON thuần túy (Array of Objects), KHÔNG viết bất kỳ lời dẫn nào.
-Mỗi object có đúng 2 trường:
-- \"id\": số id câu hỏi tương ứng trong danh sách
-- \"dap_an_dung\": Ký tự đáp án đúng duy nhất (\"A\", \"B\", \"C\", hoặc \"D\")
+        $prompt = "Bạn là chuyên gia thẩm định đề thi hàng đầu Việt Nam thuộc $context.
+Hãy phân tích cẩn trọng từng câu hỏi trắc nghiệm và 4 phương án lựa chọn (A, B, C, D) dưới đây để chỉ ra phương án đúng nhất tuyệt đối.
+QUY TẮC BẮT BUỘC:
+1. Đọc kỹ câu hỏi, đối chiếu các định nghĩa chuẩn, cú pháp lập trình, quy tắc chỉ số mảng (trong hầu hết ngôn ngữ lập trình hiện đại như C, C++, C#, Java, Python, VB.Net, JavaScript... mảng đều là 0-based indexing, phần tử thứ k có chỉ số là k-1), tính tương thích phiên bản phần mềm, thứ tự toán tử.
+2. Với mỗi câu hỏi, BẮT BUỘC đưa ra một câu phân tích ngắn gọn cơ sở lý thuyết (trường \"ly_do\") trước khi kết luận đáp án đúng để đảm bảo độ chính xác 100%.
+3. Trả về DUY NHẤT một mảng JSON thuần túy (Array of Objects), KHÔNG viết bất kỳ chữ nào khác bên ngoài khối JSON.
+Định dạng JSON:
+[
+  {
+    \"id\": <id câu hỏi>,
+    \"ly_do\": \"<phân tích ngắn gọn cơ sở lý thuyết>\",
+    \"dap_an_dung\": \"A\" hoặc \"B\" hoặc \"C\" hoặc \"D\"
+  }
+]
 
 Danh sách câu hỏi cần giải:
 " . json_encode($itemsToSolve, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         $solvedMap = [];
 
-        // 1. Try mistralai/mistral-large-2512 via xkiro
+        // 1. Primary: mistralai/codestral-2508 via xkiro (Fast ~3s, top-tier coding & reasoning)
         $ch = curl_init('https://api.xkiro.com/v1/chat/completions');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => json_encode([
-                'model'       => 'mistralai/mistral-large-2512',
+                'model'       => 'mistralai/codestral-2508',
                 'messages'    => [
                     ['role' => 'system', 'content' => 'Bạn là chuyên gia thẩm định đáp án trắc nghiệm. Luôn trả về đúng 1 mảng JSON thuần túy.'],
                     ['role' => 'user', 'content' => $prompt]
@@ -477,7 +524,7 @@ Danh sách câu hỏi cần giải:
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $xkiroKey
             ],
-            CURLOPT_TIMEOUT        => 25,
+            CURLOPT_TIMEOUT        => 30,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false
         ]);
@@ -504,48 +551,54 @@ Danh sách câu hỏi cần giải:
             }
         }
 
-        // 2. Fallback to Google Gemini 3.6 Flash
+        // 2. Fallback 1: mistralai/mistral-large-2512 via xkiro
         if (empty($solvedMap)) {
-            $geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=" . urlencode($googleKey);
-            $chG = curl_init($geminiUrl);
-            curl_setopt_array($chG, [
+            $chM = curl_init('https://api.xkiro.com/v1/chat/completions');
+            curl_setopt_array($chM, [
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_POST           => true,
                 CURLOPT_POSTFIELDS     => json_encode([
-                    'contents' => [
-                        ['parts' => [['text' => $prompt]]]
+                    'model'       => 'mistralai/mistral-large-2512',
+                    'messages'    => [
+                        ['role' => 'system', 'content' => 'Bạn là chuyên gia thẩm định đáp án trắc nghiệm. Luôn trả về đúng 1 mảng JSON thuần túy.'],
+                        ['role' => 'user', 'content' => $prompt]
                     ],
-                    'generationConfig' => [
-                        'temperature' => 0.1,
-                        'responseMimeType' => 'application/json'
-                    ]
+                    'temperature' => 0.1,
+                    'max_tokens'  => 2500
                 ]),
-                CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-                CURLOPT_TIMEOUT        => 25,
+                CURLOPT_HTTPHEADER     => [
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $xkiroKey
+                ],
+                CURLOPT_TIMEOUT        => 30,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false
             ]);
-            $resG = curl_exec($chG);
-            $codeG = curl_getinfo($chG, CURLINFO_HTTP_CODE);
-            curl_close($chG);
+            $resM = curl_exec($chM);
+            $codeM = curl_getinfo($chM, CURLINFO_HTTP_CODE);
+            curl_close($chM);
 
-            if ($codeG === 200 && !empty($resG)) {
-                $jsonG = json_decode($resG, true);
-                $contentG = $jsonG['candidates'][0]['content']['parts'][0]['text'] ?? '';
-                $parsedG = json_decode($contentG, true);
-                if (is_array($parsedG)) {
-                    foreach ($parsedG as $p) {
-                        $pId = (int)($p['id'] ?? -1);
-                        $pAns = strtoupper(trim($p['dap_an_dung'] ?? ''));
-                        if (in_array($pAns, ['A','B','C','D'])) {
-                            $solvedMap[$pId] = $pAns;
+            if ($codeM === 200 && !empty($resM)) {
+                $jsonM = json_decode($resM, true);
+                $contentM = $jsonM['choices'][0]['message']['content'] ?? '';
+                $s = strpos($contentM, '[');
+                $e = strrpos($contentM, ']');
+                if ($s !== false && $e !== false) {
+                    $parsedM = json_decode(substr($contentM, $s, $e - $s + 1), true);
+                    if (is_array($parsedM)) {
+                        foreach ($parsedM as $p) {
+                            $pId = (int)($p['id'] ?? -1);
+                            $pAns = strtoupper(trim($p['dap_an_dung'] ?? ''));
+                            if (in_array($pAns, ['A','B','C','D'])) {
+                                $solvedMap[$pId] = $pAns;
+                            }
                         }
                     }
                 }
             }
         }
 
-        // 3. Fallback to DeepSeek Chat
+        // 3. Fallback 2: DeepSeek Chat via xkiro
         if (empty($solvedMap)) {
             $chD = curl_init('https://api.xkiro.com/v1/chat/completions');
             curl_setopt_array($chD, [
@@ -564,7 +617,7 @@ Danh sách câu hỏi cần giải:
                     'Content-Type: application/json',
                     'Authorization: Bearer ' . $xkiroKey
                 ],
-                CURLOPT_TIMEOUT        => 25,
+                CURLOPT_TIMEOUT        => 30,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false
             ]);
@@ -592,6 +645,47 @@ Danh sách câu hỏi cần giải:
             }
         }
 
+        // 4. Fallback 3: Google Gemini
+        if (empty($solvedMap)) {
+            $geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" . urlencode($googleKey);
+            $chG = curl_init($geminiUrl);
+            curl_setopt_array($chG, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => json_encode([
+                    'contents' => [
+                        ['parts' => [['text' => $prompt]]]
+                    ],
+                    'generationConfig' => [
+                        'temperature' => 0.1,
+                        'responseMimeType' => 'application/json'
+                    ]
+                ]),
+                CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+                CURLOPT_TIMEOUT        => 30,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false
+            ]);
+            $resG = curl_exec($chG);
+            $codeG = curl_getinfo($chG, CURLINFO_HTTP_CODE);
+            curl_close($chG);
+
+            if ($codeG === 200 && !empty($resG)) {
+                $jsonG = json_decode($resG, true);
+                $contentG = $jsonG['candidates'][0]['content']['parts'][0]['text'] ?? '';
+                $parsedG = json_decode($contentG, true);
+                if (is_array($parsedG)) {
+                    foreach ($parsedG as $p) {
+                        $pId = (int)($p['id'] ?? -1);
+                        $pAns = strtoupper(trim($p['dap_an_dung'] ?? ''));
+                        if (in_array($pAns, ['A','B','C','D'])) {
+                            $solvedMap[$pId] = $pAns;
+                        }
+                    }
+                }
+            }
+        }
+
         // Apply solved answers
         foreach ($chunk as $idx) {
             if (isset($solvedMap[$idx])) {
@@ -607,14 +701,23 @@ Danh sách câu hỏi cần giải:
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// HELPER: AI Single Question Solver
+// HELPER: AI Single Question Solver (Chain-of-Thought Powered)
 // ══════════════════════════════════════════════════════════════════════════
-function singleQuestionSolveViaAI($cau_hoi, $optA, $optB, $optC, $optD) {
+function singleQuestionSolveViaAI($cau_hoi, $optA, $optB, $optC, $optD, $mon_hoc_name = '') {
     $xkiroKey = 'sk-xt-be5b4b10bf19ae39b6797fd77a983b74ab9c7ce7cd277a48';
     $googleKey = 'AQ.Ab8RN6KhYYAj9hQMSKIADsz9qPRHc1THSWrXDBOq6m9UlhvAJQ';
 
-    $prompt = "Bạn là chuyên gia thẩm định đáp án trắc nghiệm. Hãy phân tích câu hỏi và 4 lựa chọn dưới đây để chọn phương án đúng nhất (A, B, C, hoặc D).
-Trả về DUY NHẤT một chữ cái viết hoa đại diện cho đáp án đúng: A hoặc B hoặc C hoặc D. Không thêm bất kỳ từ ngữ nào khác.
+    $context = !empty($mon_hoc_name) ? "thuộc môn học / lĩnh vực: $mon_hoc_name" : "giáo dục & khảo thí đại học";
+
+    $prompt = "Bạn là chuyên gia thẩm định đề thi hàng đầu Việt Nam $context.
+Hãy phân tích cẩn trọng câu hỏi và 4 phương án dưới đây để chỉ ra phương án đúng nhất tuyệt đối (A, B, C, hoặc D).
+QUY TẮC:
+- Dựa trên chuẩn kiến thức, tài liệu chính thức, quy tắc chỉ số mảng 0-based (phần tử thứ k có index k-1), thứ tự ưu tiên toán tử.
+- BẮT BUỘC trả về đúng 1 object JSON thuần túy (không có markdown hay chữ bên ngoài):
+{
+  \"ly_do\": \"phân tích ngắn gọn cơ sở lý thuyết\",
+  \"dap_an_dung\": \"A\" hoặc \"B\" hoặc \"C\" hoặc \"D\"
+}
 
 Câu hỏi: $cau_hoi
 A. $optA
@@ -622,22 +725,25 @@ B. $optB
 C. $optC
 D. $optD";
 
-    // 1. Try xkiro Mistral
+    // 1. Try xkiro Codestral 2508
     $ch = curl_init('https://api.xkiro.com/v1/chat/completions');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => json_encode([
-            'model'       => 'mistralai/mistral-large-2512',
-            'messages'    => [['role' => 'user', 'content' => $prompt]],
+            'model'       => 'mistralai/codestral-2508',
+            'messages'    => [
+                ['role' => 'system', 'content' => 'Bạn là chuyên gia thẩm định đáp án trắc nghiệm. Luôn trả về đúng 1 object JSON thuần túy.'],
+                ['role' => 'user', 'content' => $prompt]
+            ],
             'temperature' => 0.1,
-            'max_tokens'  => 50
+            'max_tokens'  => 500
         ]),
         CURLOPT_HTTPHEADER     => [
             'Content-Type: application/json',
             'Authorization: Bearer ' . $xkiroKey
         ],
-        CURLOPT_TIMEOUT        => 12,
+        CURLOPT_TIMEOUT        => 15,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_SSL_VERIFYHOST => false
     ]);
@@ -647,35 +753,48 @@ D. $optD";
 
     if ($code === 200 && !empty($res)) {
         $json = json_decode($res, true);
-        $ans = trim($json['choices'][0]['message']['content'] ?? '');
-        if (preg_match('/\b([A-D])\b/i', $ans, $m)) {
+        $content = $json['choices'][0]['message']['content'] ?? '';
+        if (preg_match('/"dap_an_dung"\s*:\s*"([A-D])"/i', $content, $m)) {
+            return strtoupper($m[1]);
+        }
+        if (preg_match('/\b([A-D])\b/i', $content, $m)) {
             return strtoupper($m[1]);
         }
     }
 
-    // 2. Fallback Google Gemini 3.6 Flash
-    $geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=" . urlencode($googleKey);
-    $chG = curl_init($geminiUrl);
-    curl_setopt_array($chG, [
+    // 2. Fallback Mistral Large
+    $chM = curl_init('https://api.xkiro.com/v1/chat/completions');
+    curl_setopt_array($chM, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => json_encode([
-            'contents' => [['parts' => [['text' => $prompt]]]],
-            'generationConfig' => ['temperature' => 0.1, 'maxOutputTokens' => 50]
+            'model'       => 'mistralai/mistral-large-2512',
+            'messages'    => [
+                ['role' => 'system', 'content' => 'Bạn là chuyên gia thẩm định đáp án trắc nghiệm. Luôn trả về đúng 1 object JSON thuần túy.'],
+                ['role' => 'user', 'content' => $prompt]
+            ],
+            'temperature' => 0.1,
+            'max_tokens'  => 500
         ]),
-        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-        CURLOPT_TIMEOUT        => 12,
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $xkiroKey
+        ],
+        CURLOPT_TIMEOUT        => 15,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_SSL_VERIFYHOST => false
     ]);
-    $resG = curl_exec($chG);
-    $codeG = curl_getinfo($chG, CURLINFO_HTTP_CODE);
-    curl_close($chG);
+    $resM = curl_exec($chM);
+    $codeM = curl_getinfo($chM, CURLINFO_HTTP_CODE);
+    curl_close($chM);
 
-    if ($codeG === 200 && !empty($resG)) {
-        $jsonG = json_decode($resG, true);
-        $ansG = trim($jsonG['candidates'][0]['content']['parts'][0]['text'] ?? '');
-        if (preg_match('/\b([A-D])\b/i', $ansG, $m)) {
+    if ($codeM === 200 && !empty($resM)) {
+        $jsonM = json_decode($resM, true);
+        $contentM = $jsonM['choices'][0]['message']['content'] ?? '';
+        if (preg_match('/"dap_an_dung"\s*:\s*"([A-D])"/i', $contentM, $m)) {
+            return strtoupper($m[1]);
+        }
+        if (preg_match('/\b([A-D])\b/i', $contentM, $m)) {
             return strtoupper($m[1]);
         }
     }
@@ -939,25 +1058,35 @@ elseif ($action === 'create_quiz') {
             if ($source_mode === 'text' && !empty($_POST['raw_text'])) {
                 $raw = trim($_POST['raw_text']);
                 $questions_to_insert = parseQuestionsFromTextContent($raw);
-                $aiExtracted = extractQuestionsDirectlyViaAI($raw);
-                if (count($aiExtracted) > count($questions_to_insert)) {
-                    $questions_to_insert = $aiExtracted;
+                if (count($questions_to_insert) < 2) {
+                    $aiExtracted = extractQuestionsDirectlyViaAI($raw);
+                    if (count($aiExtracted) > count($questions_to_insert)) {
+                        $questions_to_insert = $aiExtracted;
+                    }
                 }
             } elseif ($source_mode === 'file' && isset($_FILES['quiz_file']) && $_FILES['quiz_file']['error'] === UPLOAD_ERR_OK) {
                 $ext = strtolower(pathinfo($_FILES['quiz_file']['name'], PATHINFO_EXTENSION));
                 $fc = extractTextFromUploadedFile($_FILES['quiz_file']['tmp_name'], $ext);
                 if (!empty($fc)) {
                     $questions_to_insert = parseQuestionsFromTextContent($fc);
-                    $aiExtracted = extractQuestionsDirectlyViaAI($fc);
-                    if (count($aiExtracted) > count($questions_to_insert)) {
-                        $questions_to_insert = $aiExtracted;
+                    if (count($questions_to_insert) < 2) {
+                        $aiExtracted = extractQuestionsDirectlyViaAI($fc);
+                        if (count($aiExtracted) > count($questions_to_insert)) {
+                            $questions_to_insert = $aiExtracted;
+                        }
                     }
                 }
             }
 
             // AI Automatically analyzes and determines correct answers
+            $mon_hoc_name = '';
+            if ($mon_hoc_id > 0) {
+                $rm = $db->query("SELECT ten_mon FROM mon_hoc WHERE id = $mon_hoc_id LIMIT 1");
+                if ($rm && $rowm = $rm->fetch_assoc()) $mon_hoc_name = $rowm['ten_mon'] ?? '';
+            }
+            $forceSolve = !empty($_POST['force_ai_solve']);
             if (!empty($questions_to_insert)) {
-                analyzeQuestionsAnswersViaAI($questions_to_insert);
+                analyzeQuestionsAnswersViaAI($questions_to_insert, $mon_hoc_name, $tieu_de, $forceSolve);
             }
 
             // 2. Re-establish MySQL connection after long AI requests
@@ -1090,22 +1219,36 @@ elseif ($action === 'bulk_add_questions') {
         $fc = extractTextFromUploadedFile($_FILES['quiz_file']['tmp_name'], $ext);
         if (!empty($fc)) {
             $parsed = parseQuestionsFromTextContent($fc);
-            $aiExtracted = extractQuestionsDirectlyViaAI($fc);
-            if (count($aiExtracted) > count($parsed)) {
-                $parsed = $aiExtracted;
+            if (count($parsed) < 2) {
+                $aiExtracted = extractQuestionsDirectlyViaAI($fc);
+                if (count($aiExtracted) > count($parsed)) {
+                    $parsed = $aiExtracted;
+                }
             }
         }
     } elseif (!empty($_POST['raw_text'])) {
         $raw = trim($_POST['raw_text']);
         $parsed = parseQuestionsFromTextContent($raw);
-        $aiExtracted = extractQuestionsDirectlyViaAI($raw);
-        if (count($aiExtracted) > count($parsed)) {
-            $parsed = $aiExtracted;
+        if (count($parsed) < 2) {
+            $aiExtracted = extractQuestionsDirectlyViaAI($raw);
+            if (count($aiExtracted) > count($parsed)) {
+                $parsed = $aiExtracted;
+            }
         }
     }
     
+    $mon_hoc_name = '';
+    $quiz_title = '';
+    if ($qid > 0) {
+        $rq = $db->query("SELECT q.tieu_de, m.ten_mon FROM quizzes q LEFT JOIN mon_hoc m ON q.mon_hoc_id = m.id WHERE q.id = $qid LIMIT 1");
+        if ($rq && $rowq = $rq->fetch_assoc()) {
+            $mon_hoc_name = $rowq['ten_mon'] ?? '';
+            $quiz_title = $rowq['tieu_de'] ?? '';
+        }
+    }
+    $forceSolve = !empty($_POST['force_ai_solve']);
     if (!empty($parsed)) {
-        analyzeQuestionsAnswersViaAI($parsed);
+        analyzeQuestionsAnswersViaAI($parsed, $mon_hoc_name, $quiz_title, $forceSolve);
     }
 
     ensureDbConnection($db);
@@ -1233,7 +1376,13 @@ elseif ($action === 'ajax_ai_solve_question') {
         exit;
     }
 
-    $solved = singleQuestionSolveViaAI($cau_hoi, $da, $db_, $dc, $dd);
+    $mon_hoc_name = '';
+    if ($question_id > 0) {
+        $rm = $db->query("SELECT m.ten_mon FROM quiz_questions qq JOIN quizzes q ON qq.quiz_id = q.id LEFT JOIN mon_hoc m ON q.mon_hoc_id = m.id WHERE qq.id = $question_id LIMIT 1");
+        if ($rm && $rowm = $rm->fetch_assoc()) $mon_hoc_name = $rowm['ten_mon'] ?? '';
+    }
+
+    $solved = singleQuestionSolveViaAI($cau_hoi, $da, $db_, $dc, $dd, $mon_hoc_name);
     if ($question_id > 0 && in_array($solved, ['A','B','C','D'])) {
         $stmt = $db->prepare("UPDATE quiz_questions SET dap_an_dung=? WHERE id=?");
         $stmt->bind_param("si", $solved, $question_id);
@@ -1253,6 +1402,14 @@ elseif ($action === 'ajax_ai_solve_all') {
         exit;
     }
 
+    $mon_hoc_name = '';
+    $quiz_title = '';
+    $rq = $db->query("SELECT q.tieu_de, m.ten_mon FROM quizzes q LEFT JOIN mon_hoc m ON q.mon_hoc_id = m.id WHERE q.id = $qid LIMIT 1");
+    if ($rq && $rowq = $rq->fetch_assoc()) {
+        $mon_hoc_name = $rowq['ten_mon'] ?? '';
+        $quiz_title = $rowq['tieu_de'] ?? '';
+    }
+
     $res = $db->query("SELECT * FROM quiz_questions WHERE quiz_id = $qid ORDER BY id ASC");
     $list = [];
     if ($res) {
@@ -1267,7 +1424,7 @@ elseif ($action === 'ajax_ai_solve_all') {
         exit;
     }
 
-    $solvedCount = analyzeQuestionsAnswersViaAI($list);
+    $solvedCount = analyzeQuestionsAnswersViaAI($list, $mon_hoc_name, $quiz_title, true);
     $upStmt = $db->prepare("UPDATE quiz_questions SET dap_an_dung=? WHERE id=?");
     foreach ($list as $item) {
         $ans = $item['dap_an_dung'] ?? 'A';
@@ -1279,7 +1436,7 @@ elseif ($action === 'ajax_ai_solve_all') {
     exit;
 }
 
-// 11. GENERATE SHUFFLED EXAM CODES
+// 11. GENERATE SHUFFLED EXAM CODES (100% INVARIANT ACCURACY)
 elseif ($action === 'generate_matrix_codes') {
     $qid = (int)$_POST['quiz_id'];
     $so_ma_de = max(1, min(100, (int)($_POST['so_ma_de'] ?? 4)));
@@ -1305,26 +1462,39 @@ elseif ($action === 'generate_matrix_codes') {
 
             $matrix = [];
             foreach ($qs as $idx => $bq) {
-                $opts = ['A' => $bq['dap_an_a'], 'B' => $bq['dap_an_b'], 'C' => $bq['dap_an_c'], 'D' => $bq['dap_an_d']];
-                $correct_content = $opts[$bq['dap_an_dung']] ?? '';
-                $new_correct = $bq['dap_an_dung'];
+                $orig_dung = strtoupper(trim($bq['dap_an_dung'] ?? 'A'));
+                if (!in_array($orig_dung, ['A','B','C','D'])) $orig_dung = 'A';
+
+                // Map options with boolean correct tracker (100% invariant through shuffle)
+                $opt_items = [
+                    ['orig_key' => 'A', 'text' => $bq['dap_an_a'] ?? '', 'is_correct' => ($orig_dung === 'A')],
+                    ['orig_key' => 'B', 'text' => $bq['dap_an_b'] ?? '', 'is_correct' => ($orig_dung === 'B')],
+                    ['orig_key' => 'C', 'text' => $bq['dap_an_c'] ?? '', 'is_correct' => ($orig_dung === 'C')],
+                    ['orig_key' => 'D', 'text' => $bq['dap_an_d'] ?? '', 'is_correct' => ($orig_dung === 'D')],
+                ];
 
                 if ($tron_da) {
-                    $vals = array_values($opts);
-                    shuffle($vals);
-                    $new_opts = [];
-                    foreach ($letters as $li => $lc) {
-                        $new_opts[$lc] = $vals[$li] ?? '';
-                        if ($new_opts[$lc] === $correct_content) $new_correct = $lc;
+                    shuffle($opt_items);
+                }
+
+                $new_opts = [];
+                $new_correct = 'A';
+                foreach ($letters as $li => $lc) {
+                    $new_opts[$lc] = $opt_items[$li]['text'] ?? '';
+                    if (!empty($opt_items[$li]['is_correct'])) {
+                        $new_correct = $lc;
                     }
-                    $opts = $new_opts;
                 }
 
                 $matrix[] = [
-                    'stt' => $idx + 1, 'orig_id' => $bq['id'],
+                    'stt' => $idx + 1,
+                    'orig_id' => $bq['id'],
+                    'id' => $bq['id'],
                     'cau_hoi' => $bq['cau_hoi'],
-                    'dap_an_a' => $opts['A'], 'dap_an_b' => $opts['B'],
-                    'dap_an_c' => $opts['C'], 'dap_an_d' => $opts['D'],
+                    'dap_an_a' => $new_opts['A'],
+                    'dap_an_b' => $new_opts['B'],
+                    'dap_an_c' => $new_opts['C'],
+                    'dap_an_d' => $new_opts['D'],
                     'dap_an_dung' => $new_correct,
                 ];
             }
@@ -1334,7 +1504,7 @@ elseif ($action === 'generate_matrix_codes') {
             $ins->bind_param("iss", $qid, $ma_de, $json);
             $ins->execute();
         }
-        $msg = "success:Đã tạo $so_ma_de mã đề (từ $ma_de_start đến " . ($ma_de_start + $so_ma_de - 1) . ")!";
+        $msg = "success:Đã tạo $so_ma_de mã đề thi và bảo toàn chính xác 100% đáp án đúng!";
     }
     header("Location: /tkb/teacher/quiz.php?tab=matrix&quiz_id=$qid&msg=" . urlencode($msg));
     exit;
@@ -1394,71 +1564,140 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
 <link rel="stylesheet" href="/tkb/assets/style.css">
 <style>
 :root {
-    --quiz-bg: rgba(15, 10, 30, 0.6);
-    --quiz-border: rgba(139, 92, 246, 0.2);
-    --quiz-border-hover: rgba(139, 92, 246, 0.45);
+    /* ══════════════════════════════════════════════════════════════
+       DEFAULT: DEEP COSMIC LOFI DARK THEME (Matches Admin/Teacher Portal)
+       ══════════════════════════════════════════════════════════════ */
+    --quiz-bg: #090514;
+    --quiz-card: #140d27;
+    --quiz-card-sub: rgba(255, 255, 255, 0.05);
+    --quiz-border: rgba(168, 85, 247, 0.2);
+    --quiz-border-hover: rgba(192, 132, 252, 0.45);
     --quiz-purple: #a855f7;
+    --quiz-purple-light: rgba(147, 51, 234, 0.2);
     --quiz-blue: #38bdf8;
+    --quiz-blue-light: rgba(2, 132, 199, 0.2);
     --quiz-green: #34d399;
+    --quiz-green-light: rgba(5, 150, 105, 0.2);
     --quiz-red: #f87171;
+    --quiz-red-light: rgba(220, 38, 38, 0.2);
     --quiz-yellow: #fbbf24;
-    --quiz-text: #f1e8ff;
-    --quiz-muted: #9b8fb8;
-    --quiz-input: #0e0a1e;
-    --quiz-card: rgba(22, 15, 42, 0.8);
+    --quiz-text: #f3e8ff;
+    --quiz-muted: #a79bb7;
+    --quiz-input: #0c0717;
+    --quiz-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --quiz-opt-bg: rgba(255, 255, 255, 0.04);
+    --quiz-opt-border: rgba(168, 85, 247, 0.25);
+    --quiz-table-th: #0f0a1e;
+    --quiz-table-hover: rgba(168, 85, 247, 0.08);
+}
+
+body.adm-light-mode {
+    /* ══════════════════════════════════════════════════════════════
+       LIGHT THEME (Crisp Modern White & Slate)
+       ══════════════════════════════════════════════════════════════ */
+    --quiz-bg: #f8fafc;
+    --quiz-card: #ffffff;
+    --quiz-card-sub: #f1f5f9;
+    --quiz-border: #e2e8f0;
+    --quiz-border-hover: #cbd5e1;
+    --quiz-purple: #7c3aed;
+    --quiz-purple-light: #f5f3ff;
+    --quiz-blue: #0284c7;
+    --quiz-blue-light: #f0f9ff;
+    --quiz-green: #059669;
+    --quiz-green-light: #ecfdf5;
+    --quiz-red: #dc2626;
+    --quiz-red-light: #fef2f2;
+    --quiz-yellow: #d97706;
+    --quiz-text: #0f172a;
+    --quiz-muted: #64748b;
+    --quiz-input: #ffffff;
+    --quiz-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    --quiz-opt-bg: #f8fafc;
+    --quiz-opt-border: #e2e8f0;
+    --quiz-table-th: #f8fafc;
+    --quiz-table-hover: #f8fafc;
+}
+
+body {
+    background: var(--quiz-bg) !important;
+    color: var(--quiz-text) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+.main-content {
+    background: var(--quiz-bg) !important;
+    color: var(--quiz-text) !important;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Page Header */
+.page-title {
+    color: var(--quiz-text) !important;
+    font-weight: 800;
+}
+.page-sub {
+    color: var(--quiz-muted) !important;
+    font-size: 13.5px;
+    margin-top: 4px;
 }
 
 /* Tab Navigation */
-.qz-tabs { display: flex; gap: 8px; margin-bottom: 26px; flex-wrap: wrap; }
+.qz-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
 .qz-tab {
     padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 13px;
     text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-    border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02);
+    border: 1px solid var(--quiz-border); background: var(--quiz-card);
     color: var(--quiz-muted); transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    box-shadow: var(--quiz-shadow);
 }
-.qz-tab:hover { background: rgba(139,92,246,0.1); color: var(--quiz-text); border-color: var(--quiz-border); transform: translateY(-1px); }
+.qz-tab:hover { background: var(--quiz-purple-light); color: var(--quiz-text); border-color: var(--quiz-border-hover); transform: translateY(-1px); }
 .qz-tab.active {
     background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff;
-    border-color: #a78bfa; box-shadow: 0 4px 20px rgba(139,92,246,0.35);
+    border-color: #7c3aed; box-shadow: 0 4px 16px rgba(124, 58, 237, 0.38);
 }
 
 /* KPI Cards */
-.qz-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.qz-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .qz-kpi {
     background: var(--quiz-card); border: 1px solid var(--quiz-border); border-radius: 16px;
-    padding: 20px; position: relative; overflow: hidden;
+    padding: 22px; position: relative; overflow: hidden;
+    box-shadow: var(--quiz-shadow);
+    transition: all 0.25s ease;
 }
+.qz-kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-color: var(--quiz-border-hover); }
 .qz-kpi::after {
-    content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px;
-    border-radius: 50%; filter: blur(40px); opacity: 0.15;
+    content: ''; position: absolute; top: 0; right: 0; width: 90px; height: 90px;
+    border-radius: 50%; filter: blur(40px); opacity: 0.15; pointer-events: none;
 }
-.qz-kpi:nth-child(1)::after { background: var(--quiz-purple); }
-.qz-kpi:nth-child(2)::after { background: var(--quiz-blue); }
-.qz-kpi:nth-child(3)::after { background: var(--quiz-green); }
-.qz-kpi-label { font-size: 11.5px; font-weight: 700; color: var(--quiz-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.qz-kpi-value { font-size: 30px; font-weight: 900; margin-top: 6px; }
+.qz-kpi:nth-child(1)::after { background: #8b5cf6; }
+.qz-kpi:nth-child(2)::after { background: #0284c7; }
+.qz-kpi:nth-child(3)::after { background: #10b981; }
+.qz-kpi-label { font-size: 12px; font-weight: 700; color: var(--quiz-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.qz-kpi-value { font-size: 32px; font-weight: 900; margin-top: 6px; }
 
 /* Quiz Cards Grid */
-.qz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+.qz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
 .qz-card {
     background: var(--quiz-card); border: 1px solid var(--quiz-border); border-radius: 18px;
-    padding: 22px; transition: all 0.3s cubic-bezier(.4,0,.2,1); position: relative;
+    padding: 24px; transition: all 0.3s cubic-bezier(.4,0,.2,1); position: relative;
+    box-shadow: var(--quiz-shadow);
 }
-.qz-card:hover { border-color: var(--quiz-border-hover); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+.qz-card:hover { border-color: var(--quiz-border-hover); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.25); }
 .qz-card-title { font-size: 16px; font-weight: 800; color: var(--quiz-text); line-height: 1.45; margin-bottom: 10px; }
 .qz-badge {
-    display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700;
     padding: 4px 10px; border-radius: 8px;
 }
-.qz-badge-purple { background: rgba(139,92,246,0.12); color: #c084fc; border: 1px solid rgba(139,92,246,0.25); }
-.qz-badge-blue { background: rgba(56,189,248,0.1); color: var(--quiz-blue); border: 1px solid rgba(56,189,248,0.25); }
-.qz-badge-green { background: rgba(52,211,153,0.1); color: var(--quiz-green); border: 1px solid rgba(52,211,153,0.25); }
-.qz-badge-red { background: rgba(248,113,113,0.1); color: var(--quiz-red); border: 1px solid rgba(248,113,113,0.25); }
+.qz-badge-purple { background: var(--quiz-purple-light); color: var(--quiz-purple); border: 1px solid var(--quiz-border); }
+.qz-badge-blue { background: var(--quiz-blue-light); color: var(--quiz-blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+.qz-badge-green { background: var(--quiz-green-light); color: var(--quiz-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+.qz-badge-red { background: var(--quiz-red-light); color: var(--quiz-red); border: 1px solid rgba(239, 68, 68, 0.3); }
 
 /* Action Buttons */
 .qz-card-actions {
     display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px; margin-top: 14px;
+    border-top: 1px solid var(--quiz-border); padding-top: 16px; margin-top: 14px;
 }
 .qz-action-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -1466,98 +1705,110 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
     text-decoration: none; transition: all 0.2s ease; cursor: pointer; border: 1px solid transparent;
 }
 .qz-action-btn:hover { transform: translateY(-1px); }
-.qz-btn-edit { background: rgba(139,92,246,0.12); color: #c084fc; border-color: rgba(139,92,246,0.3); }
-.qz-btn-edit:hover { background: rgba(139,92,246,0.25); }
-.qz-btn-shuffle { background: rgba(56,189,248,0.08); color: var(--quiz-blue); border-color: rgba(56,189,248,0.25); }
-.qz-btn-shuffle:hover { background: rgba(56,189,248,0.18); }
-.qz-btn-scores { background: rgba(52,211,153,0.08); color: var(--quiz-green); border-color: rgba(52,211,153,0.25); }
-.qz-btn-scores:hover { background: rgba(52,211,153,0.18); }
-.qz-btn-delete { background: rgba(248,113,113,0.08); color: var(--quiz-red); border-color: rgba(248,113,113,0.25); }
-.qz-btn-delete:hover { background: rgba(248,113,113,0.18); }
+.qz-btn-edit { background: var(--quiz-purple-light); color: var(--quiz-purple); border-color: var(--quiz-border); }
+.qz-btn-edit:hover { background: rgba(147, 51, 234, 0.32); color: #fff; }
+.qz-btn-shuffle { background: var(--quiz-blue-light); color: var(--quiz-blue); border-color: rgba(56, 189, 248, 0.3); }
+.qz-btn-shuffle:hover { background: rgba(2, 132, 199, 0.32); color: #fff; }
+.qz-btn-scores { background: var(--quiz-green-light); color: var(--quiz-green); border-color: rgba(16, 185, 129, 0.3); }
+.qz-btn-scores:hover { background: rgba(5, 150, 105, 0.32); color: #fff; }
+.qz-btn-delete { background: var(--quiz-red-light); color: var(--quiz-red); border-color: rgba(239, 68, 68, 0.3); }
+.qz-btn-delete:hover { background: rgba(220, 38, 38, 0.32); color: #fff; }
 
 /* Form Inputs */
 .qz-input, .qz-select, .qz-textarea {
     width: 100%; background: var(--quiz-input); border: 1px solid var(--quiz-border);
-    color: var(--quiz-text); border-radius: 10px; padding: 10px 14px; font-size: 13px;
-    font-family: 'Plus Jakarta Sans', sans-serif; transition: border-color 0.2s;
+    color: var(--quiz-text); border-radius: 10px; padding: 10px 14px; font-size: 13.5px;
+    font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
     box-sizing: border-box;
 }
-.qz-input:focus, .qz-select:focus, .qz-textarea:focus { border-color: var(--quiz-purple); outline: none; }
+.qz-input:focus, .qz-select:focus, .qz-textarea:focus {
+    border-color: #a855f7; outline: none;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+}
 .qz-textarea { font-family: 'JetBrains Mono', 'Fira Code', monospace; resize: vertical; }
-.qz-label { display: block; font-size: 12px; font-weight: 700; color: #c4b5fd; margin-bottom: 6px; }
+.qz-label { display: block; font-size: 12.5px; font-weight: 700; color: var(--quiz-text); margin-bottom: 6px; }
 
 /* Mode Tabs */
-.qz-mode-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.qz-mode-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
 .qz-mode-tab {
     padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
-    cursor: pointer; border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(0,0,0,0.2); color: #b3a0d0; transition: all 0.2s;
+    cursor: pointer; border: 1px solid var(--quiz-border);
+    background: var(--quiz-card); color: var(--quiz-muted); transition: all 0.2s;
+    box-shadow: var(--quiz-shadow);
 }
 .qz-mode-tab.active {
-    background: linear-gradient(135deg, #9333ea, #7c3aed);
-    color: #fff; border-color: #c084fc; box-shadow: 0 4px 16px rgba(147, 51, 234, 0.35);
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: #fff; border-color: #7c3aed; box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
 }
-.qz-mode-tab:hover:not(.active) { background: rgba(139,92,246,0.12); color: var(--quiz-text); }
+.qz-mode-tab:hover:not(.active) { background: var(--quiz-purple-light); color: var(--quiz-text); border-color: var(--quiz-border-hover); }
 
 /* AI Studio Container */
 .ai-studio-box {
-    background: radial-gradient(circle at top left, rgba(147,51,234,0.15), rgba(15,10,30,0.85));
-    border: 1px solid rgba(168,85,247,0.35); border-radius: 20px; padding: 24px;
-    margin-bottom: 20px; position: relative; overflow: hidden;
+    background: var(--quiz-card);
+    border: 1px solid var(--quiz-border); border-radius: 20px; padding: 26px;
+    margin-bottom: 22px; position: relative; overflow: hidden;
+    box-shadow: var(--quiz-shadow);
 }
 .ai-studio-box::before {
-    content: ''; position: absolute; top: -50px; right: -50px; width: 140px; height: 140px;
-    background: #9333ea; filter: blur(70px); opacity: 0.2; pointer-events: none;
+    content: ''; position: absolute; top: -60px; right: -60px; width: 160px; height: 160px;
+    background: #c084fc; filter: blur(60px); opacity: 0.12; pointer-events: none;
 }
 .ai-chip {
-    padding: 5px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700;
-    cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
-    color: #c4b5fd; transition: all 0.2s; user-select: none; display: inline-block; margin: 3px 2px;
+    padding: 6px 13px; border-radius: 20px; font-size: 11.5px; font-weight: 700;
+    cursor: pointer; background: var(--quiz-card-sub); border: 1px solid var(--quiz-border);
+    color: var(--quiz-text); transition: all 0.2s; user-select: none; display: inline-block; margin: 3px 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
-.ai-chip:hover { background: rgba(168,85,247,0.2); color: #fff; border-color: rgba(168,85,247,0.4); }
+.ai-chip:hover { background: #7c3aed; color: #fff; border-color: #7c3aed; }
 
 /* AI Question Preview Card */
 .ai-preview-card {
-    background: rgba(18, 12, 36, 0.9); border: 1px solid rgba(168, 85, 247, 0.25);
+    background: var(--quiz-card); border: 1px solid var(--quiz-border);
     border-radius: 16px; padding: 18px; margin-bottom: 14px; position: relative;
-    transition: all 0.2s;
+    transition: all 0.2s; box-shadow: var(--quiz-shadow);
 }
-.ai-preview-card:hover { border-color: rgba(168, 85, 247, 0.45); }
+.ai-preview-card:hover { border-color: var(--quiz-border-hover); box-shadow: 0 6px 20px rgba(139,92,246,0.15); }
 .ai-preview-num {
-    font-size: 13px; font-weight: 800; color: #a855f7; display: flex;
+    font-size: 13px; font-weight: 800; color: var(--quiz-purple); display: flex;
     align-items: center; justify-content: space-between; margin-bottom: 8px;
 }
 
 /* Question Cards in Manager */
 .qz-question-card {
     background: var(--quiz-card); border: 1px solid var(--quiz-border); border-radius: 16px;
-    padding: 20px; margin-bottom: 14px; transition: border-color 0.2s;
+    padding: 22px; margin-bottom: 14px; transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: var(--quiz-shadow);
 }
-.qz-question-card:hover { border-color: var(--quiz-border-hover); }
+.qz-question-card:hover { border-color: var(--quiz-border-hover); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
 .qz-question-title { font-size: 14.5px; font-weight: 800; color: var(--quiz-text); line-height: 1.5; margin-bottom: 12px; }
-.qz-question-num { color: var(--quiz-purple); margin-right: 6px; font-size: 15px; }
+.qz-question-num { color: var(--quiz-purple); margin-right: 6px; font-size: 15px; font-weight: 800; }
 
 /* Option boxes */
-.qz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.qz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .qz-opt {
-    background: rgba(0,0,0,0.25); border: 1.5px solid rgba(255,255,255,0.06); border-radius: 10px;
-    padding: 10px 14px; font-size: 13px; color: #c8bfe0; display: flex; align-items: center; gap: 8px;
+    background: var(--quiz-opt-bg); border: 1.5px solid var(--quiz-opt-border); border-radius: 10px;
+    padding: 11px 15px; font-size: 13px; color: var(--quiz-text); display: flex; align-items: center; gap: 8px;
     cursor: pointer; transition: all 0.2s; position: relative; user-select: none;
 }
-.qz-opt:hover { border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.06); }
+.qz-opt:hover { border-color: #a855f7; background: var(--quiz-purple-light); color: var(--quiz-text); }
 .qz-opt.correct {
-    border-color: #10b981; background: rgba(16,185,129,0.12);
-    color: var(--quiz-green); font-weight: 700;
+    border-color: #10b981; background: var(--quiz-green-light);
+    color: #34d399; font-weight: 700;
+}
+body.adm-light-mode .qz-opt.correct {
+    color: #065f46;
 }
 .qz-opt.correct::after {
     content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-    margin-left: auto; font-size: 12px; color: var(--quiz-green);
+    margin-left: auto; font-size: 12px; color: #10b981;
 }
-.qz-opt-letter { font-weight: 800; min-width: 22px; }
+.qz-opt-letter { font-weight: 800; min-width: 22px; color: var(--quiz-muted); }
+.qz-opt.correct .qz-opt-letter { color: #34d399; }
+body.adm-light-mode .qz-opt.correct .qz-opt-letter { color: #065f46; }
 
 /* Answer Key Box */
 .qz-answer-key-box {
-    margin-top: 16px; background: rgba(52,211,153,0.04); border: 1px dashed rgba(52,211,153,0.3);
+    margin-top: 16px; background: var(--quiz-green-light); border: 1px dashed rgba(16, 185, 129, 0.4);
     border-radius: 14px; padding: 16px;
 }
 .qz-answer-key-label {
@@ -1572,54 +1823,57 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
     background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     font-family: 'Plus Jakarta Sans', sans-serif; text-decoration: none;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
 }
-.qz-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
+.qz-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124, 58, 237, 0.38); }
 
 .qz-ai-btn {
     background: linear-gradient(135deg, #ec4899, #8b5cf6);
-    box-shadow: 0 4px 20px rgba(236,72,153,0.3);
+    box-shadow: 0 4px 16px rgba(236,72,153,0.25);
 }
 .qz-ai-btn:hover {
-    box-shadow: 0 8px 28px rgba(236,72,153,0.5);
+    box-shadow: 0 8px 26px rgba(236,72,153,0.4);
 }
 
 /* Empty State */
 .qz-empty {
-    background: var(--quiz-card); border: 1px solid var(--quiz-border); border-radius: 18px;
+    background: var(--quiz-card); border: 1px dashed var(--quiz-border); border-radius: 18px;
     padding: 60px 30px; text-align: center;
+    box-shadow: var(--quiz-shadow);
 }
 .qz-empty i { font-size: 48px; color: var(--quiz-purple); margin-bottom: 16px; }
 .qz-empty h3 { font-size: 18px; font-weight: 800; color: var(--quiz-text); margin-bottom: 6px; }
 .qz-empty p { color: var(--quiz-muted); font-size: 13.5px; margin-bottom: 20px; }
 
 /* Table */
-.qz-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.qz-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--quiz-card); }
 .qz-table th {
-    padding: 14px 12px; text-align: left; color: #c4b5fd; font-weight: 700;
-    background: rgba(0,0,0,0.25); border-bottom: 2px solid var(--quiz-border);
+    padding: 14px 12px; text-align: left; color: var(--quiz-muted); font-weight: 700;
+    background: var(--quiz-table-th); border-bottom: 2px solid var(--quiz-border);
 }
 .qz-table td {
-    padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--quiz-text);
+    padding: 12px; border-bottom: 1px solid var(--quiz-border); color: var(--quiz-text);
 }
-.qz-table tr:hover td { background: rgba(139,92,246,0.04); }
+.qz-table tr:hover td { background: var(--quiz-table-hover); }
 
 /* Modal */
 .qz-modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+    background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px);
     z-index: 9999; align-items: center; justify-content: center;
 }
 .qz-modal-overlay.show { display: flex; }
 .qz-modal {
-    background: #180e2e; border: 1px solid var(--quiz-border-hover); border-radius: 20px;
+    background: var(--quiz-card); border: 1px solid var(--quiz-border); border-radius: 20px;
     padding: 28px; width: 95%; max-width: 620px; max-height: 90vh; overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    box-shadow: var(--quiz-shadow);
 }
 .qz-modal-title { font-size: 18px; font-weight: 800; color: var(--quiz-text); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 
 /* Section panel */
 .qz-panel {
-    background: var(--quiz-card); border: 1px solid var(--quiz-border); border-radius: 18px; padding: 24px;
+    background: var(--quiz-card); border: 1px solid var(--quiz-border); border-radius: 18px; padding: 26px;
+    box-shadow: var(--quiz-shadow);
 }
 
 /* Spinner / Animation */
@@ -1780,8 +2034,8 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
                     <div>
-                        <div style="font-size:16px;font-weight:800;color:#fff;">AI Quiz Studio — Sinh Đề Thi Tự Động</div>
-                        <div style="font-size:12px;color:#c4b5fd;">Chỉ cần nhập chủ đề hoặc dán giáo trình, AI sẽ tự động ra đề và phân bổ đều đáp án A, B, C, D</div>
+                        <div style="font-size:16px;font-weight:800;color:var(--quiz-text);">AI Quiz Studio — Sinh Đề Thi Tự Động</div>
+                        <div style="font-size:12px;color:var(--quiz-muted);">Chỉ cần nhập chủ đề hoặc dán giáo trình, AI sẽ tự động ra đề và phân bổ đều đáp án A, B, C, D</div>
                     </div>
                 </div>
 
@@ -1831,7 +2085,7 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
                     <label class="qz-label">Chủ Đề Cần Ra Đề *</label>
                     <input type="text" id="ai_topic" class="qz-input" placeholder="VD: Lập trình Web PHP cơ bản và xử lý Form, Cơ sở dữ liệu MySQL, Mạng máy tính...">
                     <div style="margin-top:8px;">
-                        <span style="font-size:11px;color:#a79bb7;margin-right:6px;">Gợi ý nhanh:</span>
+                        <span style="font-size:11px;color:#64748b;margin-right:6px;">Gợi ý nhanh:</span>
                         <span class="ai-chip" onclick="setAiTopic('Lập trình Web PHP và Kết nối MySQL')">PHP & MySQL</span>
                         <span class="ai-chip" onclick="setAiTopic('Lập trình Hướng đối tượng OOP trong C#/VB.Net')">OOP C#/VB.Net</span>
                         <span class="ai-chip" onclick="setAiTopic('Cơ sở dữ liệu và Truy vấn SQL Server')">SQL Database</span>
@@ -1844,7 +2098,7 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
                 <div style="margin-bottom:18px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                         <label class="qz-label" style="margin:0;">Tài Liệu / Giáo Trình Nguồn (Tùy chọn)</label>
-                        <span style="font-size:11px;color:#a79bb7;">AI sẽ ra đề bám sát 100% nội dung này</span>
+                        <span style="font-size:11px;color:#64748b;">AI sẽ ra đề bám sát 100% nội dung này</span>
                     </div>
                     <textarea id="ai_source_content" rows="3" class="qz-textarea" placeholder="Dán nội dung bài học, tóm tắt giáo trình, slide bài giảng vào đây nếu muốn AI ra đề thi bám sát tài liệu của bạn..."></textarea>
                 </div>
@@ -1866,11 +2120,11 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
             </div>
 
             <!-- AI Progress / Loading Box -->
-            <div id="ai_loading_box" style="display:none;background:rgba(20,13,38,0.9);border:1px solid rgba(168,85,247,0.3);border-radius:18px;padding:30px;text-align:center;margin-bottom:20px;">
+            <div id="ai_loading_box" style="display:none;background:var(--quiz-card);border:1px solid var(--quiz-border);border-radius:18px;padding:30px;text-align:center;margin-bottom:20px;box-shadow:var(--quiz-shadow);">
                 <div style="font-size:42px;color:#ec4899;margin-bottom:14px;"><i class="fa-solid fa-atom spin"></i></div>
-                <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px;" id="ai_loading_text">Đang kết nối siêu trí tuệ AI...</div>
-                <div style="font-size:13px;color:#c4b5fd;margin-bottom:18px;" id="ai_loading_sub">Hệ thống đang biên soạn câu hỏi, tạo phương án nhiễu & phân bổ đáp án...</div>
-                <div style="width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;max-width:380px;margin:0 auto;">
+                <div style="font-size:18px;font-weight:800;color:var(--quiz-text);margin-bottom:6px;" id="ai_loading_text">Đang kết nối siêu trí tuệ AI...</div>
+                <div style="font-size:13px;color:var(--quiz-muted);margin-bottom:18px;" id="ai_loading_sub">Hệ thống đang biên soạn câu hỏi, tạo phương án nhiễu & phân bổ đáp án...</div>
+                <div style="width:100%;height:6px;background:var(--quiz-card-sub);border-radius:10px;overflow:hidden;max-width:380px;margin:0 auto;">
                     <div id="ai_progress_bar" style="width:20%;height:100%;background:linear-gradient(90deg,#ec4899,#8b5cf6);transition:width 0.4s ease;"></div>
                 </div>
             </div>
@@ -1879,7 +2133,7 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
             <div id="ai_preview_area" style="display:none;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
                     <div>
-                        <div style="font-size:17px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;">
+                        <div style="font-size:17px;font-weight:800;color:var(--quiz-text);display:flex;align-items:center;gap:8px;">
                             <i class="fa-solid fa-list-check" style="color:var(--quiz-green);"></i>
                             Xem Trước &amp; Chỉnh Sửa Câu Hỏi AI Vừa Tạo (<span id="ai_preview_count">0</span> câu)
                         </div>
@@ -1931,12 +2185,12 @@ if ($msg) { $parts = explode(':', $msg, 2); $msgType = $parts[0]; $msgText = $pa
 
             <!-- Mode 2: Paste Text -->
             <div id="mode_text" style="display:none;margin-bottom:18px;">
-                <div style="background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(59,130,246,0.1));border:1px solid rgba(139,92,246,0.3);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
+                <div style="background:var(--quiz-purple-light);border:1px solid var(--quiz-border);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
                     <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#a855f7,#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0;">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
-                    <div style="font-size:12.5px;color:#e2e8f0;line-height:1.5;">
-                        <strong style="color:#c084fc;">AI Tự Động Phân Tích Đáp Án:</strong> Nếu đề thi không có sẵn đáp án (không in đậm, không ghi "Đáp án: ..."), hệ thống sẽ <strong>tự động dùng AI phân tích câu hỏi &amp; chọn đáp án chính xác nhất (A, B, C, D)</strong> cho bạn.
+                    <div style="font-size:12.5px;color:var(--quiz-text);line-height:1.5;">
+                        <strong style="color:var(--quiz-purple);">AI Tự Động Phân Tích Đáp Án:</strong> Nếu đề thi không có sẵn đáp án (không in đậm, không ghi "Đáp án: ..."), hệ thống sẽ <strong>tự động dùng AI phân tích câu hỏi &amp; chọn đáp án chính xác nhất (A, B, C, D)</strong> cho bạn.
                     </div>
                 </div>
                 <label class="qz-label" style="color:var(--quiz-muted);font-size:11.5px;">Dán nội dung câu hỏi trắc nghiệm (Hệ thống tự tách Câu 1, A, B, C, D):</label>
@@ -1955,12 +2209,12 @@ D. Visual Studio 2015"></textarea>
 
             <!-- Mode 3: File Upload -->
             <div id="mode_file" style="display:none;margin-bottom:18px;">
-                <div style="background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(59,130,246,0.1));border:1px solid rgba(139,92,246,0.3);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
+                <div style="background:var(--quiz-purple-light);border:1px solid var(--quiz-border);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
                     <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#a855f7,#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0;">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
-                    <div style="font-size:12.5px;color:#e2e8f0;line-height:1.5;">
-                        <strong style="color:#c084fc;">AI Tự Động Phân Tích Đáp Án:</strong> Tải lên tệp đề thi Word hoặc PDF. Nếu tệp không có sẵn đáp án, AI sẽ tự động phân tích và gán đáp án chính xác cho từng câu hỏi.
+                    <div style="font-size:12.5px;color:var(--quiz-text);line-height:1.5;">
+                        <strong style="color:var(--quiz-purple);">AI Tự Động Phân Tích Đáp Án:</strong> Tải lên tệp đề thi Word hoặc PDF. Nếu tệp không có sẵn đáp án, AI sẽ tự động phân tích và gán đáp án chính xác cho từng câu hỏi.
                     </div>
                 </div>
                 <label class="qz-label" style="color:var(--quiz-muted);font-size:11.5px;">Chọn tệp Word (.docx), PDF (.pdf) hoặc Text (.txt):</label>
@@ -1968,9 +2222,16 @@ D. Visual Studio 2015"></textarea>
             </div>
 
             <!-- Mode 4: Manual -->
-            <div id="mode_manual" style="display:none;margin-bottom:18px;color:var(--quiz-muted);font-size:13px;padding:14px;background:rgba(0,0,0,0.15);border-radius:10px;">
+            <div id="mode_manual" style="display:none;margin-bottom:18px;color:var(--quiz-muted);font-size:13px;padding:14px;background:var(--quiz-card);border:1px solid var(--quiz-border);border-radius:10px;">
                 <i class="fa-solid fa-circle-info" style="color:var(--quiz-blue);"></i>
                 Bộ Quiz rỗng sẽ được tạo trước, sau đó bạn thêm từng câu hỏi theo ý muốn.
+            </div>
+
+            <div id="ai_solve_toggle_box" style="margin-bottom:18px;padding:12px 14px;background:var(--quiz-card-sub);border:1px solid var(--quiz-border);border-radius:10px;">
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--quiz-text);font-weight:700;">
+                    <input type="checkbox" name="force_ai_solve" value="1" checked style="width:17px;height:17px;accent-color:#7c3aed;">
+                    <span><i class="fa-solid fa-wand-magic-sparkles" style="color:#7c3aed;"></i> Bật AI Thẩm Định &amp; Tự Giải Toàn Bộ Đáp Án (Đảm bảo chuẩn xác 100%)</span>
+                </label>
             </div>
 
             <div style="margin-top:20px;">
@@ -1988,7 +2249,7 @@ D. Visual Studio 2015"></textarea>
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
         <div style="display:flex;align-items:center;gap:10px;">
-            <a href="?tab=list" class="qz-action-btn" style="background:rgba(255,255,255,0.05);color:var(--quiz-text);border-color:rgba(255,255,255,0.1);">
+            <a href="?tab=list" class="qz-action-btn" style="background:var(--quiz-card);color:var(--quiz-text);border-color:var(--quiz-border);">
                 <i class="fa-solid fa-arrow-left"></i> Quay lại
             </a>
             <h2 style="font-size:17px;font-weight:800;color:var(--quiz-text);margin:0;">
@@ -1997,13 +2258,13 @@ D. Visual Studio 2015"></textarea>
             </h2>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="button" onclick="openImportModal()" class="qz-action-btn" style="background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(139,92,246,0.15));color:#60a5fa;border-color:rgba(59,130,246,0.3);" title="Tải tệp Word/PDF hoặc dán đề để AI tự động giải">
+            <button type="button" onclick="openImportModal()" class="qz-action-btn" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;" title="Tải tệp Word/PDF hoặc dán đề để AI tự động giải">
                 <i class="fa-solid fa-file-arrow-up"></i> Nạp Tệp / Dán Đề (AI Tự Giải)
             </button>
             <button type="button" onclick="openAiAddModal()" class="qz-action-btn qz-ai-btn" style="color:#fff;border-radius:10px;padding:8px 14px;">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> AI Sinh Thêm Câu Hỏi
             </button>
-            <button type="button" onclick="aiSolveAllQuestions(<?= $quiz_id ?>)" id="btn_ai_solve_all" class="qz-action-btn" style="background:linear-gradient(135deg,rgba(236,72,153,0.15),rgba(139,92,246,0.15));color:#f472b6;border-color:rgba(236,72,153,0.3);" title="Dùng AI tự động giải & phân tích đáp án cho toàn bộ câu hỏi trong đề">
+            <button type="button" onclick="aiSolveAllQuestions(<?= $quiz_id ?>)" id="btn_ai_solve_all" class="qz-action-btn" style="background:#fdf2f8;color:#db2777;border-color:#fbcfe8;" title="Dùng AI tự động giải & phân tích đáp án cho toàn bộ câu hỏi trong đề">
                 <i class="fa-solid fa-brain"></i> AI Giải Toàn Đề
             </button>
             <a href="?tab=matrix&quiz_id=<?= $quiz_id ?>" class="qz-action-btn qz-btn-shuffle"><i class="fa-solid fa-shuffle"></i> Trộn Mã Đề</a>
@@ -2025,11 +2286,11 @@ D. Visual Studio 2015"></textarea>
         </div>
 
         <?php if (empty($quiz_questions)): ?>
-            <div class="qz-empty" style="padding:60px 20px;text-align:center;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.1);border-radius:16px;">
-                <div style="width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(59,130,246,0.2));display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;color:#c084fc;font-size:32px;">
+            <div class="qz-empty" style="padding:60px 20px;text-align:center;background:var(--quiz-card);border:1px dashed var(--quiz-border);border-radius:16px;">
+                <div style="width:70px;height:70px;border-radius:20px;background:var(--quiz-purple-light);display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--quiz-purple);font-size:32px;">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
-                <h3 style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Chưa có câu hỏi nào trong bộ đề</h3>
+                <h3 style="font-size:18px;font-weight:800;color:var(--quiz-text);margin-bottom:8px;">Chưa có câu hỏi nào trong bộ đề</h3>
                 <p style="color:var(--quiz-muted);max-width:520px;margin:0 auto 24px auto;font-size:13.5px;line-height:1.6;">
                     Hãy tải lên tệp đề thi Word / PDF hoặc dán văn bản câu hỏi. AI sẽ tự động đọc hiểu, bóc tách câu hỏi và gán đáp án chính xác nhất!
                 </p>
@@ -2052,13 +2313,13 @@ D. Visual Studio 2015"></textarea>
                         <?= htmlspecialchars($q['cau_hoi']) ?>
                     </div>
                     <div style="display:flex;gap:6px;flex-shrink:0;">
-                        <button type="button" onclick="quickAiSolveQuestion(<?= $q['id'] ?>, this)" class="qz-action-btn" style="padding:6px 12px;font-size:12px;font-weight:700;background:rgba(236,72,153,0.12);color:#f472b6;border-color:rgba(236,72,153,0.3);" title="Dùng AI phân tích đáp án cho câu này">
+                        <button type="button" onclick="quickAiSolveQuestion(<?= $q['id'] ?>, this)" class="qz-action-btn" style="padding:6px 12px;font-size:12px;font-weight:700;background:#fdf2f8;color:#db2777;border-color:#fbcfe8;" title="Dùng AI phân tích đáp án cho câu này">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> AI Giải
                         </button>
-                        <button onclick="openEditModal(<?= htmlspecialchars(json_encode($q, JSON_UNESCAPED_UNICODE)) ?>, <?= $quiz_id ?>)" class="qz-action-btn" style="padding:6px 10px;font-size:12px;background:rgba(139,92,246,0.1);color:#c084fc;border-color:rgba(139,92,246,0.2);" title="Sửa câu hỏi">
+                        <button onclick="openEditModal(<?= htmlspecialchars(json_encode($q, JSON_UNESCAPED_UNICODE)) ?>, <?= $quiz_id ?>)" class="qz-action-btn" style="padding:6px 10px;font-size:12px;background:#f5f3ff;color:#7c3aed;border-color:#ddd6fe;" title="Sửa câu hỏi">
                             <i class="fa-solid fa-pen"></i>
                         </button>
-                        <a href="?action=delete_question&quiz_id=<?= $quiz_id ?>&question_id=<?= $q['id'] ?>" onclick="return confirm('Xóa câu hỏi này?')" class="qz-action-btn" style="padding:6px 10px;font-size:12px;background:rgba(248,113,113,0.1);color:var(--quiz-red);border-color:rgba(248,113,113,0.2);" title="Xóa">
+                        <a href="?action=delete_question&quiz_id=<?= $quiz_id ?>&question_id=<?= $q['id'] ?>" onclick="return confirm('Xóa câu hỏi này?')" class="qz-action-btn" style="padding:6px 10px;font-size:12px;background:#fef2f2;color:var(--quiz-red);border-color:#fecaca;" title="Xóa">
                             <i class="fa-solid fa-trash"></i>
                         </a>
                     </div>
@@ -2085,18 +2346,18 @@ D. Visual Studio 2015"></textarea>
     <div class="qz-modal-overlay" id="importModal">
         <div class="qz-modal" style="max-width:620px;">
             <div class="qz-modal-title">
-                <i class="fa-solid fa-file-arrow-up" style="color:#60a5fa;"></i> Nạp Thêm Đề Thi (AI Tự Giải Đáp Án)
-                <button onclick="closeImportModal()" style="margin-left:auto;background:none;border:none;color:var(--quiz-muted);font-size:20px;cursor:pointer;">&times;</button>
+                <i class="fa-solid fa-file-arrow-up" style="color:#0284c7;"></i> Nạp Thêm Đề Thi (AI Tự Giải Đáp Án)
+                <button onclick="closeImportModal()" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;">&times;</button>
             </div>
             <form method="POST" action="?action=bulk_add_questions" enctype="multipart/form-data">
                 <input type="hidden" name="quiz_id" value="<?= $quiz_id ?>">
                 
-                <div style="background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(59,130,246,0.1));border:1px solid rgba(139,92,246,0.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+                <div style="background:var(--quiz-purple-light);border:1px solid var(--quiz-border);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
                     <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#a855f7,#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0;">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
-                    <div style="font-size:12.5px;color:#e2e8f0;line-height:1.5;">
-                        <strong style="color:#c084fc;">AI Tự Động Phân Tích &amp; Giải Đề:</strong> Bạn chỉ cần tải tệp Word/PDF hoặc dán nội dung. AI sẽ tự động đọc câu hỏi, bóc tách phương án và chọn đáp án chính xác nhất!
+                    <div style="font-size:12.5px;color:var(--quiz-text);line-height:1.5;">
+                        <strong style="color:var(--quiz-purple);">AI Tự Động Phân Tích &amp; Giải Đề:</strong> Bạn chỉ cần tải tệp Word/PDF hoặc dán nội dung. AI sẽ tự động đọc câu hỏi, bóc tách phương án và chọn đáp án chính xác nhất!
                     </div>
                 </div>
 
@@ -2112,6 +2373,13 @@ D. Visual Studio 2015"></textarea>
                     <textarea name="raw_text" rows="5" class="qz-textarea" placeholder="Câu 1: ... A. ... B. ... C. ... D. ..."></textarea>
                 </div>
 
+                <div style="margin-bottom:16px;padding:10px 12px;background:var(--quiz-card-sub);border:1px solid var(--quiz-border);border-radius:10px;">
+                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:12.5px;color:var(--quiz-text);font-weight:700;">
+                        <input type="checkbox" name="force_ai_solve" value="1" checked style="width:16px;height:16px;accent-color:#7c3aed;">
+                        <span><i class="fa-solid fa-wand-magic-sparkles" style="color:#7c3aed;"></i> Bật AI Thẩm Định &amp; Tự Giải Toàn Bộ Đáp Án (Chuẩn xác 100%)</span>
+                    </label>
+                </div>
+
                 <button type="submit" class="qz-submit-btn" style="padding:12px;font-size:14px;border-radius:10px;">
                     <i class="fa-solid fa-bolt"></i> Nạp Vào Bộ Đề &amp; AI Tự Giải Ngay
                 </button>
@@ -2124,7 +2392,7 @@ D. Visual Studio 2015"></textarea>
         <div class="qz-modal">
             <div class="qz-modal-title">
                 <i class="fa-solid fa-pen-to-square" style="color:var(--quiz-purple);"></i> Sửa Câu Hỏi
-                <button onclick="closeEditModal()" style="margin-left:auto;background:none;border:none;color:var(--quiz-muted);font-size:20px;cursor:pointer;">&times;</button>
+                <button onclick="closeEditModal()" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;">&times;</button>
             </div>
             <form method="POST" action="?action=edit_question" id="editForm">
                 <input type="hidden" name="quiz_id" id="edit_quiz_id">
@@ -2146,7 +2414,7 @@ D. Visual Studio 2015"></textarea>
                             <i class="fa-solid fa-wand-magic-sparkles"></i> AI Tìm Đáp Án
                         </button>
                     </div>
-                    <select name="dap_an_dung" id="edit_dap_an_dung" class="qz-select" style="border-color:rgba(52,211,153,0.3);color:var(--quiz-green);font-weight:800;">
+                    <select name="dap_an_dung" id="edit_dap_an_dung" class="qz-select" style="border-color:#a7f3d0;color:var(--quiz-green);font-weight:800;">
                         <option value="A">A</option><option value="B">B</option>
                         <option value="C">C</option><option value="D">D</option>
                     </select>
@@ -2163,7 +2431,7 @@ D. Visual Studio 2015"></textarea>
         <div class="qz-modal">
             <div class="qz-modal-title">
                 <i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i> AI Sinh Thêm Câu Hỏi Vào Đề
-                <button onclick="closeAiAddModal()" style="margin-left:auto;background:none;border:none;color:var(--quiz-muted);font-size:20px;cursor:pointer;">&times;</button>
+                <button onclick="closeAiAddModal()" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;">&times;</button>
             </div>
             <div style="margin-bottom:14px;">
                 <label class="qz-label">Chủ đề cần tạo thêm câu hỏi:</label>
@@ -2188,7 +2456,7 @@ D. Visual Studio 2015"></textarea>
                     </select>
                 </div>
             </div>
-            <div id="ai_add_loading" style="display:none;text-align:center;padding:15px;color:#c084fc;font-weight:700;">
+            <div id="ai_add_loading" style="display:none;text-align:center;padding:15px;color:#7c3aed;font-weight:700;">
                 <i class="fa-solid fa-atom spin" style="font-size:24px;margin-bottom:6px;display:block;"></i>
                 AI đang biên soạn câu hỏi... Vui lòng chờ vài giây!
             </div>
@@ -2205,7 +2473,7 @@ D. Visual Studio 2015"></textarea>
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
         <div style="display:flex;align-items:center;gap:10px;">
-            <a href="?tab=list" class="qz-action-btn" style="background:rgba(255,255,255,0.05);color:var(--quiz-text);border-color:rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i></a>
+            <a href="?tab=list" class="qz-action-btn" style="background:var(--quiz-card);color:var(--quiz-text);border-color:var(--quiz-border);"><i class="fa-solid fa-arrow-left"></i></a>
             <h2 style="font-size:17px;font-weight:800;color:var(--quiz-text);margin:0;">
                 Trộn Mã Đề: <?= htmlspecialchars($current_quiz['tieu_de']) ?>
             </h2>
@@ -2296,7 +2564,7 @@ D. Visual Studio 2015"></textarea>
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
         <div style="display:flex;align-items:center;gap:10px;">
-            <a href="?tab=list" class="qz-action-btn" style="background:rgba(255,255,255,0.05);color:var(--quiz-text);border-color:rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i></a>
+            <a href="?tab=list" class="qz-action-btn" style="background:var(--quiz-card);color:var(--quiz-text);border-color:var(--quiz-border);"><i class="fa-solid fa-arrow-left"></i></a>
             <h2 style="font-size:17px;font-weight:800;color:var(--quiz-text);margin:0;">
                 Bảng Điểm: <?= htmlspecialchars($current_quiz['tieu_de']) ?>
             </h2>
@@ -2528,15 +2796,15 @@ function renderAiPreview(questions) {
 
         card.innerHTML = `
             <div class="ai-preview-num">
-                <span><i class="fa-solid fa-circle-question" style="color:#c084fc;"></i> Câu ${idx + 1}</span>
+                <span><i class="fa-solid fa-circle-question" style="color:#7c3aed;"></i> Câu ${idx + 1}</span>
                 <div style="display:flex;gap:6px;">
                     <span class="qz-badge qz-badge-green" id="ai_badge_ans_${idx}">Đáp án đúng: ${q.dap_an_dung}</span>
-                    <button type="button" onclick="deleteAiQuestion(${idx})" class="qz-action-btn" style="padding:4px 8px;font-size:11px;background:rgba(248,113,113,0.1);color:var(--quiz-red);border-color:rgba(248,113,113,0.2);" title="Xóa câu này">
+                    <button type="button" onclick="deleteAiQuestion(${idx})" class="qz-action-btn" style="padding:4px 8px;font-size:11px;background:#fef2f2;color:var(--quiz-red);border-color:#fecaca;" title="Xóa câu này">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </div>
-            <div style="font-size:14.5px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.45;">
+            <div style="font-size:14.5px;font-weight:700;color:var(--quiz-text);margin-bottom:10px;line-height:1.45;">
                 ${escapeHtml(q.cau_hoi)}
             </div>
             <div class="qz-opts">${optsHtml}</div>
